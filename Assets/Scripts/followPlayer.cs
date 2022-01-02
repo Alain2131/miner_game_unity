@@ -4,8 +4,13 @@ public class followPlayer : MonoBehaviour
 {
     public Transform player;
 
+    private Vector3 pos;
+
     void Update()
     {
-        transform.position = new Vector3(player.position.x, player.position.y, transform.position.z);
+        pos = player.position;
+        pos.z = transform.position.z;
+
+        transform.position = pos;
     }
 }
