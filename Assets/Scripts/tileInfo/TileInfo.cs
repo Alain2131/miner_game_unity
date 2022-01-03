@@ -6,27 +6,38 @@ using System;
 [CreateAssetMenu(fileName = "NewTileInfo", menuName = "NewTileInfo")]
 public class TileInfo : ScriptableObject
 {
+    [Header("General Info")]
     public new string name;
-
     public Material material;
 
-    public float weight; // weight in cargo
-    public float value; // sell value in store
+    [Space(10)]
+    [Tooltip("Weight in the Cargo.")]
+    public float weight; // if weight or value is -1 or 0, do not store in cargo/inventory
+    [Tooltip("Sell value in the store.")]
+    public float value;
 
-    // Separator
+    /* Info to add and implement */
+    // float Fuel Consumption (how much fuel to dig)
+    // float Dig Time (how long to dig)
+    // int Dig Level (which drill is required to dig, for stuff like rocks. Most tiles will be 0)
+
+    [Header("Procedural Generation Stuff")]
+    [Range(0, 5)]
+    [Tooltip("The size of the Perlin Noise.\nDo not use Integer Values.")]
+    public float noiseSize = 1.01f;
 
     [Serializable]
     public struct LevelGenerationValues
     {
         public int depth;
+        [Range(0, 1)]
         public float percent; // aka threshold
     }
+    [Tooltip("Make sure Depth is correctly ordered.")]
     public LevelGenerationValues[] levelGenerationValues;
-
-    // The size of the perlin noise
-    // Never use integer values,
-    // PerlinNoise doesn't like that
-    public float noiseSize = 1.01f;
+    // It would be amazing to convert that system with a curve editor
+    // Each tile would be a line, it would be clamp from 0-1 in height,
+    // and width would be depth
 
 
     public float GetWeight()
@@ -36,7 +47,7 @@ public class TileInfo : ScriptableObject
 
     public float GetNoiseSize()
     {
-        return noiseSize;
+        return noiseSize; // * 1.0013051412f; // Ensure it is not an integer.
     }
 
     public Material GetMaterial()
@@ -99,7 +110,7 @@ public class TileInfo : ScriptableObject
         // This is equivalent, and should be faster.
         // If you get around to testing that,
         // I'd be curious to see the numbers.
-        // This is something that will be evaluated pretty often.
+        // This is something that will be evaluated very often.
 
         return percent;
     }

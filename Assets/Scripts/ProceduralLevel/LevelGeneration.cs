@@ -10,9 +10,7 @@ public class LevelGeneration : MonoBehaviour
     public int ySize = 20;
 
     private List<LineGeneration> lines;
-
     private float heightThreshold;
-
     private bool dirtyCollision = false;
 
     private void Awake()
@@ -28,9 +26,6 @@ public class LevelGeneration : MonoBehaviour
         }
 
         heightThreshold = -(ySize / 2f);
-
-        //AllTiles.Type.Coal
-        //Tile dirtInfo = AllTiles.Dirt();
     }
 
     private void Update()
@@ -52,6 +47,7 @@ public class LevelGeneration : MonoBehaviour
         // Generate level as the player moves vertically
         float height = player.position.y;
         int bufferZone = 2; // could be exposed on the script. Must be >0
+
         if (height > heightThreshold + bufferZone) // upper bound
         {
             if (heightThreshold >= -(ySize / 2f))

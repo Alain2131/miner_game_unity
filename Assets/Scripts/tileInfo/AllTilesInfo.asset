@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71eb41f4426282841a10e821e9f30a39, type: 3}
-  m_Name: AllTiles
+  m_Name: AllTilesInfo
   m_EditorClassIdentifier: 
   dirtTile: {fileID: 11400000, guid: 25d0355cd70e0ee4bbb98a9092a400a0, type: 2}
   coalTile: {fileID: 11400000, guid: b139119115ca6d54a9d8c0cea052ad91, type: 2}

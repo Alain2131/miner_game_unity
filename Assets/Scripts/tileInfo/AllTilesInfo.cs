@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "AllTiles", menuName = "AllTiles")]
-public class AllTiles : ScriptableObject
+public class AllTilesInfo : ScriptableObject
 {
     public TileInfo dirtTile;
     public TileInfo coalTile;

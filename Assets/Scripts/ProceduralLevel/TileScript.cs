@@ -31,7 +31,7 @@ public class TileScript : MonoBehaviour
     {
         SetEnabled(false);
 
-        // Recompute Collision
+        // Recompute Collision on the line
         GameObject parent = transform.parent.gameObject;
         parent.GetComponent<LineGeneration>().RecomputeCollision(x_ID);
     }

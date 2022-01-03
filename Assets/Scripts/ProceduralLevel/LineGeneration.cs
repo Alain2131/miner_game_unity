@@ -3,21 +3,21 @@ using UnityEngine;
 [RequireComponent(typeof(PolygonCollider2D))]
 public class LineGeneration : MonoBehaviour
 {
-    public int      xSize = 10;
-    public Object   tileObject;
-    public int      lineID = -1; // Basically, depth. We don't need to see it in Unity, but it's helpful for debugging. It could be set to readonly
-    public AllTiles allTilesObject;
+    public int          xSize = 10;
+    public Object       tileObject;
+    public int          lineID = -1; // Basically, depth. We don't need to see it in Unity, but it's helpful for debugging. It could be set to readonly
+    public AllTilesInfo allTilesInfo;
 
     private bool[]       airTiles;     // True is a tile, False is air/digged up
     private TileScript[] lineTiles;    // References all child tiles in the line. Only modified on Start.
-    private TileInfo[]   allTilesInfo; // Init'ed in Start from allTilesObject
+    private TileInfo[]   tilesInfo; // Init'ed in Start from allTilesObject
 
     private void Start()
     {
         // Init Arrays
         airTiles = new bool[xSize + 1];
         lineTiles = new TileScript[xSize];
-        allTilesInfo = allTilesObject.GetAllTiles();
+        tilesInfo = allTilesInfo.GetAllTiles();
 
         SpawnTiles();
     }
@@ -61,8 +61,8 @@ public class LineGeneration : MonoBehaviour
             else
             {
                 // Add Air
-                noiseSize = allTilesObject.GetAir().noiseSize;
-                threshold = allTilesObject.GetAir().GetSpawnPercent(0);
+                noiseSize = allTilesInfo.GetAir().noiseSize;
+                threshold = allTilesInfo.GetAir().GetSpawnPercent(0);
 
                 noiseVal = Mathf.PerlinNoise(x * noiseSize + seed, lineID * noiseSize + seed);
                 noiseVal = Mathf.Clamp01(noiseVal) + bias;
@@ -79,10 +79,10 @@ public class LineGeneration : MonoBehaviour
             if (airTiles[x]) // If we know it's not an air tile
             {
                 // Loop through all the TileInfo, and place the first "valid" tile
-                foreach(TileInfo currentTileInfo in allTilesInfo)
+                foreach(TileInfo tileInfo in tilesInfo)
                 {
-                    noiseSize = currentTileInfo.GetNoiseSize();
-                    threshold = currentTileInfo.GetSpawnPercent(lineID);
+                    noiseSize = tileInfo.GetNoiseSize();
+                    threshold = tileInfo.GetSpawnPercent(lineID);
 
                     if (threshold == 0)
                         continue;
@@ -91,7 +91,7 @@ public class LineGeneration : MonoBehaviour
                     noiseVal = Mathf.Clamp01(noiseVal) + bias;
                     if (noiseVal < threshold)
                     {
-                        currentTile.SetMaterial(currentTileInfo.GetMaterial());
+                        currentTile.SetMaterial(tileInfo.GetMaterial());
                         //if(tile.GetName() != "dirt")
                             //Debug.Log(tile.GetName() + " " + lineID + " " + threshold + " " + noiseVal);
                         break;
