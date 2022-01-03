@@ -1,23 +1,14 @@
 using UnityEngine;
 
+/*
+ * The level generation places a tileObject,
+ * which in turn references this script.
+ */
+
 [RequireComponent(typeof(MeshRenderer), typeof(BoxCollider2D))]
 public class TileScript : MonoBehaviour
 {
-    /*
-    public enum TileType
-    {
-        Dirt, Coal, Iron
-    }
-    */
-
-    public int x_ID;
-    //public TileType tileType;
-
-    public void SetMaterial(string tileType)
-    {
-        Material tileMat = Resources.Load("Materials/" + tileType + "Mat", typeof(Material)) as Material;
-        GetComponent<Renderer>().material = tileMat;
-    }
+    public int x_ID; // the lateral position on the line, including air tiles
 
     public void SetEnabled(bool enabled)
     {
@@ -29,6 +20,11 @@ public class TileScript : MonoBehaviour
         {
             transform.gameObject.SetActive(false);
         }
+    }
+
+    public void SetMaterial(Material mat)
+    {
+        GetComponent<Renderer>().material = mat;
     }
 
     public void DigTile()

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4398deb782bb25146b1bb657f438468b, type: 3}
+  m_Name: tileInfo_dirt
+  m_EditorClassIdentifier: 
+  name: dirt
+  material: {fileID: 2100000, guid: bead403a621dfa744be7210e1174916a, type: 2}
+  weight: -1
+  value: -1
+  depths: 00000000
+  percents:
+  - 1
+  noiseSize: 1.02

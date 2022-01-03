@@ -22,24 +22,39 @@ public class LevelGeneration : MonoBehaviour
         for (int i=0; i<ySize; i++)
         {
             Vector3 pos = transform.position;
-            lines[i] = GameObject.Instantiate(lineGeneration, new Vector3(pos.x, pos.y - i, pos.z), Quaternion.identity, transform);
+            pos.y -= i;
+            lines[i] = GameObject.Instantiate(lineGeneration, pos, Quaternion.identity, transform);
             lines[i].lineID = i;
         }
 
         heightThreshold = -(ySize / 2f);
 
-        TileInfo a = AllTiles.Dirt();
-        print(a.Value());
+        //AllTiles.Type.Coal
+        //Tile dirtInfo = AllTiles.Dirt();
     }
 
     private void Update()
     {
-        // Generate level as the player moves
+        updateLevelHeight();
+    }
+
+    private void FixedUpdate()
+    {
+        if(dirtyCollision)
+        {
+            GetComponent<CompositeCollider2D>().GenerateGeometry();
+            dirtyCollision = false;
+        }
+    }
+
+    private void updateLevelHeight()
+    {
+        // Generate level as the player moves vertically
         float height = player.position.y;
         int bufferZone = 2; // could be exposed on the script. Must be >0
-        if(height > heightThreshold + bufferZone) // upper bound
+        if (height > heightThreshold + bufferZone) // upper bound
         {
-            if(heightThreshold >= -(ySize/2f))
+            if (heightThreshold >= -(ySize / 2f))
                 return;
 
             // Extract relevant lines
@@ -51,7 +66,8 @@ public class LevelGeneration : MonoBehaviour
             lines.Insert(0, currentLine);
 
             // Set new position
-            Vector3 newPos = firstLine.transform.position + new Vector3(0, 1, 0);
+            Vector3 newPos = firstLine.transform.position;
+            newPos.y += 1;
             currentLine.transform.position = newPos;
 
             // Update lineID
@@ -71,16 +87,17 @@ public class LevelGeneration : MonoBehaviour
         {
             // Extract relevant lines
             LineGeneration currentLine = lines[0];
-            LineGeneration lastLine = lines[lines.Count-1];
+            LineGeneration lastLine = lines[lines.Count - 1];
 
             // Reorder List
             lines.RemoveAt(0);
             lines.Add(currentLine);
 
             // Set new position
-            Vector3 newPos = lastLine.transform.position + new Vector3(0, -1, 0);
+            Vector3 newPos = lastLine.transform.position;
+            newPos.y -= 1;
             currentLine.transform.position = newPos;
-            
+
             // Update lineID
             int newID = lastLine.lineID + 1;
             currentLine.lineID = newID;
@@ -93,15 +110,6 @@ public class LevelGeneration : MonoBehaviour
 
             // Update heightThreshold
             heightThreshold--;
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        if(dirtyCollision)
-        {
-            GetComponent<CompositeCollider2D>().GenerateGeometry();
-            dirtyCollision = false;
         }
     }
 }

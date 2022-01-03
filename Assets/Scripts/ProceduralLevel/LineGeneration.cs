@@ -3,92 +3,126 @@ using UnityEngine;
 [RequireComponent(typeof(PolygonCollider2D))]
 public class LineGeneration : MonoBehaviour
 {
-    public int xSize = 10;
-    public Object quad;
-    public int lineID = -1;
+    public int      xSize = 10;
+    public Object   tileObject;
+    public int      lineID = -1; // Basically, depth. We don't need to see it in Unity, but it's helpful for debugging. It could be set to readonly
+    public AllTiles allTilesObject;
 
-    // Temporary debug variables
-    public float noiseMult = 1.05f;
-    public float noiseThreshold = 0.5f;
-
-    private bool[] toGenerate;
-
-    private GameObject[] tiles; // contains a reference to all the child tiles
+    private bool[]       airTiles;     // True is a tile, False is air/digged up
+    private TileScript[] lineTiles;    // References all child tiles in the line. Only modified on Start.
+    private TileInfo[]   allTilesInfo; // Init'ed in Start from allTilesObject
 
     private void Start()
     {
         // Init Arrays
-        toGenerate = new bool[xSize + 1];
-        tiles = new GameObject[xSize];
-        
+        airTiles = new bool[xSize + 1];
+        lineTiles = new TileScript[xSize];
+        allTilesInfo = allTilesObject.GetAllTiles();
+
         SpawnTiles();
-        GenerateLine(lineID);
     }
 
-    // Called once at level start
-    private void SpawnTiles()
+    private void SpawnTiles() // Called once, at level start
     {
-        // Generate Tiles
+        // Generate all Tiles (digged-up tiles and air will be disabled later)
         for (int x = 0; x < xSize; x++)
         {
             Vector3 pos = transform.position;
+            pos.x += x + 0.5f;
+            pos.y -= 0.5f;
 
             int zRot = Random.Range(0, 5) * 90;
             Quaternion rotation = Quaternion.Euler(0, 0, zRot);
 
-            GameObject newTile = (GameObject)GameObject.Instantiate(quad, new Vector3(pos.x + x + 0.5f, pos.y - 0.5f, pos.z), rotation, transform);
+            GameObject newTile = (GameObject)GameObject.Instantiate(tileObject, pos, rotation, transform);
             newTile.GetComponent<TileScript>().x_ID = x;
 
-            tiles[x] = newTile;
+            lineTiles[x] = newTile.GetComponent<TileScript>();
         }
+
+        GenerateLine(lineID);
     }
 
-    // Called when the line is moved and reused
+    // Called on Start and when the line is moved/reused
     public void GenerateLine(int lineID, float seed = 0f)
     {
-        // We can't use lineID directly, because it doesn't update correctly inside the same frame
-        // so, we pass it manually
+        // We can't use lineID directly,
+        // because it doesn't update correctly inside the same frame
+        // So, we pass it manually
 
-        // temporary toGenerate bool array
-        // Will have to be converted into an array of blocks to generate, with their types
-        // dirt, iron, coal, rock, etc
-        // If the type is null (or simply unknown), then don't generate
-
+        float noiseVal, threshold, noiseSize;
+        float bias = 0.001f; // smol bias to remove 0 in noiseVal
         for (int x = 0; x < xSize; x++)
         {
-            //toGenerate[x] = Random.Range(0, 1f) > 0.35f;
-            
-            float noiseVal = Mathf.PerlinNoise(x * noiseMult + seed, lineID * noiseMult + seed);
-            toGenerate[x] = noiseVal > noiseThreshold;
+            TileScript currentTile = lineTiles[x];
 
-            if (this.lineID == 0) // If we're the first line
-                toGenerate[x] = true;
-
-            tiles[x].GetComponent<TileScript>().SetEnabled(toGenerate[x]);
-            if (toGenerate[x])
+            if (isTileDugUp() == true) // Handle the tiles already dug up
+                airTiles[x] = false;
+            else
             {
-                bool a = Mathf.PerlinNoise(x * noiseMult + seed, lineID * noiseMult + seed) > 0.5f;
-                if(a)
-                    tiles[x].GetComponent<TileScript>().SetMaterial("dirt");
-                else
-                    tiles[x].GetComponent<TileScript>().SetMaterial("coal");
+                // Add Air
+                noiseSize = allTilesObject.GetAir().noiseSize;
+                threshold = allTilesObject.GetAir().GetSpawnPercent(0);
+
+                noiseVal = Mathf.PerlinNoise(x * noiseSize + seed, lineID * noiseSize + seed);
+                noiseVal = Mathf.Clamp01(noiseVal) + bias;
+                airTiles[x] = noiseVal > threshold;
+
+                if (this.lineID == 0) // If we're the first line,
+                    airTiles[x] = true; // remove all air.
             }
             
-            // We could randomize rotation, but it's not necessary
+            // Disable air tile, Enable non-air tile
+            currentTile.SetEnabled(airTiles[x]);
+
+
+            if (airTiles[x]) // If we know it's not an air tile
+            {
+                // Loop through all the TileInfo, and place the first "valid" tile
+                foreach(TileInfo currentTileInfo in allTilesInfo)
+                {
+                    noiseSize = currentTileInfo.GetNoiseSize();
+                    threshold = currentTileInfo.GetSpawnPercent(lineID);
+
+                    if (threshold == 0)
+                        continue;
+                    
+                    noiseVal = Mathf.PerlinNoise(x * noiseSize + seed, lineID * noiseSize + seed);
+                    noiseVal = Mathf.Clamp01(noiseVal) + bias;
+                    if (noiseVal < threshold)
+                    {
+                        currentTile.SetMaterial(currentTileInfo.GetMaterial());
+                        //if(tile.GetName() != "dirt")
+                            //Debug.Log(tile.GetName() + " " + lineID + " " + threshold + " " + noiseVal);
+                        break;
+                    }
+                }
+            }
+
+            // We could randomize rotation,
+            // but it's not necessary when re-using the line.
+            // It is already randomised on spawn.
         }
         
         // This might have to be updated on the next Update
         // It currently works because there is a setup in LevelGeneration.cs
         // that dirties the collision and updates it in FixedUpdate()
-        GenerateCollision2D(toGenerate);
+        GenerateCollision2D(airTiles); // this is quite expensive, but necessary
+    }
+
+    private bool isTileDugUp()
+    {
+        // Fetch dug up tiles here
+        // an array containing all the tiles that we dug up for the current lineID
+        // Question is - How and where do we store that info ?
+        return false;
     }
 
     private void GenerateCollision2D(bool[] toGenerate)
     {
         PolygonCollider2D col = GetComponent<PolygonCollider2D>();
 
-        Vector2[] corners;
-        corners = new Vector2[xSize + 1];
+        Vector2[] corners = new Vector2[xSize + 1];
 
         bool prev = false;
         int halfVertCount = 0;
@@ -103,9 +137,17 @@ public class LineGeneration : MonoBehaviour
                     offset *= -1;
 
                 if(prev == false) // from empty to tile
-                    corners[halfVertCount] = new Vector2(x + offset, 0); // top-left corner
+                {
+                    // top-left corner
+                    corners[halfVertCount].x = x + offset;
+                    corners[halfVertCount].y = 0;
+                }
                 else // from tile to empty
-                    corners[halfVertCount] = new Vector2(x + offset, -1); // bottom-right corner
+                {
+                    // bottom-right corner
+                    corners[halfVertCount].x = x + offset;
+                    corners[halfVertCount].y = -1;
+                }
 
                 prev = !prev;
                 halfVertCount++;
@@ -118,10 +160,17 @@ public class LineGeneration : MonoBehaviour
         {
             // j   is top-left corner
             // j+1 is bottom-right corner
-            verts[i+0] = new Vector2(corners[j].x,   corners[j].y);
-            verts[i+1] = new Vector2(corners[j].x,   corners[j+1].y);
-            verts[i+2] = new Vector2(corners[j+1].x, corners[j+1].y);
-            verts[i+3] = new Vector2(corners[j+1].x, corners[j].y);
+            verts[i + 0].x = corners[j].x;
+            verts[i + 0].y = corners[j].y;
+
+            verts[i + 1].x = corners[j].x;
+            verts[i + 1].y = corners[j+1].y;
+
+            verts[i + 2].x = corners[j+1].x;
+            verts[i + 2].y = corners[j+1].y;
+
+            verts[i + 3].x = corners[j+1].x;
+            verts[i + 3].y = corners[j].y;
         }
 
         col.pathCount = halfVertCount / 2;
@@ -143,8 +192,8 @@ public class LineGeneration : MonoBehaviour
     public void RecomputeCollision(int deletedTileID)
     {
         // Update tileDeleted array considering the newly deleted tileID
-        toGenerate[deletedTileID] = false;
+        airTiles[deletedTileID] = false;
 
-        GenerateCollision2D(toGenerate);
+        GenerateCollision2D(airTiles);
     }
 }

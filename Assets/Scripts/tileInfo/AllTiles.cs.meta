@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 71eb41f4426282841a10e821e9f30a39
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - dirtTile: {fileID: 11400000, guid: 25d0355cd70e0ee4bbb98a9092a400a0, type: 2}
+  - coalTile: {fileID: 11400000, guid: b139119115ca6d54a9d8c0cea052ad91, type: 2}
+  - airTile: {fileID: 11400000, guid: 9e018067cf910094bb733f039fa8ec8d, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
