@@ -8,6 +8,7 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer), typeof(BoxCollider2D))]
 public class TileScript : MonoBehaviour
 {
+    public TileInfo tileInfo;
     public int x_ID; // the lateral position on the line, including air tiles
     public int uniqueID = -1; // lineID * xSize + x_ID, a unique ID for every single tiles to store which tiles have been dug up
 
@@ -33,7 +34,11 @@ public class TileScript : MonoBehaviour
         SetEnabled(false);
 
         GameManager gameManager = GameManager.Instance;
-        gameManager.tilesDugUp.Add(uniqueID); // add the tile to the tilesDugUp List
+        gameManager.Add(uniqueID); // add the tile to the tilesDugUp List
+
+        OreInventory oreInventory = OreInventory.Instance;
+        if(tileInfo.addToInventory)
+            oreInventory.Add(tileInfo.GetName()); // increase the tile count in the inventory (if applicable)
 
         // Recompute Collision on the line
         GameObject parent = transform.parent.gameObject;

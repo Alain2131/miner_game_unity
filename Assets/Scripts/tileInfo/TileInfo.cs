@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 [CreateAssetMenu(fileName = "NewTileInfo", menuName = "NewTileInfo")]
 public class TileInfo : ScriptableObject
@@ -11,6 +10,7 @@ public class TileInfo : ScriptableObject
     public Material material;
 
     [Space(10)]
+    public bool addToInventory = true;
     [Tooltip("Weight in the Cargo.")]
     public float weight; // if weight or value is -1 or 0, do not store in cargo/inventory
     [Tooltip("Sell value in the store.")]
@@ -26,7 +26,7 @@ public class TileInfo : ScriptableObject
     [Tooltip("The size of the Perlin Noise.\nDo not use Integer Values.")]
     public float noiseSize = 1.01f;
 
-    [Serializable]
+    [System.Serializable]
     public struct LevelGenerationValues
     {
         public int depth;

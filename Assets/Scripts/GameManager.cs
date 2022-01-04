@@ -18,7 +18,15 @@ public class GameManager : MonoBehaviour
     // in words, the current depth multiplied by the amount of tiles in X, plus the current ID on the line
     // we multiply it so we have a unique ID for every tile
     //[HideInInspector]
-    public List<int> tilesDugUp;
+    public List<int> tilesDugUp = new List<int>();
+    // The TilesDugUp stuff could technically be
+    // somewhere other than inside GameManager.cs,
+    // but still in a script on the GameManager Object.
+
+    public void Add(int tileID)
+    {
+        tilesDugUp.Add(tileID);
+    }
 
     // This will be saved at some point, so we'll need a constructor here that loads tilesDugUp when the game starts
     // Note that it is a list, and we can only save arrays. We'll have to convert 'em up

@@ -96,8 +96,7 @@ public class LineGeneration : MonoBehaviour
                     if (noiseVal < threshold)
                     {
                         currentTile.SetMaterial(tileInfo.GetMaterial());
-                        //if(tile.GetName() != "dirt")
-                            //Debug.Log(tile.GetName() + " " + lineID + " " + threshold + " " + noiseVal);
+                        currentTile.tileInfo = tileInfo;
                         break;
                     }
                 }
