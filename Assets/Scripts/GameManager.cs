@@ -22,4 +22,5 @@ public class GameManager : MonoBehaviour
 
     // This will be saved at some point, so we'll need a constructor here that loads tilesDugUp when the game starts
     // Note that it is a list, and we can only save arrays. We'll have to convert 'em up
+    // https://www.youtube.com/watch?v=XOjd_qU2Ido // save/load, from Brackeys
 }
