@@ -34,7 +34,7 @@ public class PlayerScript : MonoBehaviour
         {
             rb.AddForce(new Vector3(-lateralSpeed * dtime, 0, 0));
 
-            if (isPlayerOnGround())
+            if (isPlayerOnTile())
             {
                 Dig(Vector3.left);
             }
@@ -45,7 +45,7 @@ public class PlayerScript : MonoBehaviour
         {
             rb.AddForce(new Vector3(lateralSpeed * dtime, 0, 0));
 
-            if (isPlayerOnGround())
+            if (isPlayerOnTile())
             {
                 Dig(Vector3.right);
             }
@@ -55,13 +55,25 @@ public class PlayerScript : MonoBehaviour
         // Dig Down
         if (Input.GetKey("s") || Input.GetKey("down"))
         {
-            if (isPlayerOnGround()) // this check isn't really necessary for digging down
+            if (isPlayerOnTile()) // this check isn't really necessary for digging down
             {
                 Dig(Vector3.down);
             }
+            else if (isPlayerOnFloor()) // This is janky
+            {
+                RaycastHit2D hit = isPlayerOnFloor();
+                Transform floor = hit.transform;
+                floor.GetComponent<Floor>().Disable();
+            }
         }
     }
-    
+
+    private RaycastHit2D isPlayerOnFloor()
+    {
+        RaycastHit2D hit = PlayerRaycast(Vector3.down * 0.475f, "floor", false);
+        return hit;
+    }
+
     private RaycastHit2D PlayerRaycast(Vector3 rayDirection, string layerName = "tile", bool debugDraw = false)
     {
         int layerMask = LayerMask.GetMask(layerName);
@@ -78,7 +90,7 @@ public class PlayerScript : MonoBehaviour
         return hit;
     }
 
-    private bool isPlayerOnGround()
+    private bool isPlayerOnTile()
     {
         RaycastHit2D hit = PlayerRaycast(Vector3.down * 0.475f, "tile", false);
         return hit.collider != null;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewTileInfo", menuName = "NewTileInfo")]
+[CreateAssetMenu(fileName = "tileInfo_newTile", menuName = "New Tile Info")]
 public class TileInfo : ScriptableObject
 {
     [Header("General Info")]

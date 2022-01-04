@@ -58,8 +58,8 @@
 // - * * * Annoyance could be shown with a smaller more subtle dialog box, where the NPC grumbles a bit
 
 // Misc
-// - Add level bound, left and right
-// - Add floor on first level
+// - Add level bound, left and right (DONE)
+// - Add floor on first level (DONE)
 // - Tile properties
 // - * digTime, weight, value, digLevel (which drill can dig it)
 // - Secrets
@@ -74,3 +74,12 @@
 // - * Pod
 // - * Environment
 // - * Stores
+
+// Unity Project stuff
+// https://www.youtube.com/watch?v=k3wHqPZUldw
+// Assembly Definition
+// Splits the code we write into different .dll to speed up compiles on reload
+// Good info about .dll as well
+
+// https://www.youtube.com/watch?v=p7GfSsQvR78
+// Store data in text files and load it up
