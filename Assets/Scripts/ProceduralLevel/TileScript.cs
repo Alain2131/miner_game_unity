@@ -9,6 +9,7 @@ using UnityEngine;
 public class TileScript : MonoBehaviour
 {
     public int x_ID; // the lateral position on the line, including air tiles
+    public int uniqueID = -1; // lineID * xSize + x_ID, a unique ID for every single tiles to store which tiles have been dug up
 
     public void SetEnabled(bool enabled)
     {
@@ -30,6 +31,9 @@ public class TileScript : MonoBehaviour
     public void DigTile()
     {
         SetEnabled(false);
+
+        GameManager gameManager = GameManager.Instance;
+        gameManager.tilesDugUp.Add(uniqueID); // add the tile to the tilesDugUp List
 
         // Recompute Collision on the line
         GameObject parent = transform.parent.gameObject;

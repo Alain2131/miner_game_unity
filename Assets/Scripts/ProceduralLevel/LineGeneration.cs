@@ -56,7 +56,11 @@ public class LineGeneration : MonoBehaviour
         {
             TileScript currentTile = lineTiles[x];
 
-            if (isTileDugUp() == true) // Handle the tiles already dug up
+            // Update uniqueID
+            int uniqueID = lineID * xSize + x;
+            currentTile.uniqueID = uniqueID;
+
+            if (isTileDugUp(uniqueID) == true) // Handle the tiles already dug up
                 airTiles[x] = false;
             else
             {
@@ -110,12 +114,11 @@ public class LineGeneration : MonoBehaviour
         GenerateCollision2D(airTiles); // this is quite expensive, but necessary
     }
 
-    private bool isTileDugUp()
+    private bool isTileDugUp(int uniqueID)
     {
-        // Fetch dug up tiles here
-        // an array containing all the tiles that we dug up for the current lineID
-        // Question is - How and where do we store that info ?
-        return false;
+        // I wonder how fast that will be when the List will be thousands long
+        bool isDug = GameManager.Instance.tilesDugUp.Contains(uniqueID);
+        return isDug;
     }
 
     private void GenerateCollision2D(bool[] toGenerate)

@@ -99,7 +99,7 @@ public class PlayerScript : MonoBehaviour
             // Update various stuff
             // inventory
 
-            // Move Player to tile "center"
+            // Move Player to tile "center", but keeping the original height (only move laterally)
             // with an offset in y of maybe 0.05f
             // (based on the player being 0.9, and the tile being 1),
             // to keep the player on the ground
