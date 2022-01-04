@@ -3,17 +3,23 @@ using UnityEngine;
 [RequireComponent(typeof(PolygonCollider2D))]
 public class LineGeneration : MonoBehaviour
 {
-    public int          xSize = 10;
+    private GameManager gameManager;
+    private AllTilesInfo allTilesInfo;
+    private int xSize;
+
     public Object       tileObject;
     public int          lineID = -1; // Basically, depth. We don't need to see it in Unity, but it's helpful for debugging. It could be set to readonly
-    public AllTilesInfo allTilesInfo;
-
+    
     private bool[]       airTiles;     // True is a tile, False is air/digged up
     private TileScript[] lineTiles;    // References all child tiles in the line. Only modified on Start.
     private TileInfo[]   tilesInfo; // Init'ed in Start from allTilesObject
 
     private void Start()
     {
+        gameManager = GameManager.Instance;
+        allTilesInfo = gameManager.allTilesInfo;
+        xSize = gameManager.LevelXSize;
+
         // Init Arrays
         airTiles = new bool[xSize + 1];
         lineTiles = new TileScript[xSize];

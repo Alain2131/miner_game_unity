@@ -4,16 +4,20 @@ using System.Collections.Generic; // Includes List
 [RequireComponent(typeof(CompositeCollider2D))]
 public class LevelGeneration : MonoBehaviour
 {
-    public LineGeneration lineGeneration;
+    private GameManager gameManager;
+    private int ySize;
 
-    public int ySize = 20;
+    public LineGeneration lineGeneration;
 
     private List<LineGeneration> lines;
     private float heightThreshold;
     private bool dirtyCollision = false;
 
-    private void Awake()
+    private void Start()
     {
+        gameManager = GameManager.Instance;
+        ySize = gameManager.LevelYSize;
+
         // I don't know if initializing the size is better versus simply doing List.Add()
         lines = new List<LineGeneration>(new LineGeneration[ySize]); // initialize list length
         for (int i=0; i<ySize; i++)

@@ -6,6 +6,10 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public Transform player;
+    public AllTilesInfo allTilesInfo;
+
+    public int LevelXSize = 100; // the width of the level
+    public int LevelYSize = 20; // how many lines exists at once. Might need to rename this
 
     void Awake()
     {

@@ -19,9 +19,9 @@ MonoBehaviour:
   value: 20
   noiseSize: 1.05
   levelGenerationValues:
-  - depth: 5
+  - depth: 2
     percent: 0
-  - depth: 10
+  - depth: 4
     percent: 0.25
   - depth: 100
     percent: 0.25

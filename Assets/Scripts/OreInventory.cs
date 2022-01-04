@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class OreInventory : MonoBehaviour
 {
-    public AllTilesInfo allTilesInfo;
+    private GameManager gameManager;
+    public static OreInventory Instance;
 
     [System.Serializable]
     public struct OreEntry
@@ -14,14 +15,18 @@ public class OreInventory : MonoBehaviour
     }
     public List<OreEntry> OresInCargo;
 
-    public static OreInventory Instance;
-    void Awake()
+    private void Awake()
     {
         Instance = this;
+    }
+
+    private void Start()
+    {
+        gameManager = GameManager.Instance;
 
         // We might want to make sure this happened for sure
         // And ensure that we don't add duplicates (that we might have set manually in the inspector for debugging)
-        foreach(TileInfo tile in allTilesInfo.GetAllTiles())
+        foreach (TileInfo tile in gameManager.allTilesInfo.GetAllTiles())
         {
             if (tile.addToInventory)
             {

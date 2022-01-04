@@ -536,6 +536,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1921623946}
+  allTilesInfo: {fileID: 11400000, guid: 6439bdd7a36a51a4da55228bd84ac1fc, type: 2}
+  LevelXSize: 100
+  LevelYSize: 20
   tilesDugUp: 
 --- !u!4 &1204470072
 Transform:
@@ -563,7 +566,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6e6394fefd8f244dbff59b4414ed4c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allTilesInfo: {fileID: 11400000, guid: 6439bdd7a36a51a4da55228bd84ac1fc, type: 2}
   OresInCargo: []
 --- !u!1 &1244088952
 GameObject:
