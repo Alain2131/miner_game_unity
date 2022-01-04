@@ -7,17 +7,8 @@ public class AllTilesInfo : ScriptableObject
 {
     public TileInfo dirtTile;
     public TileInfo coalTile;
+    public TileInfo ironTile;
     public TileInfo airTile;
-
-    public TileInfo GetDirt()
-    {
-        return dirtTile;
-    }
-
-    public TileInfo GetCoal()
-    {
-        return coalTile;
-    }
 
     public TileInfo GetAir()
     {
@@ -26,6 +17,6 @@ public class AllTilesInfo : ScriptableObject
 
     public TileInfo[] GetAllTiles()
     {
-        return new TileInfo[] { coalTile, dirtTile };
+        return new TileInfo[] { ironTile, coalTile, dirtTile };
     }
 }

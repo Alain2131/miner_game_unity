@@ -10,20 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4398deb782bb25146b1bb657f438468b, type: 3}
-  m_Name: tileInfo_coal
+  m_Name: tileInfo_iron
   m_EditorClassIdentifier: 
-  name: coal
-  material: {fileID: 2100000, guid: 39275958be776fe4186779f1694528d9, type: 2}
+  name: iron
+  material: {fileID: 2100000, guid: 8094d835faa5bd146892ae863af71f68, type: 2}
   addToInventory: 1
-  weight: 100
-  value: 20
-  noiseSize: 1.05
+  weight: 150
+  value: 40
+  noiseSize: 1.08
   levelGenerationValues:
-  - depth: 5
+  - depth: 50
     percent: 0
-  - depth: 10
-    percent: 0.25
   - depth: 100
-    percent: 0.25
-  - depth: 110
-    percent: 0.1
+    percent: 0.2

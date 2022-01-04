@@ -3,7 +3,7 @@
 
 // Core Mechanics
 // - Implement Digging
-// - * Add tile to inventory
+// - * Add tile to inventory (DONE)
 // - * Move Player to the center of the tile
 // - * * Add animation to the pod, and maybe the camera as well
 // - * * Disable player movement input during the animation
@@ -32,8 +32,8 @@
 // - * Fuel buying
 // - * Hull repair
 // - Level saving
-// - Level generation
-// - * Perlin Noise Implementation
+// - Level generation (DONE)
+// - * Perlin Noise Implementation (DONE)
 // - Pod weight based on ores in cargo bay
 // - * Movement become sluggish, flying is slower or not possible anymore
 
@@ -59,6 +59,7 @@
 
 // Misc
 // - Add level bound, left and right
+// - Add floor on first level
 // - Tile properties
 // - * digTime, weight, value, digLevel (which drill can dig it)
 // - Secrets
@@ -73,14 +74,3 @@
 // - * Pod
 // - * Environment
 // - * Stores
-
-
-
-// noise parms
-//empty value
-//mult - 0.5
-//threshold - 0.2
-
-//coal value
-//mult  - 1
-//threshold - 0.09
