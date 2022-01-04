@@ -16,8 +16,9 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: 4aeb8fd1246681c4e8c7f77efec6c317, type: 2}
   weight: 0
   value: 0
-  depths: 00000000
-  percents:
-  - 0
-  - 0.25
   noiseSize: 1.25
+  levelGenerationValues:
+  - depth: 0
+    percent: 0
+  - depth: 5
+    percent: 0.2

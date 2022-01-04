@@ -16,10 +16,13 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: 39275958be776fe4186779f1694528d9, type: 2}
   weight: 100
   value: 20
-  depths: 000000000a0000006400000078000000
-  percents:
-  - 0
-  - 0.15
-  - 0.25
-  - 0
   noiseSize: 1.05
+  levelGenerationValues:
+  - depth: 5
+    percent: 0
+  - depth: 10
+    percent: 0.25
+  - depth: 100
+    percent: 0.25
+  - depth: 110
+    percent: 0

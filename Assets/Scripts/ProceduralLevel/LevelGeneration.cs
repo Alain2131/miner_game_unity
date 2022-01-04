@@ -4,7 +4,6 @@ using System.Collections.Generic; // Includes List
 [RequireComponent(typeof(CompositeCollider2D))]
 public class LevelGeneration : MonoBehaviour
 {
-    public Transform player;
     public LineGeneration lineGeneration;
 
     public int ySize = 20;
@@ -45,7 +44,7 @@ public class LevelGeneration : MonoBehaviour
     private void updateLevelHeight()
     {
         // Generate level as the player moves vertically
-        float height = player.position.y;
+        float height = GameManager.Instance.player.position.y;
         int bufferZone = 2; // could be exposed on the script. Must be >0
 
         if (height > heightThreshold + bufferZone) // upper bound

@@ -66,7 +66,7 @@ public class LineGeneration : MonoBehaviour
             {
                 // Add Air
                 noiseSize = allTilesInfo.GetAir().noiseSize;
-                threshold = allTilesInfo.GetAir().GetSpawnPercent(0);
+                threshold = allTilesInfo.GetAir().GetSpawnPercent(lineID);
 
                 noiseVal = Mathf.PerlinNoise(x * noiseSize + seed, lineID * noiseSize + seed);
                 noiseVal = Mathf.Clamp01(noiseVal) + bias;
