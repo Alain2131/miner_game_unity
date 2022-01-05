@@ -1,6 +1,10 @@
 /* What needs to be done in the game */
 /* The list is in no particular order */
 
+// Note :
+// When I say "DONE", I mean that it's working,
+// but it may be very janky.
+
 // Core Mechanics
 // - Implement Digging
 // - * Add tile to inventory (DONE)
@@ -11,7 +15,7 @@
 // - * Allow possibility of discarding ores (to lower weight)
 // - * Show ore value/weight
 // - Items
-// - Money
+// - Money (DONE)
 // - Upgrades
 // - * Drill Speed
 // - * Movement Speed
@@ -28,7 +32,7 @@
 // - Stores
 // - * Upgrades (buying/selling)
 // - * Items (dynamite, teleport, etc)
-// - * Ore selling
+// - * Ore selling (DONE)
 // - * Fuel buying
 // - * Hull repair
 // - Level saving
@@ -42,7 +46,7 @@
 // - Items (could be a part of the inventory screen)
 // - Stores
 // - Fuel/life
-// - Money
+// - Money (DONE)
 // - Menus
 // - * Main Menu
 // - * Pause

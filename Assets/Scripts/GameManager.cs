@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +7,7 @@ public class GameManager : MonoBehaviour
     public Transform player;
     public AllTilesInfo allTilesInfo;
 
+    [Header("Level Generation Stuff")]
     public int LevelXSize = 100; // the width of the level
     public int LevelYSize = 20; // how many lines exists at once. Might need to rename this
 
@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     // in words, the current depth multiplied by the amount of tiles in X, plus the current ID on the line
     // we multiply it so we have a unique ID for every tile
     //[HideInInspector]
+    [Space(5)]
     public List<int> tilesDugUp = new List<int>();
     // The TilesDugUp stuff could technically be
     // somewhere other than inside GameManager.cs,

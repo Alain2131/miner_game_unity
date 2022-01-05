@@ -66,6 +66,15 @@ public class PlayerScript : MonoBehaviour
                 floor.GetComponent<Floor>().Disable();
             }
         }
+
+        // Building Interact
+        if (Input.GetKeyDown("e"))
+        {
+            if (isPlayerOnFloor()) // There will always be a floor under a building
+            {
+                CheckInteraction();
+            }
+        }
     }
 
     private RaycastHit2D isPlayerOnFloor()
@@ -118,6 +127,19 @@ public class PlayerScript : MonoBehaviour
 
             // Maybe partially disable player input during that time
             // leave Pausing on, but movement should be disabled
+        }
+    }
+
+    private void CheckInteraction() // Interact with Building, for the time being
+    {
+        RaycastHit2D hit = PlayerRaycast(Vector3.forward, "building", false);
+
+        if (hit)
+        {
+            if (hit.transform.GetComponent<Interactable>())
+            {
+                hit.transform.GetComponent<Interactable>().Interact();
+            }
         }
     }
 }
