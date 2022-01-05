@@ -17,8 +17,8 @@ MonoBehaviour:
   digTime: 1
   fuelConsumption: 1
   addToInventory: 0
-  weight: -1
-  value: -1
+  weight: 0
+  value: 0
   noiseSize: 1.02
   levelGenerationValues:
   - depth: 0

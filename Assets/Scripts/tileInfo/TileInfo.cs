@@ -13,9 +13,9 @@ public class TileInfo : ScriptableObject
     [Space(10)]
     public bool addToInventory = true;
     [Tooltip("Weight in the Cargo.")]
-    public float weight; // if weight or value is -1 or 0, do not store in cargo/inventory
+    public int weight;
     [Tooltip("Sell value in the store.")]
-    public float value;
+    public int value;
 
     /* Info to add and implement */
     // float Fuel Consumption (how much fuel to dig)
@@ -41,7 +41,7 @@ public class TileInfo : ScriptableObject
     // and width would be depth
 
 
-    public float GetWeight()
+    public int GetWeight()
     {
         return weight;
     }
@@ -64,6 +64,11 @@ public class TileInfo : ScriptableObject
     public float GetDigTime()
     {
         return digTime;
+    }
+
+    public int GetValue()
+    {
+        return value;
     }
 
     // Only for convenience and readability

@@ -9,8 +9,8 @@ public class OreInventory : MonoBehaviour
     [System.Serializable]
     public struct OreEntry
     {
-        public string OreName;
-        public int    OreAmount;
+        public TileInfo OreInfo;
+        public int      OreAmount;
     }
     public List<OreEntry> OresInCargo;
 
@@ -30,7 +30,7 @@ public class OreInventory : MonoBehaviour
             if (tile.addToInventory)
             {
                 OreEntry newOre = new OreEntry();
-                newOre.OreName = tile.GetName();
+                newOre.OreInfo = tile;
                 newOre.OreAmount = 0;
                 OresInCargo.Add(newOre);
             }
@@ -80,7 +80,7 @@ public class OreInventory : MonoBehaviour
     {
         for (int i = 0; i < OresInCargo.Count; i++)
         {
-            if (OresInCargo[i].OreName == oreName)
+            if (OresInCargo[i].OreInfo.GetName() == oreName)
             {
                 return i;
             }

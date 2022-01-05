@@ -19,7 +19,7 @@ public class Building_SellOres : Interactable
             OreInventory.OreEntry newOre = oreInventory.OresInCargo[i];
 
             int count = newOre.OreAmount;
-            int value = GetTileValue(newOre.OreName);
+            int value = newOre.OreInfo.GetValue();
             total += count * value;
 
             // Reset Amount
@@ -28,21 +28,5 @@ public class Building_SellOres : Interactable
         }
 
         Money.Instance.Sell(total);
-    }
-
-    private int GetTileValue(string tileName)
-    {
-        // This is janky
-        // A better solution might be to directly store the TileInfo
-        // in the OreInventory instead of the TileName
-        TileInfo[] tiles = GameManager.Instance.allTilesInfo.GetAllTiles();
-        foreach(TileInfo tile in tiles)
-        {
-            if(tile.name == tileName)
-            {
-                return (int)tile.value;
-            }
-        }
-        return -1;
     }
 }
