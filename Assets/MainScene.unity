@@ -304,9 +304,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 432368806723328940, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
+      propertyPath: m_Simulated
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 432368806723328941, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: m_Name
       value: PlayerObject
+      objectReference: {fileID: 0}
+    - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
+      propertyPath: doJitter
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
+      propertyPath: jitterScale
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
+      propertyPath: jitterIntensity
+      value: 0.02
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}

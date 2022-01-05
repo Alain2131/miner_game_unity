@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: air
   material: {fileID: 2100000, guid: 4aeb8fd1246681c4e8c7f77efec6c317, type: 2}
+  digTime: 0
+  fuelConsumption: 0
   addToInventory: 0
   weight: 0
   value: 0

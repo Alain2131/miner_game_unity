@@ -7,6 +7,9 @@ public class TileInfo : ScriptableObject
     public new string name;
     public Material material;
 
+    public float digTime = 1.0f;
+    public float fuelConsumption = 1.0f;
+
     [Space(10)]
     public bool addToInventory = true;
     [Tooltip("Weight in the Cargo.")]
@@ -56,6 +59,11 @@ public class TileInfo : ScriptableObject
     public string GetName()
     {
         return name;
+    }
+
+    public float GetDigTime()
+    {
+        return digTime;
     }
 
     // Only for convenience and readability

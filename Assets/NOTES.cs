@@ -6,11 +6,11 @@
 // but it may be very janky.
 
 // Core Mechanics
-// - Implement Digging
+// - Implement Digging (DONE)
 // - * Add tile to inventory (DONE)
-// - * Move Player to the center of the tile
-// - * * Add animation to the pod, and maybe the camera as well
-// - * * Disable player movement input during the animation
+// - * Move Player to the center of the tile (DONE)
+// - * * Add jitter animation to the pod, and maybe the camera as well (DONE)
+// - * * Disable player movement input during the animation (DONE)
 // - Inventory
 // - * Allow possibility of discarding ores (to lower weight)
 // - * Show ore value/weight
