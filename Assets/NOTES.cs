@@ -7,8 +7,8 @@
 
 /* 
  * Do the Fuel and Hull (with consumption and damage) (DONE)
- * Then do the Refuel and Hull repair buildings
- * Then do the Upgrades building
+ * Then do the Refuel and Hull repair buildings (DONE)
+ * Then do the Upgrades building (will require UI)
  * Then start to work on the item upgrades (drill, fuel tank, hull, cargo size)
  */
 

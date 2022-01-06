@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class Building_SellOres : Interactable
 {
     private OreInventory oreInventory;

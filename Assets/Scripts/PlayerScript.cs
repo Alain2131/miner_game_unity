@@ -67,6 +67,7 @@ public class PlayerScript : MonoBehaviour
         {
             float fallDamage = (Mathf.Abs(delta) - threshold) * damageMultiplier;
 
+            // Please add UI animation when we take damage
             TakeDamage((int)fallDamage);
             //Debug.Log("Youch ! Took " + (int)fallDamage + " damage.");
         }
@@ -249,9 +250,21 @@ public class PlayerScript : MonoBehaviour
         hullBar.SetValue(currentHealth);
     }
 
+    public void SetHealth(int amount)
+    {
+        currentHealth = amount;
+        hullBar.SetValue(currentHealth);
+    }
+
     public void ReduceFuel(float consumption)
     {
         currentFuel -= consumption;
+        fuelBar.SetValue(currentFuel);
+    }
+
+    public void SetFuel(float amount)
+    {
+        currentFuel = amount;
         fuelBar.SetValue(currentFuel);
     }
 
