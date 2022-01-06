@@ -15,6 +15,7 @@ public class PlayerScript : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
     public SliderBar hullBar;
+    public HurtOverlay hurtOverlay;
 
     [Header("Fuel")]
     public int maxFuel = 100;
@@ -248,6 +249,7 @@ public class PlayerScript : MonoBehaviour
     {
         currentHealth -= damage;
         hullBar.SetValue(currentHealth);
+        hurtOverlay.Hurt();
     }
 
     public void SetHealth(int amount)

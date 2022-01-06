@@ -25,7 +25,7 @@ public class SliderBar : MonoBehaviour
         if (slider.value <= 0)
         {
             isDead = true;
-            Debug.LogError("Yer dead !");
+            Debug.LogWarning("Yer dead !");
         }
     }
 }
