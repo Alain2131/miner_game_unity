@@ -15,7 +15,7 @@ MonoBehaviour:
   name: dirt
   material: {fileID: 2100000, guid: bead403a621dfa744be7210e1174916a, type: 2}
   digTime: 1
-  fuelConsumption: 1
+  fuelConsumption: 2
   addToInventory: 0
   weight: 0
   value: 0

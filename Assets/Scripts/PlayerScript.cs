@@ -1,5 +1,7 @@
-using System.Threading.Tasks;
+using System.Collections;
 using UnityEngine;
+
+// Rigidbody2D.IsTouchingLayers
 
 public class PlayerScript : MonoBehaviour
 {
@@ -9,10 +11,35 @@ public class PlayerScript : MonoBehaviour
     public float upForce = 1250f;
     public float lateralSpeed = 1000f;
 
+    [Header("Hull Strength")]
+    public int maxHealth = 100;
+    public int currentHealth;
+    public SliderBar hullBar;
+
+    [Header("Fuel")]
+    public int maxFuel = 100;
+    public float currentFuel;
+    public SliderBar fuelBar;
+
     [Header("Debug")]
     [SerializeField] private bool DisableDigAnimation = false;
 
     private bool isDigging = false;
+    private bool isFalling = false; // flying as well
+
+    private float previousFrameSpeed = 0;
+
+    private void Start()
+    {
+        currentHealth = maxHealth;
+        hullBar.SetMaxValue(maxHealth);
+
+        currentFuel = maxFuel;
+        fuelBar.SetMaxValue(maxFuel);
+
+        // Constant Fuel Consumption, always active
+        StartCoroutine("FuelConsumption", 2); // we might want control over this value
+    }
 
     void Update()
     {
@@ -20,6 +47,31 @@ public class PlayerScript : MonoBehaviour
 
         if(!isDigging)
             HandlePlayerInput();
+
+        isFalling = !IsPlayerOnGround();
+
+        HandleFallDamage();
+    }
+    
+    private void HandleFallDamage()
+    {
+        // This feels super janky, but it kinda works
+        // A collision from any side will do damage, not just from falling
+
+        float currentFrameSpeed = rb.velocity.magnitude;
+        float delta = currentFrameSpeed - previousFrameSpeed;
+
+        float threshold = 5;
+        float damageMultiplier = 10;
+        if(delta < -threshold)
+        {
+            float fallDamage = (Mathf.Abs(delta) - threshold) * damageMultiplier;
+
+            TakeDamage((int)fallDamage);
+            //Debug.Log("Youch ! Took " + (int)fallDamage + " damage.");
+        }
+
+        previousFrameSpeed = rb.velocity.magnitude;
     }
 
     private void ClampPlayerSpeed()
@@ -45,12 +97,14 @@ public class PlayerScript : MonoBehaviour
         if (Input.GetKey("w") || Input.GetKey("space") || Input.GetKey("up"))
         {
             rb.AddForce(new Vector3(0, upForce * dtime, 0));
+            MovingFuelConsumption(2);
         }
 
         // Move Left
         if (Input.GetKey("a") || Input.GetKey("left"))
         {
             rb.AddForce(new Vector3(-lateralSpeed * dtime, 0, 0));
+            MovingFuelConsumption(1);
 
             if (isPlayerOnTile())
             {
@@ -62,6 +116,7 @@ public class PlayerScript : MonoBehaviour
         if (Input.GetKey("d") || Input.GetKey("right"))
         {
             rb.AddForce(new Vector3(lateralSpeed * dtime, 0, 0));
+            MovingFuelConsumption(1);
 
             if (isPlayerOnTile())
             {
@@ -69,11 +124,10 @@ public class PlayerScript : MonoBehaviour
             }
         }
 
-        // Please make sure we are on the ground first
         // Dig Down
         if (Input.GetKey("s") || Input.GetKey("down"))
         {
-            if (isPlayerOnTile()) // this check isn't really necessary for digging down
+            if (isPlayerOnTile())
             {
                 Dig(Vector3.down);
             }
@@ -115,13 +169,12 @@ public class PlayerScript : MonoBehaviour
                 if (DisableDigAnimation)
                     tile.DigTile();
                 else
-                    DigAnimation(tile);
+                    StartCoroutine("DigAnimation", tile);
             }
         }
     }
 
-    // I wasn't able to make an IEnumerator work, so I used async instead.
-    private async void DigAnimation(TileScript tile)
+    private IEnumerator DigAnimation(TileScript tile)
     {
         //Debug.Log("Diggy diggy hole");
         isDigging = true;
@@ -143,15 +196,23 @@ public class PlayerScript : MonoBehaviour
         Vector3 currentPos = transform.position;
         Vector3 targetPosition = tile.transform.position;
 
+        float startingFuel = currentFuel;
+        float targetFuel = currentFuel - tile.tileInfo.GetFuelConsumption();
+
         float t = 0f;
         while (t < 1)
         {
             t += Time.deltaTime / digTime;
+
+            // Update Player Position
             transform.position = Vector3.Lerp(currentPos, targetPosition, t);
             transform.position += AddJitter();
 
-            int wait = (int)(Time.deltaTime * 1000);
-            await Task.Delay(wait);
+            // Digging Fuel Consumption
+            currentFuel = Mathf.Lerp(startingFuel, targetFuel, t);
+            fuelBar.SetValue(currentFuel);
+
+            yield return new WaitForSeconds(Time.deltaTime);
         }
 
         tile.DigTile();
@@ -167,7 +228,7 @@ public class PlayerScript : MonoBehaviour
         // over like 0.1 seconds
 
         // You can make those public at the top to tweak them
-        float jitterIntensity = 0.1f;
+        float jitterIntensity = 0.05f;
         float jitterScale = 15f;
 
         float time = Time.realtimeSinceStartup;
@@ -180,6 +241,50 @@ public class PlayerScript : MonoBehaviour
         jitterOffset *= jitterIntensity;
 
         return jitterOffset;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        hullBar.SetValue(currentHealth);
+    }
+
+    public void ReduceFuel(float consumption)
+    {
+        currentFuel -= consumption;
+        fuelBar.SetValue(currentFuel);
+    }
+
+    // Remove the equivalent of 1 fuel every X seconds
+    private IEnumerator FuelConsumption(float seconds)
+    {
+        float interval = 0.1f; // how often we update
+        float consumption = interval / seconds;
+
+        while (true)
+        {
+            yield return new WaitForSeconds(interval);
+            ReduceFuel(consumption);
+        }
+    }
+
+    private void MovingFuelConsumption(float amount)
+    {
+        // This BADLY NEEDS a better solution
+        // When on the ground, lateral movement should be more expensive then when flying
+        // Pressing "up" should be the most expensive movement (other than digging)
+        ReduceFuel(amount * Time.deltaTime);
+    }
+
+    private void OnApplicationQuit()
+    {
+        // This might not be 100% needed,
+        // but if I used async instead and didn't stop that,
+        // then I would have an error thrown at me when closing the game.
+        // This won't hurt. I Promise.
+        // Note: iOS applications are usually suspended and do not quit.
+        StopCoroutine("FuelConsumption");
+        StopCoroutine("DigAnimation");
     }
 
     // Utility methods
@@ -223,5 +328,19 @@ public class PlayerScript : MonoBehaviour
                 hit.transform.GetComponent<Interactable>().Interact();
             }
         }
+    }
+
+    // May be useful in the future when doing PlayerState
+    // Is different from isPlayerOnTile/Floor since those returns the specific hit object
+    public bool IsPlayerOnGround()
+    {
+        if (isDigging) // If we are digging, we are "on the ground"
+            return true;
+
+        bool touchingFloor = rb.IsTouchingLayers(LayerMask.GetMask("floor"));
+        bool touchingTile = rb.IsTouchingLayers(LayerMask.GetMask("tile"));
+
+        //Debug.Log("Touching floor " + touchingFloor + " Touching tile " + touchingTile);
+        return touchingFloor || touchingTile;
     }
 }

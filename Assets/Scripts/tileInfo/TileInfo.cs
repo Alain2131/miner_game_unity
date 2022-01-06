@@ -8,7 +8,7 @@ public class TileInfo : ScriptableObject
     public Material material;
 
     public float digTime = 1.0f;
-    public float fuelConsumption = 1.0f;
+    public float fuelConsumption = 2.0f;
 
     [Space(10)]
     public bool addToInventory = true;
@@ -69,6 +69,11 @@ public class TileInfo : ScriptableObject
     public int GetValue()
     {
         return value;
+    }
+
+    public float GetFuelConsumption()
+    {
+        return fuelConsumption;
     }
 
     // Only for convenience and readability

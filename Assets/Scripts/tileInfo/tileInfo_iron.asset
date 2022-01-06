@@ -15,7 +15,7 @@ MonoBehaviour:
   name: iron
   material: {fileID: 2100000, guid: 8094d835faa5bd146892ae863af71f68, type: 2}
   digTime: 1
-  fuelConsumption: 1
+  fuelConsumption: 2
   addToInventory: 1
   weight: 150
   value: 40

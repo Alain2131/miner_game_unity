@@ -15,7 +15,7 @@ MonoBehaviour:
   name: coal
   material: {fileID: 2100000, guid: 39275958be776fe4186779f1694528d9, type: 2}
   digTime: 1
-  fuelConsumption: 1
+  fuelConsumption: 2
   addToInventory: 1
   weight: 100
   value: 20
