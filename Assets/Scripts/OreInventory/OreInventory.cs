@@ -3,44 +3,42 @@ using UnityEngine;
 
 public class OreInventory : MonoBehaviour
 {
-    public GameManager gameManager;
     public static OreInventory Instance;
 
-    private OreInventoryUI oreInventoryUI;
+    [SerializeField] private OreInventoryUI oreInventoryUI;
 
     [System.Serializable]
     public struct OreEntry
     {
-        public TileInfo OreInfo;
-        public int      OreAmount;
+        public TileInfo tileInfo;
+        public int amount;
     }
-    public List<OreEntry> OresInCargo;
+    [Tooltip("Public only for debugging purposes.")]
+    public List<OreEntry> oresInCargo;
 
     private void Awake()
     {
         Instance = this;
-        gameManager = GetComponent<GameManager>();
 
-        // We might want to make sure this happened for sure
-        // And ensure that we don't add duplicates (that we might have set manually in the inspector for debugging)
-        foreach (TileInfo tile in gameManager.allTilesInfo.GetAllTiles())
+        oresInCargo = new List<OreEntry>(); // Remove any stuff from the UI
+        foreach (TileInfo tile in AllTilesInfo.Instance.GetAllTiles())
         {
             if (tile.addToInventory)
             {
                 OreEntry newOre = new OreEntry();
-                newOre.OreInfo = tile;
-                newOre.OreAmount = 0;
-                OresInCargo.Add(newOre);
+                newOre.tileInfo = tile;
+                newOre.amount = 0;
+                oresInCargo.Add(newOre);
             }
         }
     }
 
     void Start()
     {
-        oreInventoryUI = OreInventoryUI.Instance;
+        //oreInventoryUI = OreInventoryUI.Instance;
     }
 
-    public void Add(TileInfo tile)
+    public void AddSingleOre(TileInfo tile)
     {
         // This is really not ideal for memory (same for the two Remove variants)
         // The only way to modify a struct is to copy it,
@@ -48,9 +46,9 @@ public class OreInventory : MonoBehaviour
         int ID = GetIDFromOre(tile.name);
         if(ID >= 0)
         {
-            OreEntry editedOre = OresInCargo[ID];
-            editedOre.OreAmount += 1;
-            OresInCargo[ID] = editedOre;
+            OreEntry editedOre = oresInCargo[ID];
+            editedOre.amount += 1;
+            oresInCargo[ID] = editedOre;
 
             UpdateUIIfOpened();
         }
@@ -60,28 +58,28 @@ public class OreInventory : MonoBehaviour
         }
     }
 
-    public void Remove(TileInfo tile)
+    public void RemoveSingleOre(TileInfo tile)
     {
         int ID = GetIDFromOre(tile.name);
         if (ID >= 0)
         {
-            OreEntry editedOre = OresInCargo[ID];
-            editedOre.OreAmount -= 1;
-            if (editedOre.OreAmount < 0)
+            OreEntry editedOre = oresInCargo[ID];
+            editedOre.amount -= 1;
+            if (editedOre.amount < 0)
                 return;
-            OresInCargo[ID] = editedOre;
+            oresInCargo[ID] = editedOre;
 
             UpdateUIIfOpened();
         }
     }
 
-    public void RemoveAll()
+    public void RemoveAllOres()
     {
-        for (int i = 0; i < OresInCargo.Count; i++)
+        for (int i = 0; i < oresInCargo.Count; i++)
         {
-            OreEntry editedOre = OresInCargo[i];
-            editedOre.OreAmount = 0;
-            OresInCargo[i] = editedOre;
+            OreEntry editedOre = oresInCargo[i];
+            editedOre.amount = 0;
+            oresInCargo[i] = editedOre;
         }
 
         UpdateUIIfOpened();
@@ -89,9 +87,9 @@ public class OreInventory : MonoBehaviour
 
     private int GetIDFromOre(string oreName)
     {
-        for (int i = 0; i < OresInCargo.Count; i++)
+        for (int i = 0; i < oresInCargo.Count; i++)
         {
-            if (OresInCargo[i].OreInfo.GetName() == oreName)
+            if (oresInCargo[i].tileInfo.GetName() == oreName)
             {
                 return i;
             }
@@ -102,15 +100,15 @@ public class OreInventory : MonoBehaviour
     public int GetOreCount(TileInfo tile)
     {
         int ID = GetIDFromOre(tile.name);
-        return OresInCargo[ID].OreAmount;
+        return oresInCargo[ID].amount;
     }
 
     public int GetTotalValue() // used when selling ores
     {
         int total = 0;
-        for (int i = 0; i < OresInCargo.Count; i++)
+        for (int i = 0; i < oresInCargo.Count; i++)
         {
-            total += OresInCargo[i].OreInfo.value * OresInCargo[i].OreAmount;
+            total += oresInCargo[i].tileInfo.value * oresInCargo[i].amount;
         }
         return total;
     }

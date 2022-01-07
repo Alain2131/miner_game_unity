@@ -7,17 +7,17 @@ public class LineGeneration : MonoBehaviour
     private AllTilesInfo allTilesInfo;
     private int xSize;
 
-    public Object       tileObject;
-    public int          lineID = -1; // Basically, depth. We don't need to see it in Unity, but it's helpful for debugging. It could be set to readonly
+    public Object tileObject;
+    public int lineID = -1; // Basically, depth. We don't need to see it in Unity, but it's helpful for debugging. It could be set to readonly
     
-    private bool[]       airTiles;     // True is a tile, False is air/digged up
-    private TileScript[] lineTiles;    // References all child tiles in the line. Only modified on Start.
-    private TileInfo[]   tilesInfo; // Init'ed in Start from allTilesObject
+    private bool[] airTiles; // True is a tile, False is air/digged up
+    private TileScript[] lineTiles; // References all child tiles in the line. Only modified on Start.
+    private TileInfo[] tilesInfo; // Init'ed in Start from allTilesObject
 
     private void Start()
     {
         gameManager = GameManager.Instance;
-        allTilesInfo = gameManager.allTilesInfo;
+        allTilesInfo = AllTilesInfo.Instance;
         xSize = gameManager.LevelXSize;
 
         // Init Arrays
@@ -71,8 +71,8 @@ public class LineGeneration : MonoBehaviour
             else
             {
                 // Add Air
-                noiseSize = allTilesInfo.GetAir().noiseSize;
-                threshold = allTilesInfo.GetAir().GetSpawnPercent(lineID);
+                noiseSize = allTilesInfo.airTile.noiseSize;
+                threshold = allTilesInfo.airTile.GetSpawnPercent(lineID);
 
                 noiseVal = Mathf.PerlinNoise(x * noiseSize + seed, lineID * noiseSize + seed);
                 noiseVal = Mathf.Clamp01(noiseVal) + bias;

@@ -18,8 +18,6 @@ public class TileInfo : ScriptableObject
     public int value;
 
     /* Info to add and implement */
-    // float Fuel Consumption (how much fuel to dig)
-    // float Dig Time (how long to dig)
     // int Dig Level (which drill is required to dig, for stuff like rocks. Most tiles will be 0)
 
     [Header("Procedural Generation Stuff")]

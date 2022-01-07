@@ -3,7 +3,11 @@ guid: c8505335230ff104b983de7fb05b4867
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - itemsParent: {instanceID: 0}
+  - oreInventory: {instanceID: 0}
+  - oreInventoryUI: {instanceID: 0}
+  - oreInventorySlotPrefab: {fileID: 4828326159883162020, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

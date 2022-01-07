@@ -1,11 +1,5 @@
 using UnityEngine;
 
-/* 
- * An OreInventory UI object contains an Ore Inventory Items object.
- * The items are populated on start based on OreInventory's items.
- * For each of them, an OreInventorySlot prefab is Instanciated
- * under Ore Inventory Items.
- */
 public class OreInventoryUI : MonoBehaviour
 {
     public Transform itemsParent;
@@ -15,40 +9,13 @@ public class OreInventoryUI : MonoBehaviour
     
     private OreInventorySlot[] slots;
 
-    public static OreInventoryUI Instance;
-    void Awake()
-    {
-        Instance = this;
-    }
-
     void Start()
     {
-        // Populate Ore Inventory Items
-        // Instanciate all Ores into the OreInventory
+        // We could automatically populate the slots,
+        // but I prefer adding them manually in the Level.
+        slots = itemsParent.GetComponentsInChildren<OreInventorySlot>();
 
-        // Make sure there isn't already something under itemsParent
-        foreach (Transform child in itemsParent)
-        {
-            GameObject.Destroy(child.gameObject);
-        }
-
-        // Potential issue, we currently do not have a proper way
-        // to order the Inventory Items.
-        slots = new OreInventorySlot[oreInventory.OresInCargo.Count];
-        int count = 0;
-        foreach(OreInventory.OreEntry entry in oreInventory.OresInCargo)
-        {
-            GameObject newSlot = Instantiate(oreInventorySlotPrefab, itemsParent);
-            newSlot.name = "OreInventorySlot_" + entry.OreInfo.name;
-
-            OreInventorySlot slot = newSlot.GetComponent<OreInventorySlot>();
-            slot.tileInfo = entry.OreInfo;
-
-            slots[count] = slot;
-            count++;
-
-            slot.UpdateSlotUI();
-        }
+        OreInventorySlotsSanityCheck();
 
         // Make sure the inventory is closed when the game starts
         oreInventoryUI.SetActive(false);
@@ -60,7 +27,7 @@ public class OreInventoryUI : MonoBehaviour
         {
             oreInventoryUI.SetActive(!IsOpen());
 
-            if (oreInventoryUI.activeSelf) // if we opened the Inventory, update it
+            if (oreInventoryUI.activeSelf) // Update the Inventory UI when we open it
                 UpdateUI();
         }
     }
@@ -76,5 +43,28 @@ public class OreInventoryUI : MonoBehaviour
     public bool IsOpen()
     {
         return oreInventoryUI.activeSelf;
+    }
+
+    private void OreInventorySlotsSanityCheck()
+    {
+        // Make sure all ores have a slot
+        // This is more for debugging than anything
+        bool found;
+        foreach (OreInventory.OreEntry entry in OreInventory.Instance.oresInCargo)
+        {
+            found = false;
+            foreach (OreInventorySlot slot in slots)
+            {
+                if (entry.tileInfo == slot.tileInfo)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                Debug.LogError("Missing UI Inventory Slot for " + entry.tileInfo.name);
+            }
+        }
     }
 }

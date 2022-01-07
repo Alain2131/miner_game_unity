@@ -34,11 +34,11 @@ public class TileScript : MonoBehaviour
         SetEnabled(false);
 
         GameManager gameManager = GameManager.Instance;
-        gameManager.Add(uniqueID); // add the tile to the tilesDugUp List
+        gameManager.AddDugUpTile(uniqueID); // add the tile to the tilesDugUp List
 
         OreInventory oreInventory = OreInventory.Instance;
         if(tileInfo.addToInventory)
-            oreInventory.Add(tileInfo); // increase the tile count in the inventory (if applicable)
+            oreInventory.AddSingleOre(tileInfo); // increase the tile count in the inventory (if applicable)
 
         // Recompute Collision on the line
         GameObject parent = transform.parent.gameObject;

@@ -19,7 +19,7 @@
 // - * * Add jitter animation to the pod, and maybe the camera as well (DONE)
 // - * * Disable player movement input during the animation (DONE)
 // - Inventory
-// - * Allow possibility of discarding ores (to lower weight)
+// - * Allow possibility of discarding ores (to lower weight) (DONE)
 // - * Show ore value/weight
 // - Items
 // - Money (DONE)
@@ -29,7 +29,7 @@
 // - * Fuel tank
 // - * Cargo size
 // - * Hull life
-// - Fuel consumption
+// - Fuel consumption (DONE)
 // - Hull life
 // - * Fall damage (DONE)
 // - * Dying/respawning (for fuel as well)
@@ -94,3 +94,6 @@
 
 // https://www.youtube.com/watch?v=p7GfSsQvR78
 // Store data in text files and load it up
+
+// https://learn.unity.com/tutorial/optimizing-unity-ui#
+// UI optimisation

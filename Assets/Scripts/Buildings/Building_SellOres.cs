@@ -14,6 +14,6 @@ public class Building_SellOres : Interactable
         int total = oreInventory.GetTotalValue();
         Money.Instance.Sell(total);
 
-        oreInventory.RemoveAll();
+        oreInventory.RemoveAllOres();
     }
 }

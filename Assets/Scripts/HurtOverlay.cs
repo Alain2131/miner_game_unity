@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
+// Handles the animation of the Hurt Overlay UI
+
 [RequireComponent(typeof(Image))]
 public class HurtOverlay : MonoBehaviour
 {

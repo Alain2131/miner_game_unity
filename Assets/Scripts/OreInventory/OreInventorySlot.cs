@@ -19,7 +19,14 @@ public class OreInventorySlot : MonoBehaviour
 
     private void Start()
     {
-        oreName.text = tileInfo.name;
+        // We can either set the name in the level, or automatically
+        // Problem with setting the name in the level is the prefabs
+        // If we modify one and propagate the changes,
+        // the naming will be discarded.
+        // But it is nice to see the actual result in the engine
+        // rather than having to start the game every time.
+
+        //oreName.text = tileInfo.name;
     }
 
     public void UpdateSlotUI()
@@ -33,7 +40,6 @@ public class OreInventorySlot : MonoBehaviour
 
     public void RemoveItem()
     {
-        //Debug.Log("Remove Item !");
-        oreInventory.Remove(tileInfo);
+        oreInventory.RemoveSingleOre(tileInfo);
     }
 }

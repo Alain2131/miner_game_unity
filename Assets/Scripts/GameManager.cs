@@ -5,7 +5,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public Transform player;
-    public AllTilesInfo allTilesInfo;
 
     [Header("Level Generation Stuff")]
     public int LevelXSize = 100; // the width of the level
@@ -23,12 +22,13 @@ public class GameManager : MonoBehaviour
     // we multiply it so we have a unique ID for every tile
     //[HideInInspector]
     [Space(5)]
+    [Tooltip("Public only for debugging purposes.")]
     public List<int> tilesDugUp = new List<int>();
     // The TilesDugUp stuff could technically be
     // somewhere other than inside GameManager.cs,
     // but still in a script on the GameManager Object.
 
-    public void Add(int tileID)
+    public void AddDugUpTile(int tileID)
     {
         tilesDugUp.Add(tileID);
     }

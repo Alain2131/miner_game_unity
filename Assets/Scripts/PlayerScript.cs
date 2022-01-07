@@ -24,6 +24,8 @@ public class PlayerScript : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private bool DisableDigAnimation = false;
+    [SerializeField] private bool DisableDamage = false;
+    [SerializeField] private bool DisableFuel = false;
 
     private bool isDigging = false;
     private bool isFalling = false; // flying as well
@@ -58,7 +60,9 @@ public class PlayerScript : MonoBehaviour
     {
         // This feels super janky, but it kinda works
         // A collision from any side will do damage, not just from falling
-
+        // Also, if we are moving on the ground, then start digging,
+        // the velocity delta from the sudden stop damage us.
+        
         float currentFrameSpeed = rb.velocity.magnitude;
         float delta = currentFrameSpeed - previousFrameSpeed;
 
@@ -68,7 +72,6 @@ public class PlayerScript : MonoBehaviour
         {
             float fallDamage = (Mathf.Abs(delta) - threshold) * damageMultiplier;
 
-            // Please add UI animation when we take damage
             TakeDamage((int)fallDamage);
             //Debug.Log("Youch ! Took " + (int)fallDamage + " damage.");
         }
@@ -211,8 +214,7 @@ public class PlayerScript : MonoBehaviour
             transform.position += AddJitter();
 
             // Digging Fuel Consumption
-            currentFuel = Mathf.Lerp(startingFuel, targetFuel, t);
-            fuelBar.SetValue(currentFuel);
+            SetFuel(Mathf.Lerp(startingFuel, targetFuel, t));
 
             yield return new WaitForSeconds(Time.deltaTime);
         }
@@ -247,6 +249,9 @@ public class PlayerScript : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        if (DisableDamage)
+            return;
+
         currentHealth -= damage;
         hullBar.SetValue(currentHealth);
         hurtOverlay.Hurt();
@@ -254,18 +259,29 @@ public class PlayerScript : MonoBehaviour
 
     public void SetHealth(int amount)
     {
+        if (DisableDamage)
+            return;
+
         currentHealth = amount;
         hullBar.SetValue(currentHealth);
+        if(amount < 0)
+            hurtOverlay.Hurt();
     }
 
     public void ReduceFuel(float consumption)
     {
+        if (DisableFuel)
+            return;
+
         currentFuel -= consumption;
         fuelBar.SetValue(currentFuel);
     }
 
     public void SetFuel(float amount)
     {
+        if (DisableFuel)
+            return;
+
         currentFuel = amount;
         fuelBar.SetValue(currentFuel);
     }
