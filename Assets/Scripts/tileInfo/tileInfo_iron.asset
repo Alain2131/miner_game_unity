@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: iron
   material: {fileID: 2100000, guid: 8094d835faa5bd146892ae863af71f68, type: 2}
-  digTime: 1
+  digTime: 0.75
   fuelConsumption: 2
   addToInventory: 1
   weight: 150

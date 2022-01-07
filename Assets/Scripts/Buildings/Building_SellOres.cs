@@ -11,24 +11,9 @@ public class Building_SellOres : Interactable
     
     public override void Interact()
     {
-        // Sell all Ores in the OreInventory
-        // Again, this is janky because we have to create a newOre variable,
-        // modify it, and then re-assign it in the array,
-        // all because of the OreEntry Struct.
-        int total = 0;
-        for(int i=0; i<oreInventory.OresInCargo.Count; i++)
-        {
-            OreInventory.OreEntry newOre = oreInventory.OresInCargo[i];
-
-            int count = newOre.OreAmount;
-            int value = newOre.OreInfo.GetValue();
-            total += count * value;
-
-            // Reset Amount
-            newOre.OreAmount = 0;
-            oreInventory.OresInCargo[i] = newOre;
-        }
-
+        int total = oreInventory.GetTotalValue();
         Money.Instance.Sell(total);
+
+        oreInventory.RemoveAll();
     }
 }

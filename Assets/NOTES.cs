@@ -49,10 +49,10 @@
 // - * Movement become sluggish, flying is slower or not possible anymore
 
 // UI
-// - Inventory
+// - Inventory (DONE)
 // - Items (could be a part of the inventory screen)
 // - Stores
-// - Fuel/life
+// - Fuel/life (DONE)
 // - Money (DONE)
 // - Menus
 // - * Main Menu

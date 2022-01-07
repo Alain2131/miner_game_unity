@@ -38,7 +38,7 @@ public class TileScript : MonoBehaviour
 
         OreInventory oreInventory = OreInventory.Instance;
         if(tileInfo.addToInventory)
-            oreInventory.Add(tileInfo.GetName()); // increase the tile count in the inventory (if applicable)
+            oreInventory.Add(tileInfo); // increase the tile count in the inventory (if applicable)
 
         // Recompute Collision on the line
         GameObject parent = transform.parent.gameObject;

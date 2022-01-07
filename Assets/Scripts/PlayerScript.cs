@@ -39,7 +39,7 @@ public class PlayerScript : MonoBehaviour
         fuelBar.SetMaxValue(maxFuel);
 
         // Constant Fuel Consumption, always active
-        StartCoroutine("FuelConsumption", 2); // we might want control over this value
+        StartCoroutine("FuelConsumption", 3); // Remove 1 fuel over X seconds
     }
 
     void Update()
@@ -99,14 +99,14 @@ public class PlayerScript : MonoBehaviour
         if (Input.GetKey("w") || Input.GetKey("space") || Input.GetKey("up"))
         {
             rb.AddForce(new Vector3(0, upForce * dtime, 0));
-            MovingFuelConsumption(2);
+            MovingFuelConsumption(1);
         }
 
         // Move Left
         if (Input.GetKey("a") || Input.GetKey("left"))
         {
             rb.AddForce(new Vector3(-lateralSpeed * dtime, 0, 0));
-            MovingFuelConsumption(1);
+            MovingFuelConsumption(0.5f);
 
             if (isPlayerOnTile())
             {
@@ -118,7 +118,7 @@ public class PlayerScript : MonoBehaviour
         if (Input.GetKey("d") || Input.GetKey("right"))
         {
             rb.AddForce(new Vector3(lateralSpeed * dtime, 0, 0));
-            MovingFuelConsumption(1);
+            MovingFuelConsumption(0.5f);
 
             if (isPlayerOnTile())
             {

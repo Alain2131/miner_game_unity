@@ -3,8 +3,10 @@ using UnityEngine;
 
 public class OreInventory : MonoBehaviour
 {
-    private GameManager gameManager;
+    public GameManager gameManager;
     public static OreInventory Instance;
+
+    private OreInventoryUI oreInventoryUI;
 
     [System.Serializable]
     public struct OreEntry
@@ -17,11 +19,7 @@ public class OreInventory : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-    }
-
-    private void Start()
-    {
-        gameManager = GameManager.Instance;
+        gameManager = GetComponent<GameManager>();
 
         // We might want to make sure this happened for sure
         // And ensure that we don't add duplicates (that we might have set manually in the inspector for debugging)
@@ -37,32 +35,43 @@ public class OreInventory : MonoBehaviour
         }
     }
 
-    public void Add(string oreName)
+    void Start()
+    {
+        oreInventoryUI = OreInventoryUI.Instance;
+    }
+
+    public void Add(TileInfo tile)
     {
         // This is really not ideal for memory (same for the two Remove variants)
         // The only way to modify a struct is to copy it,
         // change the copy, and overwrite the original (I think)
-        int ID = GetIDFromOre(oreName);
+        int ID = GetIDFromOre(tile.name);
         if(ID >= 0)
         {
             OreEntry editedOre = OresInCargo[ID];
             editedOre.OreAmount += 1;
             OresInCargo[ID] = editedOre;
+
+            UpdateUIIfOpened();
         }
         else
         {
-            Debug.LogError(oreName + " not in the inventory !");
+            Debug.LogError(tile.name + " not in the inventory !");
         }
     }
 
-    public void Remove(string oreName)
+    public void Remove(TileInfo tile)
     {
-        int ID = GetIDFromOre(oreName);
+        int ID = GetIDFromOre(tile.name);
         if (ID >= 0)
         {
             OreEntry editedOre = OresInCargo[ID];
             editedOre.OreAmount -= 1;
+            if (editedOre.OreAmount < 0)
+                return;
             OresInCargo[ID] = editedOre;
+
+            UpdateUIIfOpened();
         }
     }
 
@@ -74,6 +83,8 @@ public class OreInventory : MonoBehaviour
             editedOre.OreAmount = 0;
             OresInCargo[i] = editedOre;
         }
+
+        UpdateUIIfOpened();
     }
 
     private int GetIDFromOre(string oreName)
@@ -86,5 +97,30 @@ public class OreInventory : MonoBehaviour
             }
         }
         return -1;
+    }
+
+    public int GetOreCount(TileInfo tile)
+    {
+        int ID = GetIDFromOre(tile.name);
+        return OresInCargo[ID].OreAmount;
+    }
+
+    public int GetTotalValue() // used when selling ores
+    {
+        int total = 0;
+        for (int i = 0; i < OresInCargo.Count; i++)
+        {
+            total += OresInCargo[i].OreInfo.value * OresInCargo[i].OreAmount;
+        }
+        return total;
+    }
+
+    private void UpdateUIIfOpened()
+    {
+        // If we dig an ore while the inventory UI is opened, update it.
+        if (oreInventoryUI.IsOpen())
+        {
+            oreInventoryUI.UpdateUI();
+        }
     }
 }
