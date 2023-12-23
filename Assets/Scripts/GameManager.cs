@@ -3,13 +3,14 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
     public Transform player;
+    public Money money;
 
     [Header("Level Generation Stuff")]
     public int LevelXSize = 100; // the width of the level
     public int LevelYSize = 20; // how many lines exists at once. Might need to rename this
 
+    public static GameManager Instance;
     void Awake()
     {
         Instance = this;

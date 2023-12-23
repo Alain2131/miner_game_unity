@@ -3,13 +3,14 @@ using UnityEngine;
 // The logic isn't super clear or readable, but it works.
 
 // This is basically the same as Building_HullRepair
-public class Building_Refuel : Interactable
+public class Store_Refuel : Store
 {
     public override void Interact()
     {
         PlayerScript playerScript = gameManager.player.GetComponent<PlayerScript>();
+        Money money = gameManager.money;
 
-        int balance = Money.Instance.GetMoney();
+        int balance = money.GetMoney();
         if (balance == 0) // If poor, do nothing.
             return;
         
@@ -24,12 +25,12 @@ public class Building_Refuel : Interactable
         // 1 fuel == 1 dollar
         if(moneyDelta < 0) // If we don't have enough money
         {
-            Money.Instance.Buy(balance); // Buy what we can
+            money.Buy(balance); // Buy what we can
             playerScript.SetFuel(currentFuel + balance);
         }
         else // If we have enough
         {
-            Money.Instance.Buy(fuelDelta); // buy the difference
+            money.Buy(fuelDelta); // buy the difference
             playerScript.SetFuel(maxFuel); // fill the tank
         }
     }

@@ -6,12 +6,12 @@ public class Money : MonoBehaviour
     [SerializeField] private int money = 0;
     [SerializeField] private Text moneyText;
 
-    public static Money Instance;
+    //public static Money Instance;
 
-    void Awake()
+    /*void Awake()
     {
         Instance = this;
-    }
+    }*/
 
     private void Start()
     {

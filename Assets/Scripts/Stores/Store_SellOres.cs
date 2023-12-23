@@ -1,8 +1,9 @@
 using UnityEngine;
 
-public class Building_SellOres : Interactable
+public class Store_SellOres : Store
 {
     private OreInventory oreInventory;
+    //public Money moneyScript;
 
     private void Start()
     {
@@ -11,8 +12,10 @@ public class Building_SellOres : Interactable
     
     public override void Interact()
     {
+        Money money = gameManager.money;
+
         int total = oreInventory.GetTotalValue();
-        Money.Instance.Sell(total);
+        money.Sell(total);
 
         oreInventory.RemoveAllOres();
     }
