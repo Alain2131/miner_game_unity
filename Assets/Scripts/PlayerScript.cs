@@ -137,6 +137,11 @@ public class PlayerScript : MonoBehaviour
                 Dig(Vector3.down);
             }
 
+            // If the floor is disabled, but the player hasn't gone through it,
+            // it would be nice to re-enable it if they use any other direction key.
+            // Right now, the player can have two separate holes,
+            // disable the floor on one hole (without going through it),
+            // then move to the other hole and fall through it, which is weird.
             RaycastHit2D hit = isPlayerOnFloor();
             if (hit)
             {

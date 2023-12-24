@@ -26,9 +26,9 @@ public class AllTilesInfo : ScriptableObject
 /*
  * Process for adding a new Ore Type
  * 1) Create a New Tile Info, fill up the relevant info
- * 2) In the AllTilesInfo script (this one), add a new entry for the tile,
+ * 2) In the AllTilesInfo.cs script (this one), add a new entry for the tile,
  * and link it in the scriptable.
- * 3) In the UI, duplicate an OreInventorySlot, with the subsequent tweaks to it
+ * 3) In the UI, duplicate an OreInventorySlot_ object, with the subsequent tweaks to it
  * 
  * And that should be it !
  */

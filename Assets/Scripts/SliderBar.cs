@@ -20,6 +20,7 @@ public class SliderBar : MonoBehaviour
             CheckForDeath();
     }
 
+    // This should not be in here
     public void CheckForDeath()
     {
         if (slider.value <= 0)

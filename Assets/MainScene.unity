@@ -1570,6 +1570,68 @@ Transform:
   m_Father: {fileID: 78270868}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &800751848
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 800751849}
+  - component: {fileID: 800751850}
+  - component: {fileID: 800751851}
+  m_Layer: 0
+  m_Name: OreInventory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &800751849
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 800751848}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1959726070}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &800751850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 800751848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6e6394fefd8f244dbff59b4414ed4c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  oreInventoryUI: {fileID: 800751851}
+  oresInCargo: []
+--- !u!114 &800751851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 800751848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8505335230ff104b983de7fb05b4867, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemsParent: {fileID: 914629051}
+  oreInventory: {fileID: 800751850}
+  oreInventoryUI: {fileID: 168886049}
+  oreInventorySlotPrefab: {fileID: 4828326159883162020, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
 --- !u!1 &914629050
 GameObject:
   m_ObjectHideFlags: 0
@@ -1863,7 +1925,6 @@ GameObject:
   - component: {fileID: 1131409254}
   - component: {fileID: 1131409253}
   - component: {fileID: 1131409252}
-  - component: {fileID: 1131409256}
   m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
@@ -1958,22 +2019,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1131409256
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1131409251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8505335230ff104b983de7fb05b4867, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemsParent: {fileID: 914629051}
-  oreInventory: {fileID: 1204470073}
-  oreInventoryUI: {fileID: 168886049}
-  oreInventorySlotPrefab: {fileID: 4828326159883162020, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
 --- !u!1 &1204470070
 GameObject:
   m_ObjectHideFlags: 0
@@ -1984,7 +2029,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1204470072}
   - component: {fileID: 1204470071}
-  - component: {fileID: 1204470073}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2006,6 +2050,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1921623946}
   money: {fileID: 2060802741}
+  oreInventory: {fileID: 800751850}
   LevelXSize: 100
   LevelYSize: 20
   tilesDugUp: 
@@ -2023,20 +2068,6 @@ Transform:
   m_Father: {fileID: 1959726070}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1204470073
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1204470070}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6e6394fefd8f244dbff59b4414ed4c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  oreInventoryUI: {fileID: 1131409256}
-  oresInCargo: []
 --- !u!1 &1205411748
 GameObject:
   m_ObjectHideFlags: 0
@@ -2388,8 +2419,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1781668885}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 270, y: 453.1587, z: 0}
-  m_LocalScale: {x: 1.1646763, y: 1.1646763, z: 1.1646763}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1959726070}
   m_RootOrder: 2
@@ -2718,6 +2749,7 @@ Transform:
   - {fileID: 1607118835}
   - {fileID: 1781668887}
   - {fileID: 2060802740}
+  - {fileID: 800751849}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

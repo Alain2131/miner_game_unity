@@ -36,7 +36,7 @@ public class TileScript : MonoBehaviour
         GameManager gameManager = GameManager.Instance;
         gameManager.AddDugUpTile(uniqueID); // add the tile to the tilesDugUp List
 
-        OreInventory oreInventory = OreInventory.Instance;
+        OreInventory oreInventory = gameManager.oreInventory;
         if(tileInfo.addToInventory)
             oreInventory.AddSingleOre(tileInfo); // increase the tile count in the inventory (if applicable)
 

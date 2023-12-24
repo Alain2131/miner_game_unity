@@ -7,7 +7,7 @@ public class Store_SellOres : Store
 
     private void Start()
     {
-        oreInventory = OreInventory.Instance;
+        oreInventory = gameManager.oreInventory;
     }
     
     public override void Interact()

@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour
 {
     public Transform player;
     public Money money;
+    public OreInventory oreInventory;
 
     [Header("Level Generation Stuff")]
     public int LevelXSize = 100; // the width of the level

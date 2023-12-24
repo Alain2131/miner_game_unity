@@ -3,10 +3,11 @@ using UnityEngine;
 
 public class OreInventory : MonoBehaviour
 {
-    public static OreInventory Instance;
-
     [SerializeField] private OreInventoryUI oreInventoryUI;
 
+    // Looks like this is evil. "Mutable" means that it can change.
+    // https://stackoverflow.com/questions/441309/why-are-mutable-structs-evil
+    // I'll probably have to change how OreEntry is represented
     [System.Serializable]
     public struct OreEntry
     {
@@ -15,12 +16,11 @@ public class OreInventory : MonoBehaviour
     }
     [Tooltip("Public only for debugging purposes.")]
     public List<OreEntry> oresInCargo;
-
-    private void Awake()
+    
+    void Start()
     {
-        Instance = this;
-
-        oresInCargo = new List<OreEntry>(); // Remove any stuff from the UI
+        // Populate oresInCargo list. This feels a bit weird though
+        oresInCargo = new List<OreEntry>(); // Remove any stuff from the UI - what does that mean ?
         foreach (TileInfo tile in AllTilesInfo.Instance.GetAllTiles())
         {
             if (tile.addToInventory)
@@ -33,11 +33,6 @@ public class OreInventory : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        //oreInventoryUI = OreInventoryUI.Instance;
-    }
-
     public void AddSingleOre(TileInfo tile)
     {
         // This is really not ideal for memory (same for the two Remove variants)
@@ -46,11 +41,13 @@ public class OreInventory : MonoBehaviour
         int ID = GetIDFromOre(tile.name);
         if(ID >= 0)
         {
+            // Looks like this is evil
+            // https://stackoverflow.com/questions/441309/why-are-mutable-structs-evil
             OreEntry editedOre = oresInCargo[ID];
             editedOre.amount += 1;
             oresInCargo[ID] = editedOre;
 
-            UpdateUIIfOpened();
+            oreInventoryUI.UpdateUI();
         }
         else
         {
@@ -69,7 +66,7 @@ public class OreInventory : MonoBehaviour
                 return;
             oresInCargo[ID] = editedOre;
 
-            UpdateUIIfOpened();
+            oreInventoryUI.UpdateUI();
         }
     }
 
@@ -82,7 +79,7 @@ public class OreInventory : MonoBehaviour
             oresInCargo[i] = editedOre;
         }
 
-        UpdateUIIfOpened();
+        oreInventoryUI.UpdateUI();
     }
 
     private int GetIDFromOre(string oreName)
@@ -111,14 +108,5 @@ public class OreInventory : MonoBehaviour
             total += oresInCargo[i].tileInfo.value * oresInCargo[i].amount;
         }
         return total;
-    }
-
-    private void UpdateUIIfOpened()
-    {
-        // If we dig an ore while the inventory UI is opened, update it.
-        if (oreInventoryUI.IsOpen())
-        {
-            oreInventoryUI.UpdateUI();
-        }
     }
 }
