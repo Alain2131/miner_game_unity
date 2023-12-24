@@ -349,6 +349,10 @@ public class PlayerScript : MonoBehaviour
 
         bool slowEnough = rb.velocity.magnitude < 0.5f;
 
+        // Debug feature to be able to dig as fast as I want
+        if (DisableDigAnimation)
+            slowEnough = true;
+
         return grounded && slowEnough;
     }
 

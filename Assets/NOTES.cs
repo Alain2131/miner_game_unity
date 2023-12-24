@@ -20,7 +20,7 @@
 // - * * Disable player movement input during the animation (DONE)
 // - Inventory
 // - * Allow possibility of discarding ores (to lower weight) (DONE)
-// - * Show ore value/weight
+// - * Show ore value/weight (DONE) -> might want to get total value instead of individual value)
 // - Items
 // - Money (DONE)
 // - Upgrades
@@ -35,13 +35,16 @@
 // - * Dying/respawning (for fuel as well)
 // - * * Steep money malus when dying (remove half or something)
 // - * * Remove some amount of ore in the cargo (some or all of it)
+// - * * * If all is lost, could have the wreck be recoverable where the player died (but the wreck would contain like half or whatever)
+// - * * * Not sure how to handle when the player dies in the air. Fall down to the bottom ? Would the wreckage float ? (could go full silly with little balloons holding the wreckage in place)
 // - * * Fill fuel
+// - * * The IMPORTANT part is to never be in a situation where the player is stuck without being able to make money/progress anymore
 // - Stores
 // - * Upgrades (buying/selling)
 // - * Items (dynamite, teleport, etc)
 // - * Ore selling (DONE)
-// - * Fuel buying
-// - * Hull repair
+// - * Fuel buying (DONE)
+// - * Hull repair (DONE)
 // - Level saving
 // - Level generation (DONE)
 // - * Perlin Noise Implementation (DONE)
@@ -59,17 +62,17 @@
 // - * Pause
 // - * Options
 // - Depth gauge
-// - Dialogs ?
+// - NPCs ? Dialogs ?
 // - * Animate text apparition
 // - * * Skip animation on click
 // - * Go back to previous dialog box
 // - * Witty stuff
-// - * * If we go back too much, some NPCs could get annoyed that they need to repeat themselves
+// - * * If we go back too much, some NPCs could get annoyed that they need to repeat themselves ("go back" ? what do you mean, like a left arrow in the dialog box to re-read a previous text box ?)
 // - * * If we skip too much, some NPCs could get annoyed that we don't listen to them
 // - * * * Annoyance could be shown with a smaller more subtle dialog box, where the NPC grumbles a bit
 
 // Misc
-// - Add level bound, left and right (DONE)
+// - Add level bound, left and right (DONE - but requires visual collision)
 // - Add floor on first level (DONE)
 // - Tile properties
 // - * digTime, weight, value, digLevel (which drill can dig it)

@@ -10,8 +10,10 @@ using UnityEngine.UI;
  */
 public class OreInventorySlot : MonoBehaviour
 {
+    public Text oreValue;
     public Text oreName;
     public Text oreQty;
+    public Text oreWeight;
 
     public TileInfo tileInfo;
 
@@ -33,11 +35,16 @@ public class OreInventorySlot : MonoBehaviour
 
     public void UpdateSlotUI()
     {
+        Debug.Log("Update UI");
         if (!oreInventory)
-            oreInventory = GameManager.Instance.oreInventory;
+            oreInventory = gameManager.oreInventory;
 
         int count = oreInventory.GetOreCount(tileInfo);
         oreQty.text = count.ToString();
+
+        float totalWeight = tileInfo.weight * count;
+        oreWeight.text = totalWeight.ToString() + "KG";
+        oreValue.text = "$" + tileInfo.value.ToString();
     }
 
     public void RemoveItem()

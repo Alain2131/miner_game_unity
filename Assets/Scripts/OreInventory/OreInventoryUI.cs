@@ -20,7 +20,7 @@ public class OreInventoryUI : MonoBehaviour
         OreInventorySlotsSanityCheck();
 
         // Make sure the inventory is closed when the game starts
-        //oreInventoryUI.SetActive(false);
+        oreInventoryUI.SetActive(false);
     }
 
     private void Update()
