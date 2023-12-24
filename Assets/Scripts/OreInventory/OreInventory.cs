@@ -6,18 +6,16 @@ public class OreInventory : MonoBehaviour
     [SerializeField] private OreInventoryUI oreInventoryUI;
     public AllTilesInfo allTilesInfo;
 
-    // Looks like this is evil. "Mutable" means that it can change.
-    // https://stackoverflow.com/questions/441309/why-are-mutable-structs-evil
-    // I'll probably have to change how OreEntry is represented
     [System.Serializable]
-    public struct OreEntry
+    public class OreEntry
     {
         public TileInfo tileInfo;
         public int amount;
     }
+
     [Tooltip("Public only for debugging purposes.")]
     public List<OreEntry> oresInCargo;
-    
+
     void Start()
     {
         // Populate oresInCargo list. This feels a bit weird though
@@ -42,11 +40,7 @@ public class OreInventory : MonoBehaviour
         int ID = GetIDFromOre(tile.name);
         if(ID >= 0)
         {
-            // Looks like this is evil
-            // https://stackoverflow.com/questions/441309/why-are-mutable-structs-evil
-            OreEntry editedOre = oresInCargo[ID];
-            editedOre.amount += 1;
-            oresInCargo[ID] = editedOre;
+            oresInCargo[ID].amount += 1;
 
             oreInventoryUI.UpdateUI();
         }
@@ -61,11 +55,7 @@ public class OreInventory : MonoBehaviour
         int ID = GetIDFromOre(tile.name);
         if (ID >= 0)
         {
-            OreEntry editedOre = oresInCargo[ID];
-            editedOre.amount -= 1;
-            if (editedOre.amount < 0)
-                return;
-            oresInCargo[ID] = editedOre;
+            oresInCargo[ID].amount -= 1;
 
             oreInventoryUI.UpdateUI();
         }
@@ -75,9 +65,7 @@ public class OreInventory : MonoBehaviour
     {
         for (int i = 0; i < oresInCargo.Count; i++)
         {
-            OreEntry editedOre = oresInCargo[i];
-            editedOre.amount = 0;
-            oresInCargo[i] = editedOre;
+            oresInCargo[i].amount = 0;
         }
 
         oreInventoryUI.UpdateUI();
