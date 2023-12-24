@@ -6,7 +6,7 @@ MonoImporter:
   defaultReferences:
   - player: {instanceID: 0}
   - allTilesInfo: {fileID: 11400000, guid: 6439bdd7a36a51a4da55228bd84ac1fc, type: 2}
-  executionOrder: 0
+  executionOrder: -10
   icon: {instanceID: 0}
   userData: 
   assetBundleName: 

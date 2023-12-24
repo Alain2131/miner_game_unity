@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     // somewhere other than inside GameManager.cs,
     // but still in a script on the GameManager Object.
 
+    // Should probably be in a "level" class or something, so we can call it with gameManager.level.AddDugUpTile()
     public void AddDugUpTile(int tileID)
     {
         tilesDugUp.Add(tileID);
