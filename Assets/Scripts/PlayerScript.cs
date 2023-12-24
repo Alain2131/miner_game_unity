@@ -60,8 +60,6 @@ public class PlayerScript : MonoBehaviour
     {
         // This feels super janky, but it kinda works
         // A collision from any side will do damage, not just from falling
-        // Also, if we are moving on the ground, then start digging,
-        // the velocity delta from the sudden stop damage us.
         
         float currentFrameSpeed = rb.velocity.magnitude;
         float delta = currentFrameSpeed - previousFrameSpeed;
@@ -111,7 +109,7 @@ public class PlayerScript : MonoBehaviour
             rb.AddForce(new Vector3(-lateralSpeed * dtime, 0, 0));
             MovingFuelConsumption(0.5f);
 
-            if (isPlayerOnTile())
+            if (canPlayerDig())
             {
                 Dig(Vector3.left);
             }
@@ -123,7 +121,7 @@ public class PlayerScript : MonoBehaviour
             rb.AddForce(new Vector3(lateralSpeed * dtime, 0, 0));
             MovingFuelConsumption(0.5f);
 
-            if (isPlayerOnTile())
+            if (canPlayerDig())
             {
                 Dig(Vector3.right);
             }
@@ -132,7 +130,7 @@ public class PlayerScript : MonoBehaviour
         // Dig Down
         if (Input.GetKey("s") || Input.GetKey("down"))
         {
-            if (isPlayerOnTile())
+            if (canPlayerDig())
             {
                 Dig(Vector3.down);
             }
@@ -142,10 +140,10 @@ public class PlayerScript : MonoBehaviour
             // Right now, the player can have two separate holes,
             // disable the floor on one hole (without going through it),
             // then move to the other hole and fall through it, which is weird.
-            RaycastHit2D hit = isPlayerOnFloor();
-            if (hit)
+            RaycastHit2D floorHit = fetchFloor();
+            if (floorHit)
             {
-                Transform floor = hit.transform;
+                Transform floor = floorHit.transform;
                 floor.GetComponent<Floor>().Disable();
             }
         }
@@ -153,7 +151,7 @@ public class PlayerScript : MonoBehaviour
         // Building Interact
         if (Input.GetKeyDown("e"))
         {
-            if (isPlayerOnFloor()) // There will always be a floor under a building
+            if (fetchFloor()) // There will always be a floor under a building <- what do you mean ? "Floor" as in "Tiles", or "Floor" as in "the Floor object" ?
             {
                 CheckInteraction();
             }
@@ -196,15 +194,17 @@ public class PlayerScript : MonoBehaviour
 
         float digTime = tile.tileInfo.GetDigTime();
 
-        // The positions aren't exactly right
-        // The target position is in the middle of the tile.
-        // That results in the player being off the ground at the end.
-        // A solution would be to place the pivots
-        // of the player and the tiles at the bottom middle.
-        // Another solution would be to calculate the offset
-        // and add that to the targetPosition, but that's more janky.
+
         Vector3 currentPos = transform.position;
-        Vector3 targetPosition = tile.transform.position;
+        Vector3 targetPosition = currentPos;
+        targetPosition.x = tile.transform.position.x;
+
+        bool diggingDown = (tile.transform.position - currentPos).y < -0.5;
+        if (diggingDown)
+        {
+            targetPosition.y -= 1;
+        }
+
 
         float startingFuel = currentFuel;
         float targetFuel = currentFuel - tile.tileInfo.GetFuelConsumption();
@@ -259,6 +259,7 @@ public class PlayerScript : MonoBehaviour
 
         currentHealth -= damage;
         hullBar.SetValue(currentHealth);
+        // Should have an intensity to the hurt overlay
         hurtOverlay.Hurt();
     }
 
@@ -340,15 +341,20 @@ public class PlayerScript : MonoBehaviour
         return hit;
     }
 
-    // OnTile and OnFloor are basically the same, I could make a single method for those two
-    private bool isPlayerOnTile()
+    private bool canPlayerDig()
     {
+        // We want a ray that's barely larger than the player. 0.475 is ~half the size of the player.
         RaycastHit2D hit = PlayerRaycast(Vector3.down * 0.475f, "tile", false);
-        return hit.collider != null;
+        bool grounded = hit.collider != null;
+
+        bool slowEnough = rb.velocity.magnitude < 0.5f;
+
+        return grounded && slowEnough;
     }
 
-    private RaycastHit2D isPlayerOnFloor()
+    private RaycastHit2D fetchFloor()
     {
+        // We want a ray that's barely larger than the player. 0.475 is ~half the size of the player.
         RaycastHit2D hit = PlayerRaycast(Vector3.down * 0.475f, "floor", false);
         return hit;
     }
@@ -374,7 +380,9 @@ public class PlayerScript : MonoBehaviour
             return true;
 
         bool touchingFloor = rb.IsTouchingLayers(LayerMask.GetMask("floor"));
-        bool touchingTile = rb.IsTouchingLayers(LayerMask.GetMask("tile"));
+        // We want a ray that's barely larger than the player. 0.475 is ~half the size of the player.
+        RaycastHit2D hit = PlayerRaycast(Vector3.down * 0.475f, "tile", false);
+        bool touchingTile = hit.collider != null;
 
         //Debug.Log("Touching floor " + touchingFloor + " Touching tile " + touchingTile);
         return touchingFloor || touchingTile;
