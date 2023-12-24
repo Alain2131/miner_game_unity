@@ -5,6 +5,22 @@
 // When I say "DONE", I mean that it's working,
 // but it may be very janky.
 
+/*
+ * I once did a test with a compute shader to generate a texture where each pixels was a tileID
+ * When digging, I would do a lookup (converting worldSpace to texture pixel coordinate) to see what tileID is there
+ * I had another texture which contained whether the tile is dug or not
+ * 
+ * I seem to recall that it was working well !
+ * I also expect the performance to be better.
+ * It would be nice to find those tests, or do them again in this project
+ * 
+ * The actual tiles rendered in the world could then be a single plane, which looks up the two textures (tileID, dugTiles)
+ * to use as "what to render at this place", so instead of hundreds of polygons, we'd have only two !
+ * But we'd still need to compute the collision mesh.
+ * 
+ * The raycast could be discarded in favor of the lookup. (probably not all raycast though)
+ */
+
 /* 
  * Do the Fuel and Hull (with consumption and damage) (DONE)
  * Then do the Refuel and Hull repair buildings (DONE)

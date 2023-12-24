@@ -304,7 +304,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &168886050
 RectTransform:
   m_ObjectHideFlags: 0
@@ -732,11 +732,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3170005387618622840, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 3170005387618622840, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 3170005387618622840, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -768,11 +768,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3170005387618622840, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 85
       objectReference: {fileID: 0}
     - target: {fileID: 3170005387618622840, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -52.5
       objectReference: {fileID: 0}
     - target: {fileID: 3170005387618622840, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1591,6 +1591,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   oreInventoryUI: {fileID: 800751851}
+  allTilesInfo: {fileID: 11400000, guid: 6439bdd7a36a51a4da55228bd84ac1fc, type: 2}
   oresInCargo: []
 --- !u!114 &800751851
 MonoBehaviour:
@@ -1605,9 +1606,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemsParent: {fileID: 914629051}
-  oreInventory: {fileID: 800751850}
   oreInventoryUI: {fileID: 168886049}
-  oreInventorySlotPrefab: {fileID: 4828326159883162020, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
 --- !u!1 &914629050
 GameObject:
   m_ObjectHideFlags: 0
@@ -2438,11 +2437,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3170005387618622840, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 3170005387618622840, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 3170005387618622840, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2474,11 +2473,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3170005387618622840, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 85
       objectReference: {fileID: 0}
     - target: {fileID: 3170005387618622840, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -22.5
       objectReference: {fileID: 0}
     - target: {fileID: 3170005387618622840, guid: 32d2769311155394ebed1b51244cba9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

@@ -20,9 +20,14 @@ public class OreInventorySlot : MonoBehaviour
     private OreInventory oreInventory;
     private GameManager gameManager;
 
-    private void Start()
+    private void Awake()
     {
         gameManager = GameManager.Instance;
+        oreInventory = gameManager.oreInventory;
+    }
+
+    private void Start()
+    {
         // We can either set the name in the level, or automatically
         // Problem with setting the name in the level is the prefabs
         // If we modify one and propagate the changes,
@@ -35,9 +40,9 @@ public class OreInventorySlot : MonoBehaviour
 
     public void UpdateSlotUI()
     {
-        Debug.Log("Update UI");
-        if (!oreInventory)
-            oreInventory = gameManager.oreInventory;
+        //Debug.Log(oreInventory);
+        /*if (!oreInventory)
+            oreInventory = gameManager.oreInventory;*/
 
         int count = oreInventory.GetOreCount(tileInfo);
         oreQty.text = count.ToString();

@@ -4,6 +4,7 @@ using UnityEngine;
 public class OreInventory : MonoBehaviour
 {
     [SerializeField] private OreInventoryUI oreInventoryUI;
+    public AllTilesInfo allTilesInfo;
 
     // Looks like this is evil. "Mutable" means that it can change.
     // https://stackoverflow.com/questions/441309/why-are-mutable-structs-evil
@@ -21,7 +22,7 @@ public class OreInventory : MonoBehaviour
     {
         // Populate oresInCargo list. This feels a bit weird though
         oresInCargo = new List<OreEntry>(); // Remove any stuff from the UI - what does that mean ?
-        foreach (TileInfo tile in AllTilesInfo.Instance.GetAllTiles())
+        foreach (TileInfo tile in allTilesInfo.GetAllTiles())
         {
             if (tile.addToInventory)
             {

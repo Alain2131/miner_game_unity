@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "AllTiles", menuName = "AllTiles")]
+//[CreateAssetMenu(fileName = "AllTiles", menuName = "AllTiles")]
 public class AllTilesInfo : ScriptableObject
 {
     public TileInfo dirtTile;
@@ -8,14 +8,14 @@ public class AllTilesInfo : ScriptableObject
     public TileInfo ironTile;
     public TileInfo airTile;
 
-    public static AllTilesInfo Instance;
+    //public static AllTilesInfo Instance;
 
     // This runs even in the editor.. ?
     // Could that be an issue ?
-    private void OnEnable()
+    /*private void OnEnable()
     {
         Instance = this;
-    }
+    }*/
 
     public TileInfo[] GetAllTiles()
     {

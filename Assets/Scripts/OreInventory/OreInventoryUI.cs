@@ -3,10 +3,9 @@ using UnityEngine;
 public class OreInventoryUI : MonoBehaviour
 {
     public Transform itemsParent;
-    public OreInventory oreInventory;
     public GameObject oreInventoryUI;
-    public GameObject oreInventorySlotPrefab;
-    
+
+    private OreInventory oreInventory;
     private OreInventorySlot[] slots;
 
     void Start()

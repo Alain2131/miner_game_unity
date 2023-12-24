@@ -3,7 +3,6 @@ using UnityEngine;
 public class Store_SellOres : Store
 {
     private OreInventory oreInventory;
-    //public Money moneyScript;
 
     private void Start()
     {

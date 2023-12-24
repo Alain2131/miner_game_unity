@@ -4,7 +4,7 @@ using UnityEngine;
 public class LineGeneration : MonoBehaviour
 {
     private GameManager gameManager;
-    private AllTilesInfo allTilesInfo;
+    public AllTilesInfo allTilesInfo;
     private int xSize;
 
     public Object tileObject;
@@ -17,7 +17,6 @@ public class LineGeneration : MonoBehaviour
     private void Start()
     {
         gameManager = GameManager.Instance;
-        allTilesInfo = AllTilesInfo.Instance;
         xSize = gameManager.LevelXSize;
 
         // Init Arrays
