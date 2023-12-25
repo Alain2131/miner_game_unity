@@ -16,6 +16,11 @@ public class GameManager : MonoBehaviour
     public GameObject store_UI;
     public bool isStoreOpen = false;
 
+    [Header("Game Pause")]
+    public GameObject pauseGameUI;
+    public GameObject resumeButton;
+    public bool gamePaused = false;
+
     [Header("Level Generation Stuff")]
     public int LevelXSize = 100; // the width of the level
     public int LevelYSize = 20; // how many lines exists at once. Might need to rename this
@@ -25,6 +30,8 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
         playerScript = player.GetComponent<PlayerScript>();
+        
+        pauseGameUI.SetActive(false);
     }
 
     // A flat integer List of all the tiles that were dug up.
@@ -52,6 +59,31 @@ public class GameManager : MonoBehaviour
     public void AddDugUpTile(int tileID)
     {
         tilesDugUp.Add(tileID);
+    }
+
+    public void TogglePauseGame()
+    {
+        gamePaused = !gamePaused;
+        pauseGameUI.SetActive(gamePaused);
+
+        // stop player movement
+        // velocity is automatically stored/restored, yay !
+        if(gamePaused)
+        {
+            playerScript.rb.simulated = false;
+        }
+        else
+        {
+            playerScript.rb.simulated = true;
+        }
+    }
+
+    public void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        Application.Quit();
     }
 
     // This will be saved at some point, so we'll need a constructor here that loads tilesDugUp when the game starts

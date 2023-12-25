@@ -116,6 +116,18 @@ public class PlayerScript : MonoBehaviour
     {
         float dtime = Time.deltaTime;
 
+        if (Input.GetButtonDown("Cancel"))
+        {
+            Debug.Log("cancel");
+            gameManager.TogglePauseGame();
+        }
+
+        // Cannot check for paused game later,
+        // otherwise we'd still be able to interact/open inventory
+        if (gameManager.gamePaused)
+            return;
+
+
         // Building Interact
         if (Input.GetKeyDown("e"))
         {
@@ -130,7 +142,7 @@ public class PlayerScript : MonoBehaviour
             gameManager.oreInventory.ToggleInventoryUI();
         }
 
-
+        
         // Disable movement when digging or when the store is open
         if (isDigging || gameManager.isStoreOpen)
             return;
@@ -319,6 +331,9 @@ public class PlayerScript : MonoBehaviour
     public void ReduceFuel(float consumption)
     {
         if (DisableFuel)
+            return;
+
+        if (gameManager.gamePaused)
             return;
 
         currentFuel -= consumption;
