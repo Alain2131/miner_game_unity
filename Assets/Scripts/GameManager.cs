@@ -6,10 +6,15 @@ public class GameManager : MonoBehaviour
     public Transform player;
     public PlayerScript playerScript;
     public Money money;
-    public OreInventory oreInventory;
 
     [Header("Player Upgrades")]
     public UpgradesManager upgradeManager;
+
+    [Header("UI")]
+    public OreInventory oreInventory;
+    public GameObject oreInventoryUI;
+    public GameObject store_UI;
+    public bool isStoreOpen = false;
 
     [Header("Level Generation Stuff")]
     public int LevelXSize = 100; // the width of the level
@@ -34,6 +39,14 @@ public class GameManager : MonoBehaviour
     // The TilesDugUp stuff could technically be
     // somewhere other than inside GameManager.cs,
     // but still in a script on the GameManager Object.
+
+    public bool ToggleStoreUI()
+    {
+        isStoreOpen = !store_UI.activeSelf;
+        store_UI.SetActive(isStoreOpen);
+
+        return isStoreOpen;
+    }
 
     // Should probably be in a "level" class or something, so we can call it with gameManager.level.AddDugUpTile()
     public void AddDugUpTile(int tileID)

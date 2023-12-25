@@ -35,6 +35,8 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private bool DisableDamage = false;
     [SerializeField] private bool DisableFuel = false;
 
+    private GameManager gameManager;
+
     private bool isDigging = false;
     private bool isFalling = false; // flying as well
 
@@ -42,6 +44,8 @@ public class PlayerScript : MonoBehaviour
 
     private void Start()
     {
+        gameManager = GameManager.Instance;
+
         currentHealth = maxHealth;
         hullBar.SetMaxValue(maxHealth);
 
@@ -56,8 +60,7 @@ public class PlayerScript : MonoBehaviour
     {
         ClampPlayerSpeed();
 
-        if(!isDigging)
-            HandlePlayerInput();
+        HandlePlayerInput();
 
         isFalling = !IsPlayerOnGround();
 
@@ -106,9 +109,31 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    // There has to be a better way to handle player inputs.
+    // Especially considering that other inputs
+    // are sometimes handled somewhere else (such as "i" for inventory).
     private void HandlePlayerInput()
     {
         float dtime = Time.deltaTime;
+
+        // Building Interact
+        if (Input.GetKeyDown("e"))
+        {
+            if (fetchFloor()) // There will always be a floor under a building <- what do you mean ? "Floor" as in "Tiles", or "Floor" as in "the Floor object" ?
+            {
+                CheckInteraction();
+            }
+        }
+
+        if (Input.GetButtonDown("Inventory"))
+        {
+            gameManager.oreInventory.ToggleInventoryUI();
+        }
+
+
+        // Disable movement when digging or when the store is open
+        if (isDigging || gameManager.isStoreOpen)
+            return;
 
         // Player Movement
         // I may have to split that into another script
@@ -161,15 +186,6 @@ public class PlayerScript : MonoBehaviour
             {
                 Transform floor = floorHit.transform;
                 floor.GetComponent<Floor>().Disable();
-            }
-        }
-
-        // Building Interact
-        if (Input.GetKeyDown("e"))
-        {
-            if (fetchFloor()) // There will always be a floor under a building <- what do you mean ? "Floor" as in "Tiles", or "Floor" as in "the Floor object" ?
-            {
-                CheckInteraction();
             }
         }
     }

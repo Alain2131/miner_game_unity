@@ -2,18 +2,17 @@ using UnityEngine;
 
 public class Store_Upgrades : Store
 {
-    public GameObject store_UI;
-
     private void Start()
     {
         // Make sure the store is closed when the game starts
-        store_UI.SetActive(false);
+        if (gameManager.isStoreOpen)
+            gameManager.ToggleStoreUI();
     }
 
     public override void Interact()
     {
         // Should disable movement inputs while the store is open
-        store_UI.SetActive(!store_UI.activeSelf);
+        gameManager.ToggleStoreUI();
 
         // Kinda eery to be so empty compared to the other stores
         // But I would assume it will be the same for the others

@@ -520,10 +520,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 432368806723328940, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
-      propertyPath: m_Simulated
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 432368806723328941, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: m_Name
       value: PlayerObject
@@ -3313,7 +3309,7 @@ MonoBehaviour:
   fuel_upgrades: {fileID: 11400000, guid: 0facad21301b19f46b9e7907ecf42a1f, type: 2}
   fuel_upgrade_level: 0
   hull_upgrades: {fileID: 11400000, guid: e07323cc45d172642adde77a73addd15, type: 2}
-  hull_upgrade_level: 5
+  hull_upgrade_level: 0
   propeller_upgrades: {fileID: 11400000, guid: 6e6ae8d83f043af468b87feb64ae2f7b, type: 2}
   propeller_upgrade_level: 0
   fuelSlider: {fileID: 1930581995}

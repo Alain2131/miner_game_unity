@@ -3,8 +3,13 @@ using UnityEngine;
 
 public class OreInventory : MonoBehaviour
 {
-    [SerializeField] private OreInventoryUI oreInventoryUI;
     public AllTilesInfo allTilesInfo;
+
+    public Transform itemsParent;
+    public GameObject oreInventoryUI;
+
+    private OreInventory oreInventory;
+    private OreInventorySlot[] slots;
 
     [System.Serializable]
     public class OreEntry
@@ -30,7 +35,21 @@ public class OreInventory : MonoBehaviour
                 oresInCargo.Add(newOre);
             }
         }
+
+
+        // UI stuff
+        oreInventory = GameManager.Instance.oreInventory;
+
+        // We could automatically populate the slots,
+        // but I prefer adding them manually in the Level.
+        slots = itemsParent.GetComponentsInChildren<OreInventorySlot>();
+
+        OreInventorySlotsSanityCheck();
+
+        // Make sure the inventory is closed when the game starts
+        oreInventoryUI.SetActive(false);
     }
+
 
     public void AddSingleOre(TileInfo tile)
     {
@@ -47,7 +66,7 @@ public class OreInventory : MonoBehaviour
             }
 
             oresInCargo[ID].amount += 1;
-            oreInventoryUI.UpdateUI();
+            UpdateUI();
 
             if (maxWeight == newTotalWeight)
             {
@@ -74,7 +93,7 @@ public class OreInventory : MonoBehaviour
         if (ID >= 0)
         {
             oresInCargo[ID].amount -= 1;
-            oreInventoryUI.UpdateUI();
+            UpdateUI();
         }
     }
 
@@ -85,7 +104,7 @@ public class OreInventory : MonoBehaviour
             oresInCargo[i].amount = 0;
         }
 
-        oreInventoryUI.UpdateUI();
+        UpdateUI();
     }
 
     private int GetIDFromOre(string oreName)
@@ -125,5 +144,55 @@ public class OreInventory : MonoBehaviour
         }
 
         return -1;
+    }
+
+    // UI stuff
+    public bool ToggleInventoryUI()
+    {
+        oreInventoryUI.SetActive(!oreInventoryUI.activeSelf);
+
+        if(oreInventoryUI.activeSelf)
+            UpdateUI();
+
+        return !oreInventoryUI.activeSelf;
+    }
+
+    public void UpdateUI()
+    {
+        if (IsOpen())
+        {
+            foreach (OreInventorySlot slot in slots)
+            {
+                slot.UpdateSlotUI();
+            }
+        }
+    }
+
+    public bool IsOpen()
+    {
+        return oreInventoryUI.activeSelf;
+    }
+
+    private void OreInventorySlotsSanityCheck()
+    {
+        // Make sure all ores have a slot
+        // This is more for debugging than anything
+        bool found;
+        foreach (OreInventory.OreEntry entry in oreInventory.oresInCargo)
+        {
+            found = false;
+            foreach (OreInventorySlot slot in slots)
+            {
+                if (entry.tileInfo == slot.tileInfo)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                Debug.LogError("Missing UI Inventory Slot for " + entry.tileInfo.name);
+            }
+        }
     }
 }

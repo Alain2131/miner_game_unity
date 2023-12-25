@@ -17,13 +17,13 @@ public class OreInventorySlot : MonoBehaviour
 
     public TileInfo tileInfo;
 
-    private OreInventory oreInventory;
+    //private OreInventory oreInventory;
     private GameManager gameManager;
 
     private void Awake()
     {
         gameManager = GameManager.Instance;
-        oreInventory = gameManager.oreInventory;
+        //oreInventory = gameManager.oreInventory;
     }
 
     private void Start()
@@ -44,7 +44,7 @@ public class OreInventorySlot : MonoBehaviour
         /*if (!oreInventory)
             oreInventory = gameManager.oreInventory;*/
 
-        int count = oreInventory.GetOreCount(tileInfo);
+        int count = gameManager.oreInventory.GetOreCount(tileInfo);
         oreQty.text = count.ToString();
 
         float totalWeight = tileInfo.weight * count;
@@ -54,6 +54,6 @@ public class OreInventorySlot : MonoBehaviour
 
     public void RemoveItem()
     {
-        oreInventory.RemoveSingleOre(tileInfo);
+        gameManager.oreInventory.RemoveSingleOre(tileInfo);
     }
 }
