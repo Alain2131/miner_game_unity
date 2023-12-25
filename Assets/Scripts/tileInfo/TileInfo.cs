@@ -1,10 +1,18 @@
 using UnityEngine;
 
+public enum TileType
+{
+    dirt,
+    coal,
+    iron,
+    air
+}
+
 [CreateAssetMenu(fileName = "tileInfo_newTile", menuName = "New Tile Info")]
 public class TileInfo : ScriptableObject
 {
     [Header("General Info")]
-    public new string name;
+    public TileType type;
     public Material material;
 
     public float digTime = 1.0f;
@@ -35,7 +43,7 @@ public class TileInfo : ScriptableObject
     [Tooltip("Make sure Depth is correctly ordered.")]
     public LevelGenerationValues[] levelGenerationValues;
     // It would be amazing to convert that system with a curve editor
-    // Each tile would be a line, it would be clamp from 0-1 in height,
+    // Each tile would be a line, it would be clamped from 0-1 in height,
     // and width would be depth
 
 
@@ -54,9 +62,9 @@ public class TileInfo : ScriptableObject
         return material;
     }
 
-    public string GetName()
+    public TileType GetType()
     {
-        return name;
+        return type;
     }
 
     public float GetDigTime()

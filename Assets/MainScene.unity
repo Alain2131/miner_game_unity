@@ -1728,7 +1728,6 @@ GameObject:
   m_Component:
   - component: {fileID: 800751849}
   - component: {fileID: 800751850}
-  - component: {fileID: 800751851}
   m_Layer: 0
   m_Name: OreInventory
   m_TagString: Untagged
@@ -1762,23 +1761,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6e6394fefd8f244dbff59b4414ed4c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  oreInventoryUI: {fileID: 800751851}
   allTilesInfo: {fileID: 11400000, guid: 6439bdd7a36a51a4da55228bd84ac1fc, type: 2}
-  oresInCargo: []
---- !u!114 &800751851
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 800751848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8505335230ff104b983de7fb05b4867, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   itemsParent: {fileID: 914629051}
   oreInventoryUI: {fileID: 168886049}
+  oresInCargo: []
 --- !u!1 &825957468
 GameObject:
   m_ObjectHideFlags: 0
@@ -2396,7 +2382,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 1204470071}
-  store_UI: {fileID: 1299523086}
 --- !u!61 &1187968180
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2504,8 +2489,11 @@ MonoBehaviour:
   player: {fileID: 1921623946}
   playerScript: {fileID: 0}
   money: {fileID: 2060802741}
-  oreInventory: {fileID: 800751850}
   upgradeManager: {fileID: 1724371121}
+  oreInventory: {fileID: 800751850}
+  oreInventoryUI: {fileID: 168886049}
+  store_UI: {fileID: 1299523086}
+  isStoreOpen: 0
   LevelXSize: 100
   LevelYSize: 20
   tilesDugUp: 

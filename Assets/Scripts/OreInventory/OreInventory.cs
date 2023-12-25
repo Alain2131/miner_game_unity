@@ -53,7 +53,7 @@ public class OreInventory : MonoBehaviour
 
     public void AddSingleOre(TileInfo tile)
     {
-        int ID = GetIDFromOre(tile.name);
+        int ID = GetIDFromOre(tile.type);
         if(ID >= 0)
         {
             int totalWeight = GetOreWeight(tile);
@@ -89,7 +89,7 @@ public class OreInventory : MonoBehaviour
 
     public void RemoveSingleOre(TileInfo tile)
     {
-        int ID = GetIDFromOre(tile.name);
+        int ID = GetIDFromOre(tile.type);
         if (ID >= 0)
         {
             oresInCargo[ID].amount -= 1;
@@ -107,11 +107,11 @@ public class OreInventory : MonoBehaviour
         UpdateUI();
     }
 
-    private int GetIDFromOre(string oreName)
+    private int GetIDFromOre(TileType oreName)
     {
         for (int i = 0; i < oresInCargo.Count; i++)
         {
-            if (oresInCargo[i].tileInfo.GetName() == oreName)
+            if (oresInCargo[i].tileInfo.GetType() == oreName)
             {
                 return i;
             }
@@ -121,7 +121,7 @@ public class OreInventory : MonoBehaviour
 
     public int GetOreCount(TileInfo tile)
     {
-        int ID = GetIDFromOre(tile.name);
+        int ID = GetIDFromOre(tile.type);
         return oresInCargo[ID].amount;
     }
 
@@ -137,7 +137,7 @@ public class OreInventory : MonoBehaviour
 
     public int GetOreWeight(TileInfo tile)
     {
-        int ID = GetIDFromOre(tile.name);
+        int ID = GetIDFromOre(tile.type);
         if (ID >= 0)
         {
             return oresInCargo[ID].amount * tile.weight;
