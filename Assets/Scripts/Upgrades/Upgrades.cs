@@ -31,9 +31,4 @@ public class Upgrades : ScriptableObject
 {
     public upgradeTypes type = upgradeTypes.drill;
     public List<Upgrade> upgrades;
-
-    public bool BuyUpgrade(upgradeTypes type, int level)
-    {
-        return GameManager.Instance.upgradeManager.Upgrade(type, level);
-    }
 }

@@ -69,7 +69,7 @@ public class UpgradeSlot : MonoBehaviour
             return;
         }
 
-        bool success = upgradeInfo.BuyUpgrade(upgradeType, currentLevel+1);
+        bool success = gameManager.upgradeManager.Upgrade(upgradeType, currentLevel + 1);
         if(success)
         {
             money.Buy(cost);
