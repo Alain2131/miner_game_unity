@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4312eae97b79d584198f809fd1ae7755, type: 3}
+  m_Name: upgrades_cargo
+  m_EditorClassIdentifier: 
+  type: 1
+  upgrades:
+  - name: Basic Cargo
+    description: A bad Cargo.
+    cost: 0
+    value: 1000
+  - name: Upgraded Cargo
+    description: Not good.
+    cost: 200
+    value: 1500
+  - name: Cargo
+    description: It's a Cargo.
+    cost: 500
+    value: 2000
+  - name: Good Cargo
+    description: Good !
+    cost: 1000
+    value: 3000
+  - name: Great Cargo
+    description: Great !
+    cost: 3000
+    value: 5000
+  - name: Amazing Cargo
+    description: Okay, this is amazing.
+    cost: 10000
+    value: 10000

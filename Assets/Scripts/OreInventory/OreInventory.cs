@@ -34,14 +34,18 @@ public class OreInventory : MonoBehaviour
 
     public void AddSingleOre(TileInfo tile)
     {
-        // This is really not ideal for memory (same for the two Remove variants)
-        // The only way to modify a struct is to copy it,
-        // change the copy, and overwrite the original (I think)
         int ID = GetIDFromOre(tile.name);
         if(ID >= 0)
         {
-            oresInCargo[ID].amount += 1;
+            int totalWeight = GetOreWeight(tile);
+            int maxWeight = GameManager.Instance.playerScript.cargoSize; // it's not great to have to access the player here
+            if(totalWeight + tile.weight > maxWeight)
+            {
+                Debug.LogError("Can't add ore due to full cargo.");
+                return;
+            }
 
+            oresInCargo[ID].amount += 1;
             oreInventoryUI.UpdateUI();
         }
         else
@@ -56,7 +60,6 @@ public class OreInventory : MonoBehaviour
         if (ID >= 0)
         {
             oresInCargo[ID].amount -= 1;
-
             oreInventoryUI.UpdateUI();
         }
     }
@@ -97,5 +100,16 @@ public class OreInventory : MonoBehaviour
             total += oresInCargo[i].tileInfo.value * oresInCargo[i].amount;
         }
         return total;
+    }
+
+    public int GetOreWeight(TileInfo tile)
+    {
+        int ID = GetIDFromOre(tile.name);
+        if (ID >= 0)
+        {
+            return oresInCargo[ID].amount * tile.weight;
+        }
+
+        return -1;
     }
 }

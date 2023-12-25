@@ -7,7 +7,7 @@ public class Store_Refuel : Store
 {
     public override void Interact()
     {
-        PlayerScript playerScript = gameManager.player.GetComponent<PlayerScript>();
+        PlayerScript playerScript = gameManager.playerScript;
         Money money = gameManager.money;
 
         int balance = money.GetMoney();

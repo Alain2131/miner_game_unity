@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e778a5864dfe6e545ae085019df93293
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - cargo_upgrades: {fileID: 11400000, guid: 661e83fae10ddd14e8ca0668b8b5f829, type: 2}
+  - drill_upgrades: {fileID: 11400000, guid: 2b23448e016b9e845a72f1f879791d2f, type: 2}
+  - fuel_upgrades: {fileID: 11400000, guid: 0facad21301b19f46b9e7907ecf42a1f, type: 2}
+  - hull_upgrades: {fileID: 11400000, guid: e07323cc45d172642adde77a73addd15, type: 2}
+  - propeller_upgrades: {fileID: 11400000, guid: 6e6ae8d83f043af468b87feb64ae2f7b, type: 2}
+  - fuelSlider: {instanceID: 0}
+  - healthSlider: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

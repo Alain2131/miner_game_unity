@@ -10,6 +10,7 @@ public class PlayerScript : MonoBehaviour
 
     public float upForce = 1250f;
     public float lateralSpeed = 1000f;
+    public float propellerMultiplier = 1.0f;
 
     [Header("Hull Strength")]
     public int maxHealth = 100;
@@ -21,6 +22,12 @@ public class PlayerScript : MonoBehaviour
     public int maxFuel = 100;
     public float currentFuel;
     public SliderBar fuelBar;
+
+    [Header("Drill")]
+    public float drillSpeed = 1.0f;
+
+    [Header("Cargo")]
+    public int cargoSize = 100;
 
     [Header("Debug")]
     [SerializeField] private bool DisableDigAnimation = false;
@@ -99,14 +106,14 @@ public class PlayerScript : MonoBehaviour
         // Move Up
         if (Input.GetKey("w") || Input.GetKey("space") || Input.GetKey("up"))
         {
-            rb.AddForce(new Vector3(0, upForce * dtime, 0));
+            rb.AddForce(new Vector3(0, (upForce * propellerMultiplier) * dtime, 0));
             MovingFuelConsumption(1);
         }
 
         // Move Left
         if (Input.GetKey("a") || Input.GetKey("left"))
         {
-            rb.AddForce(new Vector3(-lateralSpeed * dtime, 0, 0));
+            rb.AddForce(new Vector3(-(lateralSpeed * propellerMultiplier) * dtime, 0, 0));
             MovingFuelConsumption(0.5f);
 
             if (canPlayerDig())
@@ -118,7 +125,7 @@ public class PlayerScript : MonoBehaviour
         // Move Right
         if (Input.GetKey("d") || Input.GetKey("right"))
         {
-            rb.AddForce(new Vector3(lateralSpeed * dtime, 0, 0));
+            rb.AddForce(new Vector3((lateralSpeed * propellerMultiplier) * dtime, 0, 0));
             MovingFuelConsumption(0.5f);
 
             if (canPlayerDig())
@@ -193,7 +200,7 @@ public class PlayerScript : MonoBehaviour
         rb.simulated = false; // Disable RigidBody when digging
 
         float digTime = tile.tileInfo.GetDigTime();
-
+        digTime /= drillSpeed;
 
         Vector3 currentPos = transform.position;
         Vector3 targetPosition = currentPos;

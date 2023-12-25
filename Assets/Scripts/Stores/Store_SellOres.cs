@@ -8,7 +8,7 @@ public class Store_SellOres : Store
     {
         oreInventory = gameManager.oreInventory;
     }
-    
+
     public override void Interact()
     {
         Money money = gameManager.money;

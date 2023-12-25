@@ -4,8 +4,12 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public Transform player;
+    public PlayerScript playerScript;
     public Money money;
     public OreInventory oreInventory;
+
+    [Header("Player Upgrades")]
+    public UpgradesManager upgradeManager;
 
     [Header("Level Generation Stuff")]
     public int LevelXSize = 100; // the width of the level
@@ -15,6 +19,7 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        playerScript = player.GetComponent<PlayerScript>();
     }
 
     // A flat integer List of all the tiles that were dug up.
