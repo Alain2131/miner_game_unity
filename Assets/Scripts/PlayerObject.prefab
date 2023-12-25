@@ -146,3 +146,17 @@ MonoBehaviour:
   rb: {fileID: 432368806723328940}
   upForce: 1250
   lateralSpeed: 1000
+  propellerMultiplier: 1
+  maxHealth: 100
+  currentHealth: 0
+  hullBar: {fileID: 0}
+  hurtOverlay: {fileID: 0}
+  omnidirectionalDamage: 1
+  maxFuel: 100
+  currentFuel: 0
+  fuelBar: {fileID: 0}
+  drillSpeed: 1
+  cargoSize: 1000
+  DisableDigAnimation: 0
+  DisableDamage: 0
+  DisableFuel: 0

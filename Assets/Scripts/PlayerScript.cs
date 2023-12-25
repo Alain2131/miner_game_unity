@@ -17,6 +17,7 @@ public class PlayerScript : MonoBehaviour
     public int currentHealth;
     public SliderBar hullBar;
     public HurtOverlay hurtOverlay;
+    public bool omnidirectionalDamage = true;
 
     [Header("Fuel")]
     public int maxFuel = 100;
@@ -27,7 +28,7 @@ public class PlayerScript : MonoBehaviour
     public float drillSpeed = 1.0f;
 
     [Header("Cargo")]
-    public int cargoSize = 100;
+    public int cargoSize = 1000;
 
     [Header("Debug")]
     [SerializeField] private bool DisableDigAnimation = false;
@@ -66,14 +67,22 @@ public class PlayerScript : MonoBehaviour
     private void HandleFallDamage()
     {
         // This feels super janky, but it kinda works
-        // A collision from any side will do damage, not just from falling
-        
-        float currentFrameSpeed = rb.velocity.magnitude;
-        float delta = currentFrameSpeed - previousFrameSpeed;
-
         float threshold = 5;
         float damageMultiplier = 10;
-        if(delta < -threshold)
+
+
+        float currentFrameSpeed = rb.velocity.magnitude;
+        if (!omnidirectionalDamage)
+        {
+            // Clamp negative velocity (going down), then inverse
+            currentFrameSpeed = rb.velocity.y;
+            currentFrameSpeed = Mathf.Min(currentFrameSpeed, 0);
+            currentFrameSpeed *= -1;
+        }
+
+
+        float delta = currentFrameSpeed - previousFrameSpeed;
+        if (delta < -threshold)
         {
             float fallDamage = (Mathf.Abs(delta) - threshold) * damageMultiplier;
 
@@ -81,7 +90,7 @@ public class PlayerScript : MonoBehaviour
             //Debug.Log("Youch ! Took " + (int)fallDamage + " damage.");
         }
 
-        previousFrameSpeed = rb.velocity.magnitude;
+        previousFrameSpeed = currentFrameSpeed;
     }
 
     private void ClampPlayerSpeed()
@@ -259,6 +268,12 @@ public class PlayerScript : MonoBehaviour
         return jitterOffset;
     }
 
+    // Should be in a math library
+    public float fit_range(float value, float omin, float omax, float nmin, float nmax)
+    {
+        return (nmax - nmin) * (value - omin) / (omax - omin) + nmin;
+    }
+
     public void TakeDamage(int damage)
     {
         if (DisableDamage)
@@ -266,8 +281,12 @@ public class PlayerScript : MonoBehaviour
 
         currentHealth -= damage;
         hullBar.SetValue(currentHealth);
-        // Should have an intensity to the hurt overlay
-        hurtOverlay.Hurt();
+
+        // hurt opacity maps 0 - 1 opacity to 0% - Y% damage (compared to max health)
+        float opacity = damage / (maxHealth * 0.25f);
+        opacity = Mathf.Min(opacity, 1.0f); // clamp to 1.0
+
+        hurtOverlay.Hurt(opacity);
     }
 
     public void SetHealth(int amount)
@@ -278,7 +297,7 @@ public class PlayerScript : MonoBehaviour
         currentHealth = amount;
         hullBar.SetValue(currentHealth);
         if(amount < 0)
-            hurtOverlay.Hurt();
+            hurtOverlay.Hurt(1.0f);
     }
 
     public void ReduceFuel(float consumption)

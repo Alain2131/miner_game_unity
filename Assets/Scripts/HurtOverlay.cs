@@ -20,14 +20,14 @@ public class HurtOverlay : MonoBehaviour
         image.color = color;
     }
     
-    public void Hurt()
+    public void Hurt(float opacity)
     {
-        StartCoroutine("HurtAnimation");
+        StartCoroutine("HurtAnimation", opacity);
     }
     
-    IEnumerator HurtAnimation()
+    IEnumerator HurtAnimation(float opacity)
     {
-        float maxAlpha = 0.75f;
+        float maxAlpha = 0.75f * opacity;
 
         float t = 0f;
         while (t < 1)

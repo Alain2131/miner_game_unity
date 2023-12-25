@@ -500,6 +500,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 432368806723328929, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
+      propertyPath: m_CastShadows
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 432368806723328931, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -545,10 +549,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
-      propertyPath: cargoSize
-      value: 1000
-      objectReference: {fileID: 0}
-    - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 1999159836}
@@ -561,15 +561,11 @@ PrefabInstance:
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
-      propertyPath: DisableDamage
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: jitterIntensity
       value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
-      propertyPath: DisableDigAnimation
+      propertyPath: omnidirectionalDamage
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3317,7 +3313,7 @@ MonoBehaviour:
   fuel_upgrades: {fileID: 11400000, guid: 0facad21301b19f46b9e7907ecf42a1f, type: 2}
   fuel_upgrade_level: 0
   hull_upgrades: {fileID: 11400000, guid: e07323cc45d172642adde77a73addd15, type: 2}
-  hull_upgrade_level: 0
+  hull_upgrade_level: 5
   propeller_upgrades: {fileID: 11400000, guid: 6e6ae8d83f043af468b87feb64ae2f7b, type: 2}
   propeller_upgrade_level: 0
   fuelSlider: {fileID: 1930581995}
