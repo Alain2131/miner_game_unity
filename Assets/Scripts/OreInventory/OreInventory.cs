@@ -39,7 +39,8 @@ public class OreInventory : MonoBehaviour
         {
             int totalWeight = GetOreWeight(tile);
             int maxWeight = GameManager.Instance.playerScript.cargoSize; // it's not great to have to access the player here
-            if(totalWeight + tile.weight > maxWeight)
+            int newTotalWeight = totalWeight + tile.weight;
+            if (maxWeight < newTotalWeight)
             {
                 Debug.LogError("Can't add ore due to full cargo.");
                 return;
@@ -47,10 +48,23 @@ public class OreInventory : MonoBehaviour
 
             oresInCargo[ID].amount += 1;
             oreInventoryUI.UpdateUI();
+
+            if (maxWeight == newTotalWeight)
+            {
+                // Need to have some UI instead
+                Debug.LogWarning("Cargo full !");
+            }
+            // Warning debug if almost full at a percentage of total size
+            else if (maxWeight*0.8f <= newTotalWeight)
+            {
+                // Need to have some UI instead
+                Debug.LogWarning("Cargo almost full !");
+            }
         }
         else
         {
             Debug.LogError(tile.name + " not in the inventory !");
+            return;
         }
     }
 

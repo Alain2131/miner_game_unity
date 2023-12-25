@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 // upgrade cost and money are handled in UpgradeSlot.cs
 
@@ -21,6 +22,8 @@ public class UpgradesManager : MonoBehaviour
     
     public SliderBar fuelSlider;
     public SliderBar healthSlider;
+
+    public Text inventoryMaximumWeight;
 
     private GameManager gameManager;
     private PlayerScript playerScript;
@@ -101,8 +104,9 @@ public class UpgradesManager : MonoBehaviour
         //Debug.Log("Cargo");
 
         Upgrade currentUpgrade = cargo_upgrades.upgrades[upgradeLevel];
-        int newCapacity= (int)currentUpgrade.value;
+        int newCapacity = (int)currentUpgrade.value;
         playerScript.cargoSize = newCapacity;
+        inventoryMaximumWeight.text = "Maximum Weight : " + newCapacity + "KG";
 
         return true;
     }
