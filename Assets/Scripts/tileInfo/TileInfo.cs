@@ -62,7 +62,7 @@ public class TileInfo : ScriptableObject
         return material;
     }
 
-    public TileType GetType()
+    public new TileType GetType()
     {
         return type;
     }

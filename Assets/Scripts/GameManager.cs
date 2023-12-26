@@ -25,6 +25,9 @@ public class GameManager : MonoBehaviour
     public int LevelXSize = 100; // the width of the level
     public int LevelYSize = 20; // how many lines exists at once. Might need to rename this
 
+
+    public Controls controls;
+
     public static GameManager Instance;
     void Awake()
     {
@@ -32,6 +35,8 @@ public class GameManager : MonoBehaviour
         playerScript = player.GetComponent<PlayerScript>();
         
         pauseGameUI.SetActive(false);
+
+        controls = new Controls();
     }
 
     // A flat integer List of all the tiles that were dug up.
@@ -52,6 +57,17 @@ public class GameManager : MonoBehaviour
         isStoreOpen = !store_UI.activeSelf;
         store_UI.SetActive(isStoreOpen);
 
+        if (isStoreOpen)
+        {
+            controls.Gameplay.Disable();
+            controls.MenuControls.Enable();
+        }
+        else
+        {
+            controls.Gameplay.Enable();
+            controls.MenuControls.Disable();
+        }
+
         return isStoreOpen;
     }
 
@@ -63,18 +79,33 @@ public class GameManager : MonoBehaviour
 
     public void TogglePauseGame()
     {
+        // HACK - exit Upgrades UI menu with Escape
+        // This is a bad band-aid, we need a better way
+        // to close the Upgrades UI (and others, eventually) when in a menu.
+        if (!gamePaused && isStoreOpen)
+        {
+            ToggleStoreUI();
+            return;
+        }
+
         gamePaused = !gamePaused;
         pauseGameUI.SetActive(gamePaused);
 
         // stop player movement
         // velocity is automatically stored/restored, yay !
-        if(gamePaused)
+        if (gamePaused)
         {
             playerScript.rb.simulated = false;
+
+            controls.Gameplay.Disable();
+            controls.MenuControls.Enable();
         }
         else
         {
             playerScript.rb.simulated = true;
+
+            controls.Gameplay.Enable();
+            controls.MenuControls.Disable();
         }
     }
 

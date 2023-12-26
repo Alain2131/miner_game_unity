@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 // Rigidbody2D.IsTouchingLayers
 
@@ -42,10 +43,29 @@ public class PlayerScript : MonoBehaviour
 
     private float previousFrameSpeed = 0;
 
-    private void Start()
+
+    private Controls controls;
+    private void Awake()
     {
         gameManager = GameManager.Instance;
 
+        // Bind controls Callbacks
+        // rebind -> https://youtu.be/Yjee_e4fICc?t=2478
+        // save rebind -> https://youtu.be/Yjee_e4fICc?t=2573
+        // mobile (on-screen) controls -> https://youtu.be/Yjee_e4fICc?t=2578
+
+        controls = gameManager.controls;
+        controls.Gameplay.Enable();
+        controls.Gameplay.Inventory.performed += ToggleInventory;
+        controls.Gameplay.TogglePause.performed += TogglePause;
+        controls.Gameplay.Interact.performed += Interact;
+
+        controls.MenuControls.Cancel.performed += TogglePause;
+    }
+
+
+    private void Start()
+    {
         currentHealth = maxHealth;
         hullBar.SetMaxValue(maxHealth);
 
@@ -56,17 +76,45 @@ public class PlayerScript : MonoBehaviour
         StartCoroutine("FuelConsumption", 3); // Remove 1 fuel over X seconds
     }
 
-    void Update()
+
+    private void FixedUpdate()
     {
         ClampPlayerSpeed();
 
-        HandlePlayerInput();
+        HandleInputs();
 
         isFalling = !IsPlayerOnGround();
 
         HandleFallDamage();
     }
+
+    private void ToggleInventory(InputAction.CallbackContext context)
+    {
+        gameManager.oreInventory.ToggleInventoryUI();
+    }
+
+    private void TogglePause(InputAction.CallbackContext context)
+    {
+        gameManager.TogglePauseGame();
+    }
+
+    private void Interact(InputAction.CallbackContext context)
+    {
+        // Building Interact
+        // This could be IsPlayerOnGround(), why not ?
+        if (fetchFloor()) // There will always be a floor under a building <- what do you mean ? "Floor" as in "Tiles", or "Floor" as in "the Floor object" ?
+        {
+            CheckInteraction();
+        }
+    }
+
+
+    void Update()
+    {
+        
+    }
     
+
     private void HandleFallDamage()
     {
         // This feels super janky, but it kinda works
@@ -109,96 +157,70 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    // There has to be a better way to handle player inputs.
-    // Especially considering that other inputs
-    // are sometimes handled somewhere else (such as "i" for inventory).
-    private void HandlePlayerInput()
+    private void HandleInputs()
     {
-        float dtime = Time.deltaTime;
+        Vector2 inputVector = controls.Gameplay.Movement.ReadValue<Vector2>();
 
-        if (Input.GetButtonDown("Cancel"))
-        {
-            Debug.Log("cancel");
-            gameManager.TogglePauseGame();
-        }
-
-        // Cannot check for paused game later,
-        // otherwise we'd still be able to interact/open inventory
-        if (gameManager.gamePaused)
+        // Need to disable movement when digging or when the store is open
+        // digging is done, but not the store
+        if (gameManager.isStoreOpen || gameManager.gamePaused)
             return;
-
-
-        // Building Interact
-        if (Input.GetKeyDown("e"))
-        {
-            if (fetchFloor()) // There will always be a floor under a building <- what do you mean ? "Floor" as in "Tiles", or "Floor" as in "the Floor object" ?
-            {
-                CheckInteraction();
-            }
-        }
-
-        if (Input.GetButtonDown("Inventory"))
-        {
-            gameManager.oreInventory.ToggleInventoryUI();
-        }
 
         
-        // Disable movement when digging or when the store is open
-        if (isDigging || gameManager.isStoreOpen)
-            return;
-
-        // Player Movement
-        // I may have to split that into another script
-        // Move Up
-        if (Input.GetKey("w") || Input.GetKey("space") || Input.GetKey("up"))
-        {
-            rb.AddForce(new Vector3(0, (upForce * propellerMultiplier) * dtime, 0));
-            MovingFuelConsumption(1);
-        }
-
-        // Move Left
-        if (Input.GetKey("a") || Input.GetKey("left"))
-        {
-            rb.AddForce(new Vector3(-(lateralSpeed * propellerMultiplier) * dtime, 0, 0));
-            MovingFuelConsumption(0.5f);
-
-            if (canPlayerDig())
-            {
-                Dig(Vector3.left);
-            }
-        }
-
-        // Move Right
-        if (Input.GetKey("d") || Input.GetKey("right"))
-        {
-            rb.AddForce(new Vector3((lateralSpeed * propellerMultiplier) * dtime, 0, 0));
-            MovingFuelConsumption(0.5f);
-
-            if (canPlayerDig())
-            {
-                Dig(Vector3.right);
-            }
-        }
-
         // Dig Down
-        if (Input.GetKey("s") || Input.GetKey("down"))
+        float down = controls.Gameplay.Down.ReadValue<float>();
+        if (down > 0.5)
         {
             if (canPlayerDig())
             {
                 Dig(Vector3.down);
-            }
 
-            // If the floor is disabled, but the player hasn't gone through it,
-            // it would be nice to re-enable it if they use any other direction key.
-            // Right now, the player can have two separate holes,
-            // disable the floor on one hole (without going through it),
-            // then move to the other hole and fall through it, which is weird.
-            RaycastHit2D floorHit = fetchFloor();
-            if (floorHit)
-            {
-                Transform floor = floorHit.transform;
-                floor.GetComponent<Floor>().Disable();
+                // If the floor is disabled, but the player hasn't gone through it,
+                // it would be nice to re-enable it if they use any other direction key.
+                // Right now, the player can have two separate holes,
+                // disable the floor on one hole (without going through it),
+                // then move to the other hole and fall through it, which is weird.
+                RaycastHit2D floorHit = fetchFloor();
+                if (floorHit)
+                {
+                    Transform floor = floorHit.transform;
+                    floor.GetComponent<Floor>().Disable();
+                }
             }
+        }
+
+        //Debug.Log(inputVector.x);
+        if (inputVector.x < -0.5) // left
+        {
+            if (canPlayerDig())
+                Dig(Vector3.left);
+        }
+        else if (inputVector.x > 0.5) // right
+        {
+            if (canPlayerDig())
+                Dig(Vector3.right);
+        }
+        
+
+
+        // Apply Movement Force
+        if (inputVector.magnitude > 0 && !isDigging)
+        {
+            Vector2 speedMult = new Vector2(lateralSpeed, upForce) * propellerMultiplier; // could be defined only once
+            rb.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speedMult * Time.deltaTime);
+
+
+            float lateralMovementCost = 0.5f;
+            if (isFalling) // Barely consume fuel when moving left/right while flying
+                lateralMovementCost = 0.1f;
+
+            // Flying is more expensive than moving left/right
+            float fuelConsumption = inputVector.y + Mathf.Abs(inputVector.x) * lateralMovementCost;
+            // Could modulate based on movement input
+            // At one point, I want to get movement to be quick from idle, then taper off
+            // fuel consumption could reflect that (granted, it's not the most important detail)
+            //MovingFuelConsumption(fuelConsumption);
+            ReduceFuel(fuelConsumption * Time.deltaTime);
         }
     }
 
@@ -296,12 +318,6 @@ public class PlayerScript : MonoBehaviour
         return jitterOffset;
     }
 
-    // Should be in a math library
-    public float fit_range(float value, float omin, float omax, float nmin, float nmax)
-    {
-        return (nmax - nmin) * (value - omin) / (omax - omin) + nmin;
-    }
-
     public void TakeDamage(int damage)
     {
         if (DisableDamage)
@@ -336,6 +352,9 @@ public class PlayerScript : MonoBehaviour
         if (gameManager.gamePaused)
             return;
 
+        if (gameManager.isStoreOpen)
+            return;
+
         currentFuel -= consumption;
         fuelBar.SetValue(currentFuel);
     }
@@ -360,14 +379,6 @@ public class PlayerScript : MonoBehaviour
             yield return new WaitForSeconds(interval);
             ReduceFuel(consumption);
         }
-    }
-
-    private void MovingFuelConsumption(float amount)
-    {
-        // This BADLY NEEDS a better solution
-        // When on the ground, lateral movement should be more expensive then when flying
-        // Pressing "up" should be the most expensive movement (other than digging)
-        ReduceFuel(amount * Time.deltaTime);
     }
 
     private void OnApplicationQuit()
@@ -398,10 +409,18 @@ public class PlayerScript : MonoBehaviour
         return hit;
     }
 
+    // Should be in a math library
+    public float fit_range(float value, float omin, float omax, float nmin, float nmax)
+    {
+        return (nmax - nmin) * (value - omin) / (omax - omin) + nmin;
+    }
+
     private bool canPlayerDig()
     {
         // We want a ray that's barely larger than the player. 0.475 is ~half the size of the player.
         RaycastHit2D hit = PlayerRaycast(Vector3.down * 0.475f, "tile", false);
+        if(!hit)
+            hit = fetchFloor();
         bool grounded = hit.collider != null;
 
         bool slowEnough = rb.velocity.magnitude < 0.5f;
@@ -424,13 +443,21 @@ public class PlayerScript : MonoBehaviour
     {
         RaycastHit2D hit = PlayerRaycast(Vector3.forward, "building", false);
 
-        if (hit)
-        {
-            if (hit.transform.GetComponent<Interactable>())
-            {
-                hit.transform.GetComponent<Interactable>().Interact();
-            }
-        }
+        if (!hit)
+            return;
+        if (!hit.transform.GetComponent<Interactable>())
+            return;
+        
+
+        hit.transform.GetComponent<Interactable>().Interact();
+        // We could interact with a store with a menu,
+        // but have our velocity move us outside of the bounds
+        // such that we can't interact with the store anymore.
+        // This is a temporary bandaid/reminder to fix that.
+        // Should probably disable rigid body on UI open,
+        // then enable it back when the UI is closed
+        // so it would be ignored when there's no UI.
+        rb.velocity = Vector2.zero;
     }
 
     // May be useful in the future when doing PlayerState
