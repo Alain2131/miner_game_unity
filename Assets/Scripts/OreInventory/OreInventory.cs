@@ -92,6 +92,9 @@ public class OreInventory : MonoBehaviour
         int ID = GetIDFromOre(tile.type);
         if (ID >= 0)
         {
+            if (oresInCargo[ID].amount == 0)
+                return;
+
             oresInCargo[ID].amount -= 1;
             UpdateUI();
         }
