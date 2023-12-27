@@ -5,27 +5,11 @@
 // When I say "DONE", I mean that it's working,
 // but it may be very janky.
 
-/*
- * I once did a test with a compute shader to generate a texture where each pixels was a tileID
- * When digging, I would do a lookup (converting worldSpace to texture pixel coordinate) to see what tileID is there
- * I had another texture which contained whether the tile is dug or not
- * 
- * I seem to recall that it was working well !
- * I also expect the performance to be better.
- * It would be nice to find those tests, or do them again in this project
- * 
- * The actual tiles rendered in the world could then be a single plane, which looks up the two textures (tileID, dugTiles)
- * to use as "what to render at this place", so instead of hundreds of polygons, we'd have only two !
- * But we'd still need to compute the collision mesh.
- * 
- * The raycast could be discarded in favor of the lookup. (probably not all raycast though)
- */
-
 /* 
  * Do the Fuel and Hull (with consumption and damage) (DONE)
  * Then do the Refuel and Hull repair buildings (DONE)
- * Then do the Upgrades building (will require UI)
- * Then start to work on the item upgrades (drill, fuel tank, hull, cargo size)
+ * Then do the Upgrades building (will require UI) (DONE)
+ * Then start to work on the item upgrades (drill, fuel tank, hull, cargo size, propeller) (DONE)
  */
 
 // Core Mechanics
@@ -40,11 +24,11 @@
 // - Items
 // - Money (DONE)
 // - Upgrades
-// - * Drill Speed
-// - * Movement Speed
-// - * Fuel tank
-// - * Cargo size
-// - * Hull life
+// - * Drill Speed (DONE)
+// - * Movement Speed (DONE, but it REALLY does not feel good, needs heavy refactoring)
+// - * Fuel tank (DONE)
+// - * Cargo size (DONE)
+// - * Hull life (DONE)
 // - Fuel consumption (DONE)
 // - Hull life
 // - * Fall damage (DONE)
@@ -56,7 +40,7 @@
 // - * * Fill fuel
 // - * * The IMPORTANT part is to never be in a situation where the player is stuck without being able to make money/progress anymore
 // - Stores
-// - * Upgrades (buying/selling)
+// - * Upgrades (buying/selling) <- selling ??? wot
 // - * Items (dynamite, teleport, etc)
 // - * Ore selling (DONE)
 // - * Fuel buying (DONE)
@@ -75,7 +59,7 @@
 // - Money (DONE)
 // - Menus
 // - * Main Menu
-// - * Pause
+// - * Pause (DONE, not great)
 // - * Options
 // - Depth gauge
 // - NPCs ? Dialogs ?
@@ -105,6 +89,18 @@
 // - * Environment
 // - * Stores
 
+// Balancing
+// - The Cargo seems constantly too small
+// - We can buy early upgrades way too easily
+
+// Figure out how to build the game for different platforms
+// - PC
+// - Android
+
+// Add the Mouse Control (click to dig in the direction formed by the pod to the mouse, same for movement)
+// For mobile, have two modes, either simulate mouse, or with the circle controllers
+
+
 // Unity Project stuff
 // https://www.youtube.com/watch?v=k3wHqPZUldw
 // Assembly Definition
@@ -116,3 +112,110 @@
 
 // https://learn.unity.com/tutorial/optimizing-unity-ui#
 // UI optimisation
+
+
+
+
+
+// Random notes
+
+/*
+ Questions about how to make the upgrades/consummable items
+
+ items class
+-name
+-description
+-cost
+-icon
+
+upgrade class (from items)
+-value (capacity/speed)
+
+consummable class (from items)
+dynamite class (from consummable)
+- blast radius
+- does an action
+teleport class (from consummable)
+- does an action
+
+
+Do I really want to make classes like that ?
+If so, why don't I make the tiles like that ?
+Each types of tiles are scriptableObjects
+Can't I use that for the items ?
+What's the point of one or the other ?
+Maybe the fact that the consummable items does ACTIONS will require them to be classes
+But for upgrades, it won't be necessary ?
+
+*/
+
+
+
+
+/*
+need to check online how people store different items TYPE for their games
+swords, shields, potions, food
+and how their behavior are handled
+
+https://www.youtube.com/watch?v=ZEdmFNfxFfk&list=PLcRSafycjWFegXSGBBf4fqIKWkHDw_G8D&index=16
+https://www.youtube.com/watch?v=ZSdzzNiDvZk&list=PLJWSdH2kAe_Ij7d7ZFR2NIW8QCJE74CyT&index=5
+
+
+https://www.youtube.com/watch?v=awUe44Rr4TU&list=PLcRSafycjWFegXSGBBf4fqIKWkHDw_G8D&index=3
+how to make the UI, tricks about padding and whatnot
+
+
+https://www.youtube.com/watch?v=M94bXfIcG6s&list=PLcRSafycjWFegXSGBBf4fqIKWkHDw_G8D&index=15
+namespaces, good to avoid unwanted dependencies, encapsulate code
+*/
+
+
+// coolant upgrade ?
+// would allow to drill through lava (ah, that's one more thing to add)
+// maybe coolant would act as a depth barrier, must have a better coolant
+// otherwise the heat will cause constant damage at certain depths
+
+/*
+ * Do I want a visible map, or would I want a radar, along with upgrades ?
+ * Could have a sonar to reveal (some types of? or all?) ores
+ * 
+ * 
+ * 
+ */
+
+
+/*
+ * I'm thinking about different world, with different atmosphere, ores, upgrades
+ * Perhaps our pod isn't good enough for the next world, so we need to upgrade more
+ * Or we need a special pod for each world
+ * But if we got multiple worlds with "cross-progression", one could ignore a world
+ * At some point, it would be irrelevant since the money would be too low to be worth
+ * as I would imagine some worlds would be more worthwhile than others
+ * 
+ * 
+ */
+
+/*
+ * Submit description for Github about the Compute Shader stuff.
+ * There's a few notes on what to do with the stuff.
+Imported another project where I played with shaders and Compute Shaders with the goal to develop the technology to be used for the miner game within the Level Generation and Tiles Rendering systems.
+
+The idea is to use a Compute Shader (CS) to generate a texture where each pixel is a tile, with the pixel's color representing the tile type.
+Then, we would sample the texture by doing a World Space to Texture Space conversion and convert the color to a TileID.
+We would also have a second texture to represent the Tiles that were dug up.
+
+We'd have a script to do the World->Texture space conversion, texture lookup, color->TileID conversion, etc.
+
+The TileID texture lookup wouldn't be super necessary on its own, we can easily compute TileID through C# on the fly.
+The actual reason we need a TileIDs texture is for it to be passed into the Rendering pipeline.
+Instead of having one quad for each tiles, we would have a single quad, the shader of which handles all the visual required.
+Picking the proper texture to display for each TileIDs (should be an Atlas with all the tile types, matching TileIDs' ordering), hiding dug up tiles, rounding up corners around dug up tiles, perhaps even animating a tile eroding away as the player digs it up.
+
+The TileIDs texture only need to contain what is visible on-screen. (it would probably be larger, for debug sake ?)
+At depth 500, we don't need to know what's above 450, for instance. (unless we can see more than 50 lines, which we should not)
+The Tiles Dug Up texture will require to contain all the tiles, all the time. Starts empty, then each new depth layer is more Y resolution. (or perhaps we only increase the size by X each X depth)
+
+We still need to compute the collision. We only need the Tiles Dug Up texture for that.
+
+We will probably be able to remove the ray intersection to fetch the tile, since this would be replaced with the aforementioned script to handle the conversions and lookups.
+ */
