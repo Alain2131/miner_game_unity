@@ -272,6 +272,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""2f1e3e6b-3b08-49f7-9de7-b4cd464c0212"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -461,6 +469,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""RightClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bd585c9f-9cf4-4b97-9600-04374c6e46b1"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -501,6 +520,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_MenuControls_ScrollWheel = m_MenuControls.FindAction("ScrollWheel", throwIfNotFound: true);
         m_MenuControls_MiddleClick = m_MenuControls.FindAction("MiddleClick", throwIfNotFound: true);
         m_MenuControls_RightClick = m_MenuControls.FindAction("RightClick", throwIfNotFound: true);
+        m_MenuControls_Interact = m_MenuControls.FindAction("Interact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -623,6 +643,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_MenuControls_ScrollWheel;
     private readonly InputAction m_MenuControls_MiddleClick;
     private readonly InputAction m_MenuControls_RightClick;
+    private readonly InputAction m_MenuControls_Interact;
     public struct MenuControlsActions
     {
         private @Controls m_Wrapper;
@@ -635,6 +656,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @ScrollWheel => m_Wrapper.m_MenuControls_ScrollWheel;
         public InputAction @MiddleClick => m_Wrapper.m_MenuControls_MiddleClick;
         public InputAction @RightClick => m_Wrapper.m_MenuControls_RightClick;
+        public InputAction @Interact => m_Wrapper.m_MenuControls_Interact;
         public InputActionMap Get() { return m_Wrapper.m_MenuControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -668,6 +690,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @RightClick.started -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnRightClick;
                 @RightClick.performed -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnRightClick;
                 @RightClick.canceled -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnRightClick;
+                @Interact.started -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnInteract;
             }
             m_Wrapper.m_MenuControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -696,6 +721,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @RightClick.started += instance.OnRightClick;
                 @RightClick.performed += instance.OnRightClick;
                 @RightClick.canceled += instance.OnRightClick;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
             }
         }
     }
@@ -727,5 +755,6 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnScrollWheel(InputAction.CallbackContext context);
         void OnMiddleClick(InputAction.CallbackContext context);
         void OnRightClick(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
 }

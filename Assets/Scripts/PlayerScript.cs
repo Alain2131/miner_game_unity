@@ -61,6 +61,7 @@ public class PlayerScript : MonoBehaviour
         controls.Gameplay.Interact.performed += Interact;
 
         controls.MenuControls.Cancel.performed += TogglePause;
+        controls.MenuControls.Interact.performed += Interact;
     }
 
 
@@ -100,6 +101,11 @@ public class PlayerScript : MonoBehaviour
 
     private void Interact(InputAction.CallbackContext context)
     {
+        // Allow for interaction only when the game is not paused
+        // Much like gameManager.TogglePauseGame(), this feels like a hack.
+        if (gameManager.gamePaused)
+            return;
+        
         // Building Interact
         // This could be IsPlayerOnGround(), why not ?
         if (fetchFloor()) // There will always be a floor under a building <- what do you mean ? "Floor" as in "Tiles", or "Floor" as in "the Floor object" ?
