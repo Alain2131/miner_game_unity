@@ -3103,10 +3103,10 @@ RectTransform:
   m_Father: {fileID: 1131409255}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.64500004}
-  m_AnchorMax: {x: 0, y: 0.64500004}
-  m_AnchoredPosition: {x: 521, y: -75.2}
-  m_SizeDelta: {x: 170.4344, y: 165}
+  m_AnchorMin: {x: 0.5, y: 0.64500004}
+  m_AnchorMax: {x: 0.5, y: 0.64500004}
+  m_AnchoredPosition: {x: 0, y: -75.2}
+  m_SizeDelta: {x: 170.43439, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1094682152
 GameObject:
@@ -3918,10 +3918,10 @@ RectTransform:
   m_Father: {fileID: 1131409255}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.64500004}
-  m_AnchorMax: {x: 0, y: 0.64500004}
-  m_AnchoredPosition: {x: 521, y: -75.2}
-  m_SizeDelta: {x: 170.4344, y: 165}
+  m_AnchorMin: {x: 0.5, y: 0.64500004}
+  m_AnchorMax: {x: 0.5, y: 0.64500004}
+  m_AnchoredPosition: {x: 0, y: -75.2}
+  m_SizeDelta: {x: 170.43439, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1299523088
 CanvasRenderer:
@@ -4336,6 +4336,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_MoveRepeatDelay: 0.5
   m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
   m_ActionsAsset: {fileID: -944628639613478452, guid: ccfdd3a5eff672444b5948870699e212, type: 3}
   m_PointAction: {fileID: 1403168765280624438, guid: ccfdd3a5eff672444b5948870699e212, type: 3}
   m_MoveAction: {fileID: 6546445335706864852, guid: ccfdd3a5eff672444b5948870699e212, type: 3}
@@ -4349,6 +4350,7 @@ MonoBehaviour:
   m_TrackedDeviceOrientationAction: {fileID: 0}
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
 --- !u!114 &1607118834
 MonoBehaviour:
   m_ObjectHideFlags: 0
