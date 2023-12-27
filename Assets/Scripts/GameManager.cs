@@ -13,8 +13,10 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     public OreInventory oreInventory;
     public GameObject oreInventoryUI;
-    public GameObject store_UI;
-    public bool isStoreOpen = false;
+    public GameObject upgradesStore_UI;
+    public GameObject itemsStore_UI;
+    public bool isUpgradeStoreOpen = false;
+    public bool isItemsStoreOpen = false;
 
     [Header("Game Pause")]
     public GameObject pauseGameUI;
@@ -52,12 +54,12 @@ public class GameManager : MonoBehaviour
     // somewhere other than inside GameManager.cs,
     // but still in a script on the GameManager Object.
 
-    public bool ToggleStoreUI()
+    public bool ToggleUpgradeStoreUI()
     {
-        isStoreOpen = !store_UI.activeSelf;
-        store_UI.SetActive(isStoreOpen);
+        isUpgradeStoreOpen = !upgradesStore_UI.activeSelf;
+        upgradesStore_UI.SetActive(isUpgradeStoreOpen);
 
-        if (isStoreOpen)
+        if (isUpgradeStoreOpen)
         {
             controls.Gameplay.Disable();
             controls.MenuControls.Enable();
@@ -68,7 +70,28 @@ public class GameManager : MonoBehaviour
             controls.MenuControls.Disable();
         }
 
-        return isStoreOpen;
+        return isUpgradeStoreOpen;
+    }
+
+    // Should probably make a function to combine with ToggleUpgradeStoreUI()
+    // and simply take different arguments
+    public bool ToggleItemsStoreUI()
+    {
+        isItemsStoreOpen = !itemsStore_UI.activeSelf;
+        itemsStore_UI.SetActive(isItemsStoreOpen);
+
+        if (isItemsStoreOpen)
+        {
+            controls.Gameplay.Disable();
+            controls.MenuControls.Enable();
+        }
+        else
+        {
+            controls.Gameplay.Enable();
+            controls.MenuControls.Disable();
+        }
+
+        return isItemsStoreOpen;
     }
 
     // Should probably be in a "level" class or something, so we can call it with gameManager.level.AddDugUpTile()
@@ -82,9 +105,14 @@ public class GameManager : MonoBehaviour
         // HACK - exit Upgrades UI menu with Escape
         // This is a bad band-aid, we need a better way
         // to close the Upgrades UI (and others, eventually) when in a menu.
-        if (!gamePaused && isStoreOpen)
+        if (!gamePaused && isUpgradeStoreOpen)
         {
-            ToggleStoreUI();
+            ToggleUpgradeStoreUI();
+            return;
+        }
+        if (!gamePaused && isItemsStoreOpen)
+        {
+            ToggleItemsStoreUI();
             return;
         }
 

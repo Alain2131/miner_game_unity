@@ -163,7 +163,7 @@ public class PlayerScript : MonoBehaviour
 
         // Need to disable movement when digging or when the store is open
         // digging is done, but not the store
-        if (gameManager.isStoreOpen || gameManager.gamePaused)
+        if (gameManager.isUpgradeStoreOpen || gameManager.gamePaused)
             return;
 
         
@@ -352,7 +352,7 @@ public class PlayerScript : MonoBehaviour
         if (gameManager.gamePaused)
             return;
 
-        if (gameManager.isStoreOpen)
+        if (gameManager.isUpgradeStoreOpen)
             return;
 
         currentFuel -= consumption;
