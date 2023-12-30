@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 // Perhaps this could be used to write the data out if needed (would that be called "serialize" ?)
@@ -20,11 +19,6 @@ public class Sample_from_ComputeShader : MonoBehaviour
     }
     private ComputeBuffer sampleBuffer;
     private SampleData[] sData;
-
-    // To cache the previous sample
-    private int oldX;
-    private int oldY;
-    private Color oldColor;
 
 
     private void Awake()
@@ -77,7 +71,48 @@ public class Sample_from_ComputeShader : MonoBehaviour
         computeShader.Dispatch(0, resolution / 8, resolution / 8, 1);
     }
 
-    public Color SampleAtPosition(Vector3 position)
+    public Color SampleAtID(int pixelID)
+    {
+        int idx = pixelID % resolution;
+        int idy = pixelID / resolution;
+
+        if (visualizeSample)
+            SetVisualizeIndex(pixelID);
+
+        // A few ways to sample the data, they all give the same result
+        // Don't know about performance
+
+        // This data was the ground truth for a while, before I got the rest working properly.
+        //Color Cd0 = GetColorFromCSBuffer(pixelID);
+
+        // https://docs.unity3d.com/ScriptReference/Texture2D.GetPixel.html
+        Color Cd = tex2D.GetPixel(idx, idy);
+
+        // https://docs.unity3d.com/ScriptReference/Texture2D.GetPixels.html
+        //Color[] Cxyz = tex2D.GetPixels();
+        //Color Cd1 = Cxyz[pixelID];
+
+        // https://docs.unity3d.com/ScriptReference/Texture2D.GetPixelData.html
+        //var data = tex2D.GetPixelData<Color>(0); // I can pass in Vector4 as a type, and it works fine too
+        //Color Cd2 = data[pixelID];
+
+        /*
+        bool printDebug = false;
+        bool differentColors = Cd != Cd1 || Cd != Cd2 || Cd != Cd0;
+        if (printDebug || differentColors)
+        {
+            Debug.Log("CS result\t\t: " + Cd0);
+            Debug.Log("GetPixel (full)\t\t: " + Cd);
+            Debug.Log("GetPixel (new1)\t: " + Cd1);
+            Debug.Log("GetPixel (new2)\t: " + Cd2);
+            Debug.Log("------------------------------------------");
+        }
+        //*/
+
+        return Cd;
+    }
+
+    public int PositionToPixelID(Vector3 position)
     {
         float scale = GetMaterialScale();
 
@@ -88,57 +123,24 @@ public class Sample_from_ComputeShader : MonoBehaviour
         idx = Mathf.Clamp(idx, 0, resolution - 1);
         idy = Mathf.Clamp(idy, 0, resolution - 1);
 
-        // Only compute if necessary
-        if (oldX != idx || oldY != idy)
-        {
-            if (visualizeSample)
-                SetVisualizeIndex(idx, idy);
-
-            // A few ways to sample the data, they all give the same result
-            // Don't know about performance
-
-            // This data was the ground truth for a while, before I got the rest working properly.
-            //Color Cd0 = GetColorFromCSBuffer(idx, idy);
-
-            // https://docs.unity3d.com/ScriptReference/Texture2D.GetPixel.html
-            Color Cd = tex2D.GetPixel(idx, idy);
-
-            // https://docs.unity3d.com/ScriptReference/Texture2D.GetPixels.html
-            //Color[] Cxyz = tex2D.GetPixels();
-            //Color Cd1 = Cxyz[idx + (idy * resolution)];
-
-            // https://docs.unity3d.com/ScriptReference/Texture2D.GetPixelData.html
-            //var data = tex2D.GetPixelData<Color>(0); // I can pass in Vector4 as a type, and it works fine too
-            //Color Cd2 = data[idx + (idy * resolution)];
-
-            /*
-            bool printDebug = false;
-            bool differentColors = Cd != Cd1 || Cd != Cd2 || Cd != Cd0;
-            if (printDebug || differentColors)
-            {
-                Debug.Log("CS result\t\t: " + Cd0);
-                Debug.Log("GetPixel (full)\t\t: " + Cd);
-                Debug.Log("GetPixel (new1)\t: " + Cd1);
-                Debug.Log("GetPixel (new2)\t: " + Cd2);
-                Debug.Log("------------------------------------------");
-            }
-            //*/
-
-            // Cache the data so we don't need to sample the texture if we don't need to.
-            oldX = idx;
-            oldY = idy;
-            oldColor = Cd;
-
-            return Cd;
-        }
-
-        return oldColor;
+        int pixelID = idx + (idy * resolution);
+        return pixelID;
     }
 
-    private bool SetVisualizeIndex(int idx, int idy)
+    public Color SampleAtPosition(Vector3 position)
+    {
+        int pixelID = PositionToPixelID(position);
+
+        Color Cd = SampleAtID(pixelID);
+        return Cd;
+    }
+
+    private bool SetVisualizeIndex(int pixelID)
     {
         if (visualizeSample)
         {
+            int idx = pixelID % resolution;
+            int idy = pixelID / resolution;
             computeShader.SetInt("idx", idx);
             computeShader.SetInt("idy", idy);
 
@@ -150,13 +152,13 @@ public class Sample_from_ComputeShader : MonoBehaviour
         return false;
     }
 
-    private Color GetColorFromCSBuffer(int idx, int idy)
+    private Color GetColorFromCSBuffer(int pixelID)
     {
         // The problem with this method is that it's recomputing the ENTIRE Compute Shader
         // each time we need to make another sample. We don't _need_ to Visualize Sample,
         // but we'd still need to compute the shader just the same.
         // The advantage is that the data is NOT CLAMPED, which is a big deal.
-        SetVisualizeIndex(idx, idy);
+        SetVisualizeIndex(pixelID);
         sampleBuffer.GetData(sData);
 
         return sData[0].color;
@@ -171,20 +173,6 @@ public class Sample_from_ComputeShader : MonoBehaviour
     private void OnApplicationQuit()
     {
         sampleBuffer.Dispose();
-    }
-
-    private float Remap(float value, float oMin, float oMax, float nMin, float nMax)
-    {
-        float fromAbs = value - oMin;
-        float fromMaxAbs = oMax - oMin;
-
-        float normal = fromAbs / fromMaxAbs;
-
-        float toMaxAbs = nMax - nMin;
-        float toAbs = toMaxAbs * normal;
-
-        float to = toAbs + oMin;
-        return to;
     }
 
     /*
