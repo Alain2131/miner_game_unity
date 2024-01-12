@@ -1,0 +1,248 @@
+#pragma kernel CSMain
+
+// The amount of actual items coming from C#
+// need to match between depths[] and percents[]
+#define maxItems 50*4 // maybe +4 ? for last strideOffset
+#define air  0
+#define dirt 1
+#define coal 2
+#define iron 3
+
+
+// https://docs.unity3d.com/Packages/com.unity.shadergraph@10.10/manual/Gradient-Noise-Node.html
+float2 unity_gradientNoise_dir(float2 p)
+{
+    p = p % 289;
+    float x = (34 * p.x + 1) * p.x % 289 + p.y;
+    x = (34 * x + 1) * x % 289;
+    x = frac(x / 41) * 2 - 1;
+    return normalize(float2(x - floor(x + 0.5), abs(x) - 0.5));
+}
+
+float unity_gradientNoise(float2 p)
+{
+    float2 ip = floor(p);
+    float2 fp = frac(p);
+    float d00 = dot(unity_gradientNoise_dir(ip), fp);
+    float d01 = dot(unity_gradientNoise_dir(ip + float2(0, 1)), fp - float2(0, 1));
+    float d10 = dot(unity_gradientNoise_dir(ip + float2(1, 0)), fp - float2(1, 0));
+    float d11 = dot(unity_gradientNoise_dir(ip + float2(1, 1)), fp - float2(1, 1));
+    fp = fp * fp * fp * (fp * (fp * 6 - 15) + 10);
+    return lerp(lerp(d00, d01, fp.y), lerp(d10, d11, fp.y), fp.x);
+}
+
+void Unity_GradientNoise_float(float2 UV, float Scale, out float Out)
+{
+    Out = unity_gradientNoise(UV * Scale) + 0.5;
+}
+
+
+float rand(float2 co, float seed)
+{
+    co.x = (co.x + seed) * 2.1543;
+    co.y = (co.y + seed) * 1.5278;
+
+    return frac(sin(dot(co, float2(12.9898, 78.233))) * 43758.5453);
+}
+
+int getFinalTileID_BAK(uint3 id, int itemsCount, float noiseSizes[maxItems], float properPercents[maxItems])
+{
+    // handle air
+    float noiseSize = noiseSizes[0];
+    float randomNumber = rand(id.xy, noiseSize);
+    float tilePercent = properPercents[0];
+    if (tilePercent > randomNumber)
+    {
+        return air; // air == 0
+    }
+
+    for (int tileID = itemsCount - 1; tileID > 0; tileID--)
+    {
+        noiseSize = noiseSizes[tileID];
+        randomNumber = rand(id.xy, noiseSize);
+
+        tilePercent = properPercents[tileID];
+        if (tilePercent > randomNumber)
+        {
+            return tileID;
+        }
+    }
+    return air; // air == 0
+}
+
+int getFinalTileID(uint3 id, int itemsCount, float noiseSizes[maxItems], float properPercents[maxItems])
+{
+    // handle air
+    float noiseSize = noiseSizes[0];
+    float noisy = 0;
+    Unity_GradientNoise_float(id.xy, 0.5 * noiseSize, noisy);
+
+    float tilePercent = properPercents[0];
+    if (tilePercent > noisy)
+    {
+        return air; // air == 0
+    }
+
+
+    for (int tileID = itemsCount - 1; tileID > 0; tileID--)
+    {
+        noiseSize = noiseSizes[tileID];
+        Unity_GradientNoise_float(id.xy, 0.5 * noiseSize, noisy);
+
+        tilePercent = properPercents[tileID];
+        if (tilePercent > noisy)
+        {
+            return tileID;
+        }
+    }
+    return air; // air == 0
+}
+
+
+struct SampleData
+{
+    float4 color;
+};
+
+
+int   depths[maxItems];
+float percents[maxItems];
+int   strideOffset[maxItems];
+
+float noiseSizes[maxItems];
+
+
+RWTexture2D<float4> Result;
+RWStructuredBuffer<SampleData> sampleData;
+// uint to match "uint3 id"
+uint idx;
+uint idy;
+bool visualizeSample;
+
+[numthreads(8, 8, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    Result[id.xy] = float4(1, 0, 1, 1);
+
+
+    // Resolve Proper Percents
+    // would be nice to put in a function,
+    // but they cannot return an array AFAIK
+    float properPercents[maxItems];
+    int itemsCount = 0; // used to loop over the results
+
+    int tileDepth = id.y;
+    //float val = -1;
+    for (int tileID = air; tileID <= maxItems; tileID++)
+    {
+        if (strideOffset[tileID+1] == -1) // the last strideOffset is not an iteration we care about
+            break;
+        itemsCount += 1;
+
+        // When using continue; I had issues where tileID<50 is wrong with iron (and maybe others)
+        // Debugging the value of id.y by putting it into properPercents[] showed weird values when tileID<50
+        // The strange thing is that it is not a problem everywhere.
+        bool nextPlz = false;
+
+        // check for tileDepth>lastDepth here
+        // hopefully it's an optimisation
+        int offset1 = strideOffset[tileID + 1] - 1; // last offset
+        int lastDepth = depths[offset1];
+        if (tileDepth >= lastDepth)
+        {
+            properPercents[tileID] = percents[offset1];
+            nextPlz = true;
+            //continue; // why does it work here but not for the next one.
+        }
+
+        offset1 = strideOffset[tileID]; // first offset
+        int firstDepth = depths[offset1];
+        if (tileDepth <= firstDepth)
+        {
+            properPercents[tileID] = percents[offset1];
+            nextPlz = true;
+            //continue; // tileDepth gets confused when using this continue
+        }
+        if (nextPlz)
+            continue;
+
+        for (int offset = strideOffset[tileID]; offset < strideOffset[tileID + 1]; offset++)
+        {
+            int nextDepth = depths[offset];
+            // There are two ifs that does the same thing, with different options
+            if (tileDepth == nextDepth)
+            {
+                properPercents[tileID] = percents[offset];
+                //val = 24;
+                break;
+            }
+        
+            if (tileDepth < nextDepth)
+            {
+                int   previousDepth = depths[offset - 1];
+                float previousPercent = percents[offset - 1];
+                float nextPercent = percents[offset];
+
+                // could use lerp()
+                float percent = float(tileDepth - previousDepth) / float(nextDepth - previousDepth);
+                float true_percent = nextPercent * percent + previousPercent * (1 - percent);
+
+                properPercents[tileID] = true_percent;
+                //val = 69;
+
+                break;
+            }
+        }
+    }
+
+    int finalTileID = getFinalTileID(id, itemsCount, noiseSizes, properPercents);
+
+    // visualize iron percents
+    //Result[id.xy] = float4(properPercents[iron] 0, 0, id.y); // iron == 3
+
+    Result[id.xy] = float4(finalTileID/float(itemsCount-1), 0, 0, id.y);
+
+    //if (id.x < maxItems)
+        //Result[id.xy] = float4(percents[id.x], depths[id.x], id.y<=depths[2], id.y);
+
+
+    
+    // return sampled color
+    if (id.x == idx && id.y == idy)
+    {
+        SampleData sData = sampleData[0];
+        sData.color = Result[id.xy];
+        sampleData[0] = sData;
+    }
+
+
+    // Apply a crosshair around the sample location
+    // Requires the Compute Shader to be recomputed everytime the sample location changes.
+    if (visualizeSample == true)
+    {
+        // which pixel to apply each operation to
+        int2 offsets[] = { float2(-1,  1), float2(0,  1), float2(1,  1),
+                             float2(-1,  0),                float2(1,  0),
+                             float2(-1, -1), float2(0, -1), float2(1, -1) };
+        // operation : 0 - Copy center data | 1 - Set custom color
+        int operation[] = { 0, 1, 0,
+                       1,    1,
+                       0, 1, 0 };
+
+        // Visualize Sample Location
+        for (int i = 0; i < 8; i++)
+        {
+            int2 offset = offsets[i];
+            if (id.x == idx + offset.x && id.y == idy + offset.y)
+            {
+                if (operation[i] == 1)
+                    Result[id.xy] = Result[float2(idx, idy)];
+                else
+                {
+                    Result[id.xy] = 1;
+                    //Result[id.xy] = 1 - saturate(Result[id.xy]); // invert clamped color
+                }
+            }
+        }
+    }
+}
