@@ -3,44 +3,110 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PolygonCollider2D))]
+[RequireComponent(typeof(CompositeCollider2D))]
 public class WorldGeneration_Collision : MonoBehaviour
 {
-    [SerializeField] private Transform playerPosition;
+    [SerializeField] private Transform player;
     public WorldGeneration worldGeneration;
+    [Tooltip("Amount of tiles of collision generated around the player.")]
+    public int collisionPadding = 2;
+    public GameObject square;
 
-    private Texture2D world_tex2D;
+    //private Texture2D world_tex2D;
     private PolygonCollider2D collider_2D;
+    private CompositeCollider2D composite_collider_2D;
+    private List<GameObject> squaresPool = new List<GameObject>();
 
     private int oldLocationID;
 
     void Awake()
     {
-        world_tex2D = worldGeneration.tex2D;
+        //world_tex2D = worldGeneration.tex2D;
         collider_2D = transform.GetComponent<PolygonCollider2D>();
+        composite_collider_2D = transform.GetComponent<CompositeCollider2D>();
+    }
+
+    private void Start()
+    {
+        float tileSize = worldGeneration.GetPixelWorldSize();
+        square.transform.localScale = new Vector3(tileSize, tileSize, tileSize);
     }
 
     void Update()
     {
-        int locationID = worldGeneration.PositionToPixelID(playerPosition.position);
+        int locationID = worldGeneration.PositionToPixelID(player.position);
         if(locationID != oldLocationID)
         {
             oldLocationID = locationID;
 
-            ClearCollisions(); // Maybe this should be in GenerateCollision() since we never want to generate without clearing first
             GenerateCollision(locationID);
+            //GenerateCollision_alt(locationID);
         }
     }
 
-    private void ClearCollisions()
-    {
-        Debug.Log(collider_2D.points);
-        //collider_2D.points = new Vector2[6];
-    }
-
+    // 4 or more collisionPadding have noticeable performance hit when generated
+    // 10 or more is really bad
+    // The expensive part is setting up the collider2D
     private void GenerateCollision(int locationID)
     {
         // Example in
         // LineGeneration.cs -> GenerateCollision2D()
+
+        // Add a square collision for each non-air tiles around the player
+        // Then merge the collisions together using the Composite Collider 2D
+
+        float tileSize = worldGeneration.GetPixelWorldSize();
+        float half = tileSize * 0.5f;
+
+        int size = (collisionPadding * 2) - 1;
+        collider_2D.pathCount = size * size;
+
+        Vector2[] corners = new Vector2[4];
+        int counter = 0;
+        int skippedCount = 0;
+        for (int xOffset = -size / 2; xOffset <= size / 2; xOffset++)
+        {
+            for (int yOffset = -size / 2; yOffset <= size / 2; yOffset++)
+            {
+                int pixelID = worldGeneration.GetPixelAtOffset(locationID, xOffset, yOffset);
+                if(pixelID == -1)
+                {
+                    skippedCount++;
+                    continue;
+                }
+                //worldGeneration.CreateQuadAtPixelID(pixelID);
+
+                Color color = worldGeneration.SampleAtID(pixelID, false);
+
+                if(color.r == 0) // skip if air
+                {
+                    skippedCount++;
+                    continue;
+                }
+
+
+                Vector2 center = worldGeneration.PixelIDToPosition(pixelID);
+                corners[0] = center + new Vector2(-half, half);
+                corners[1] = center + new Vector2(half, half);
+                corners[2] = center + new Vector2(half, -half);
+                corners[3] = center + new Vector2(-half, -half);
+                collider_2D.SetPath(counter, corners);
+
+                counter++;
+            }
+        }
+
+        // Skipping leaves a "gap" at the end, this accounts for that
+        collider_2D.pathCount = (size * size) - skippedCount;
+
+        // Handles merging the tiles together
+        composite_collider_2D.GenerateGeometry();
+
+
+        // Here is an earlier thought process about figuring out an algorithm
+        // to get an "optimized" collision, i.e. with a continuous edge
+        // instead of discrete tiles. The issue with that idea is its inability to
+        // have holes - but it's not necessarily a problem.
 
 
         // Generate collision around player location
@@ -63,6 +129,83 @@ public class WorldGeneration_Collision : MonoBehaviour
         // it's not only down and right.
         // Because of that, maybe it'd be better to always check the four directions
         // if we already visited, good, next side (maybe we can ignore the direction we just came from, tho)
-        // 
     }
+
+    // This was an attempt to get the performance to be better
+    // But no, it's basically the same
+    private void GenerateCollision_alt(int locationID)
+    {
+        // Example in
+        // LineGeneration.cs -> GenerateCollision2D()
+        //Debug.Log(locationID);
+
+        // Add a square collision for each non-air tiles around the player
+        // Then merge the collisions together using the Composite Collider 2D
+
+        int size = (collisionPadding * 2) - 1;
+
+        int counter = 0;
+        //int skippedCount = 0;
+        for (int xOffset = -size / 2; xOffset <= size / 2; xOffset++)
+        {
+            for (int yOffset = -size / 2; yOffset <= size / 2; yOffset++)
+            {
+                int pixelID = worldGeneration.GetPixelAtOffset(locationID, xOffset, yOffset);
+                if (pixelID == -1)
+                {
+                    continue;
+                }
+                //worldGeneration.CreateQuadAtPixelID(pixelID);
+
+                Color color = worldGeneration.SampleAtID(pixelID);
+
+                if (color.r == 0) // skip if air
+                {
+                    continue;
+                }
+
+
+                Vector2 center = worldGeneration.PixelIDToPosition(pixelID);
+
+                if (counter < squaresPool.Count)
+                {
+                    squaresPool[counter].transform.position = center;
+                    squaresPool[counter].SetActive(true);
+                }
+                else
+                {
+                    GameObject g = Instantiate(square, center, Quaternion.identity);
+                    g.transform.SetParent(transform);
+
+                    squaresPool.Add(g);
+                }
+
+                counter++;
+            }
+        }
+
+        // disable overflow
+        for (int i = counter; i < squaresPool.Count; i++)
+        {
+            squaresPool[i].SetActive(false);
+        }
+
+        // Has an issue where the generation is a bit too soon,
+        //composite_collider_2D.GenerateGeometry();
+        // it's "one iteration" behind
+        // manually cliking Regenerate Collider works
+
+        // So instead, we leave the engine to generate the collision "when it needs to"
+        composite_collider_2D.generationType = CompositeCollider2D.GenerationType.Synchronous;
+    }
+
+    // Another solution would be to use a MeshCollider
+    // I think that generating the mesh would not produce a hit in performance
+    // And if it does, we can offload the array generation to a Compute Shader
+    // Here's the issues I think we'll have
+    // 1. We can't "merge" the collisions like the CompositeCollider2D,
+    // each triangles will be a discrete triangle.
+    // I think that when sliding along the floor/on a shaft wall,
+    // we'll hit the "gaps" in-between the triangles.
+    // 2. We're in 2D, how does a non-2D collision type interact with 2D stuff ?
 }

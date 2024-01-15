@@ -14,6 +14,11 @@ public class WorldGeneration : MonoBehaviour
     private int resolution = 128;
     private bool visualizeSample = false;
 
+    // https://stackoverflow.com/questions/12413948/c-sharp-checking-if-a-variable-is-initialized
+    // https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types
+    private float? tileWorldSize = null;
+
+
     private struct SampleData
     {
         public Color color;
@@ -31,8 +36,6 @@ public class WorldGeneration : MonoBehaviour
     
     // Also want to align it all properly in the world,
     // so that one pixel takes a full unit. Make sure sampling still works.
-
-    // Collision as well
 
     // Make tiles shader, consuming this script's tex2D
     // We'll want rounded corners and whatnot
@@ -185,6 +188,17 @@ public class WorldGeneration : MonoBehaviour
         material.SetTexture("_MainTex", renderTexture); // tex2D_full
         // "renderTexture" is required to have the proper crosshair for visualizing.
         // "tex2D_full" could work, but we'd need to copy the data each time it updates.
+        /*
+        CreateQuadAtPixelID(resolution * 0 + 6);
+        CreateQuadAtPixelID(resolution * 1 + 6);
+        CreateQuadAtPixelID(resolution * 2 + 6);
+
+        CreateQuadAtPixelID(resolution * 3 + 5);
+        CreateQuadAtPixelID(resolution * 3 + 6);
+        CreateQuadAtPixelID(resolution * 3 + 7);
+
+        CreateQuadAtPixelID(resolution * 4 + 6);
+        CreateQuadAtPixelID(resolution * 5 + 6);*/
     }
 
     public void SetVisualize(bool mode)
@@ -195,19 +209,19 @@ public class WorldGeneration : MonoBehaviour
         computeShader.Dispatch(0, resolution / 8, resolution / 8, 1);
     }
 
-    public Color SampleAtID(int pixelID)
+    public Color SampleAtID(int pixelID, bool updateVisualizer = true)
     {
         int idx = pixelID % resolution;
         int idy = pixelID / resolution;
 
-        if (visualizeSample)
+        if (visualizeSample && updateVisualizer)
             SetVisualizeIndex(pixelID);
 
         // A few ways to sample the data, they all give the same result
         // Don't know about performance
 
         // This data was the ground truth for a while, before I got the rest working properly.
-        Color Cd0 = GetColorFromCSBuffer(pixelID);
+        //Color Cd0 = GetColorFromCSBuffer(pixelID);
 
         // https://docs.unity3d.com/ScriptReference/Texture2D.GetPixel.html
         Color Cd = tex2D.GetPixel(idx, idy);
@@ -233,7 +247,7 @@ public class WorldGeneration : MonoBehaviour
         }
         //*/
 
-        return Cd0;
+        return Cd;
     }
 
     public int PositionToPixelID(Vector3 position)
@@ -249,6 +263,27 @@ public class WorldGeneration : MonoBehaviour
 
         int pixelID = idx + (idy * resolution);
         return pixelID;
+    }
+
+    public Vector3 PixelIDToPosition(int pixelID)
+    {
+        int idx = pixelID % resolution;
+        int idy = pixelID / resolution;
+        idy -= resolution; // cancel out "one page offset"
+
+        //float scale = GetMaterialScale();
+        //float xPos = (idx * scale) / resolution;
+        //float yPos = (idy * scale) / resolution;
+
+        float tileSize = GetPixelWorldSize();
+        float xPos = idx * tileSize;
+        float yPos = idy * tileSize;
+
+        // xPos and yPos at the bottom-left corner, so we add half the size
+        xPos += tileSize * 0.5f;
+        yPos += tileSize * 0.5f;
+
+        return new Vector3(xPos, yPos, 0);
     }
 
     public Color SampleAtPosition(Vector3 position)
@@ -291,6 +326,51 @@ public class WorldGeneration : MonoBehaviour
     private float GetMaterialScale()
     {
         return material.GetFloat("_Scale");
+    }
+
+    // This could probably be optimized with better math logic
+    public int GetPixelAtOffset(int pixelID, int offsetX, int offsetY)
+    {
+        int idx = pixelID % resolution;
+        int idy = pixelID / resolution;
+
+        idx += offsetX;
+        idy += offsetY;
+
+        // Sampling is Out of Bounds
+        if (idx < 0 || idy < 0 || idx > resolution || idy > resolution)
+            return -1;
+
+        int finalPixelID = idx + (idy * resolution);
+        return finalPixelID;
+    }
+
+    // This logic could be changed to calculate tileWorldSize on Awake()
+    // Then just return that value
+    // I'm leaving that in as a special sauce example,
+    // no idea if this Nullable value method is bad practice
+    public float GetPixelWorldSize()
+    {
+        if (tileWorldSize.HasValue == false)
+        {
+            // Distance between pixelID 0 and pixelID 1
+            // pixelID 0 is (0*scale)/resolution, which is 0
+            // pixelID 1 is (1*scale)/resolution, which is scale/resolution
+            tileWorldSize = GetMaterialScale() / resolution;
+        }
+
+        return tileWorldSize.Value;
+    }
+
+    // Debug Feature
+    public void CreateQuadAtPixelID(int pixelID)
+    {
+        float size = GetPixelWorldSize();
+        Vector3 position = PixelIDToPosition(pixelID);
+
+        GameObject square = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        square.transform.localScale = new Vector3(size, size, size);
+        square.transform.position = position;
     }
 
 
