@@ -3,8 +3,9 @@ using UnityEngine.UI;
 
 public class UIDebugInfo : MonoBehaviour
 {
-    public Text FPSCounter;
-    public Text depthMeter;
+    public Text FPS_counter;
+    public Text depth_meter;
+    public Text pixel_ID_info;
 
     // Velocity
     // Money Balance
@@ -14,10 +15,15 @@ public class UIDebugInfo : MonoBehaviour
 
     public void Update()
     {
-        int current = (int)(1f / Time.unscaledDeltaTime);
-        FPSCounter.text = current.ToString() + " FPS";
+        Transform player = GameManager.Instance.player;
 
-        int height = -(int)GameManager.Instance.player.position.y;
-        depthMeter.text = "Depth : " + height.ToString() + " M";
+        int FPS = (int)(1f / Time.unscaledDeltaTime);
+        FPS_counter.text = FPS.ToString() + " FPS";
+
+        int height = -(int)player.position.y;
+        depth_meter.text = "Depth : " + height.ToString() + " M";
+
+        int pixel_ID = (int)GameManager.Instance.PositionToPixelID(player.position);
+        pixel_ID_info.text = "Pixel ID : " + pixel_ID.ToString();
     }
 }

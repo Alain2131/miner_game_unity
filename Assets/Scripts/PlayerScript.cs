@@ -140,7 +140,7 @@ public class PlayerScript : MonoBehaviour
         Debug.Log(pixel_ID);
         Vector3 rayDirection = new Vector3(0, 0, 10);
         int layerMask = LayerMask.GetMask("tile");
-
+        //*
         for (int x = -1; x <= 1; x++)
         {
             for (int y = -1; y <= 1; y++)
@@ -151,7 +151,7 @@ public class PlayerScript : MonoBehaviour
                 int ID_to_dig = gameManager.GetPixelAtOffset(pixel_ID, x, y);
                 gameManager.CreateQuadAtPixelID(ID_to_dig);
 
-                /*
+                //*
                 Vector3 center_to_dig = gameManager.PixelIDToPosition(ID_to_dig);
 
                 RaycastHit2D hit = Physics2D.Raycast(center_to_dig, rayDirection, rayDirection.magnitude, layerMask);
@@ -160,9 +160,9 @@ public class PlayerScript : MonoBehaviour
                 {
                     TileScript tile = hit.collider.GetComponent<TileScript>();
                     tile.DigTile();
-                }*/
+                }//
             }
-        }
+        }//*/
 
 
         // Probably not the best place to have this

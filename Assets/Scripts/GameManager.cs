@@ -148,14 +148,14 @@ public class GameManager : MonoBehaviour
         //float xPos = (idx * scale) / resolution;
         //float yPos = (idy * scale) / resolution;
 
-        float tileSize = GetPixelWorldSize();
-        float xPos = idx * tileSize;
-        float yPos = idy * tileSize;
+        float tile_size = GetPixelWorldSize();
+        float xPos = idx * tile_size;
+        float yPos = idy * tile_size;
         yPos -= 1;
 
         // xPos and yPos at the bottom-left corner, so we add half the size
-        xPos += tileSize * 0.5f;
-        yPos += tileSize * 0.5f;
+        xPos += tile_size * 0.5f;
+        yPos += tile_size * 0.5f;
 
         return new Vector3(xPos, yPos, 0);
     }
@@ -169,15 +169,15 @@ public class GameManager : MonoBehaviour
     }*/
 
     // This could probably be optimized with better math logic
-    public int GetPixelAtOffset(int pixelID, int offsetX, int offsetY)
+    public int GetPixelAtOffset(int pixel_ID, int offsetx, int offsety)
     {
-        int idx = pixelID % LevelXSize;
-        int idy = pixelID / LevelXSize;
+        int idx = pixel_ID % LevelXSize;
+        int idy = pixel_ID / LevelXSize;
         
         idx = Mathf.Abs(idx);
 
-        idx += offsetX;
-        idy += offsetY;
+        idx += offsetx;
+        idy += offsety;
 
 
 
@@ -190,8 +190,8 @@ public class GameManager : MonoBehaviour
         if (idx < 0 || idy < 0 || idx > LevelXSize || idy > LevelXSize)
             return -1;
 
-        int finalPixelID = idx + (idy * LevelXSize);
-        return finalPixelID;
+        int final_pixel_ID = idx + (idy * LevelXSize);
+        return final_pixel_ID;
     }
 
     // This logic could be changed to calculate tileWorldSize on Awake()
