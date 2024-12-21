@@ -71,6 +71,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Explosive"",
+                    ""type"": ""Button"",
+                    ""id"": ""fa2e3257-684a-4b54-bc0b-5d05116289e0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -214,6 +223,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f3add1bb-67eb-46a0-ab58-4d9aa7255b4a"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Explosive"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -533,6 +553,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Gameplay_Interact = m_Gameplay.FindAction("Interact", throwIfNotFound: true);
         m_Gameplay_Inventory = m_Gameplay.FindAction("Inventory", throwIfNotFound: true);
         m_Gameplay_TogglePause = m_Gameplay.FindAction("TogglePause", throwIfNotFound: true);
+        m_Gameplay_Explosive = m_Gameplay.FindAction("Explosive", throwIfNotFound: true);
         // Menu Controls
         m_MenuControls = asset.FindActionMap("Menu Controls", throwIfNotFound: true);
         m_MenuControls_Navigate = m_MenuControls.FindAction("Navigate", throwIfNotFound: true);
@@ -610,6 +631,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Interact;
     private readonly InputAction m_Gameplay_Inventory;
     private readonly InputAction m_Gameplay_TogglePause;
+    private readonly InputAction m_Gameplay_Explosive;
     public struct GameplayActions
     {
         private @Controls m_Wrapper;
@@ -619,6 +641,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @Interact => m_Wrapper.m_Gameplay_Interact;
         public InputAction @Inventory => m_Wrapper.m_Gameplay_Inventory;
         public InputAction @TogglePause => m_Wrapper.m_Gameplay_TogglePause;
+        public InputAction @Explosive => m_Wrapper.m_Gameplay_Explosive;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -643,6 +666,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @TogglePause.started += instance.OnTogglePause;
             @TogglePause.performed += instance.OnTogglePause;
             @TogglePause.canceled += instance.OnTogglePause;
+            @Explosive.started += instance.OnExplosive;
+            @Explosive.performed += instance.OnExplosive;
+            @Explosive.canceled += instance.OnExplosive;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -662,6 +688,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @TogglePause.started -= instance.OnTogglePause;
             @TogglePause.performed -= instance.OnTogglePause;
             @TogglePause.canceled -= instance.OnTogglePause;
+            @Explosive.started -= instance.OnExplosive;
+            @Explosive.performed -= instance.OnExplosive;
+            @Explosive.canceled -= instance.OnExplosive;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -805,6 +834,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnInventory(InputAction.CallbackContext context);
         void OnTogglePause(InputAction.CallbackContext context);
+        void OnExplosive(InputAction.CallbackContext context);
     }
     public interface IMenuControlsActions
     {

@@ -11,7 +11,8 @@
                     "id": "b8022b72-a579-4af6-bb9a-be6191ccbea9",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Down",
@@ -19,7 +20,8 @@
                     "id": "a1987b2f-2de0-41ec-b726-7889f6a5660c",
                     "expectedControlType": "Integer",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Interact",
@@ -27,7 +29,8 @@
                     "id": "0ab16bde-fe6e-48e4-886d-6051eadaa960",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Inventory",
@@ -35,7 +38,8 @@
                     "id": "2c24d9cb-4c87-41d9-9a04-46109d77fb69",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "TogglePause",
@@ -43,7 +47,17 @@
                     "id": "26351b55-5358-4109-8261-826ab5525871",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Explosive",
+                    "type": "Button",
+                    "id": "fa2e3257-684a-4b54-bc0b-5d05116289e0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -189,6 +203,17 @@
                     "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f3add1bb-67eb-46a0-ab58-4d9aa7255b4a",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Explosive",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -202,7 +227,8 @@
                     "id": "61c5e349-9e06-4683-a288-ab308e978444",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Submit",
@@ -210,7 +236,8 @@
                     "id": "6edaf6f8-9ac1-43f9-934b-4fd78f81d12e",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Cancel",
@@ -218,7 +245,8 @@
                     "id": "23090d2e-a554-450c-9d80-96a7571f5fd7",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Point",
@@ -226,7 +254,8 @@
                     "id": "bc6ee802-1be0-4be6-9857-2d8f75d9fd11",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Click",
@@ -234,7 +263,8 @@
                     "id": "95f787d6-49fe-4be7-a6a2-f46123751fa5",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "ScrollWheel",
@@ -242,7 +272,8 @@
                     "id": "9bf1e31f-80f9-4d3d-891a-3a5536b6861e",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "MiddleClick",
@@ -250,7 +281,8 @@
                     "id": "6e7fe447-0e05-4e87-8d8a-c691c4003cf0",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "RightClick",
@@ -258,7 +290,8 @@
                     "id": "eb5a063d-4611-4bc5-95d2-d9e1b9640237",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Interact",
@@ -266,7 +299,8 @@
                     "id": "2f1e3e6b-3b08-49f7-9de7-b4cd464c0212",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [

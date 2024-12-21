@@ -100,6 +100,154 @@ public class GameManager : MonoBehaviour
         tilesDugUp.Add(tileID);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public int PositionToPixelID(Vector3 position)
+    {
+        // Needs to handle positive Y
+
+        int idx = Mathf.FloorToInt(position.x);
+        int idy = -Mathf.FloorToInt(position.y);
+
+        idx = Mathf.Clamp(idx, 0, LevelXSize - 1);
+        idy = Mathf.Clamp(idy, 0, LevelXSize - 1);
+
+        int pixelID = idx + (idy * LevelXSize) - LevelXSize;
+        return pixelID;
+    }
+
+    public Vector3 PixelIDToPosition(int pixelID)
+    {
+        // Need to handle negative pixelID properly
+        // Decide on what -1 will be.
+        // * Above 0
+        // * Above 99
+        if(pixelID < 0)
+            return new Vector3(-1, -1, 0);
+
+        
+        int idx = pixelID % LevelXSize;
+        int idy = -pixelID / LevelXSize;
+        //idy -= LevelYSize; // cancel out "one page offset"
+
+        //float scale = GetMaterialScale();
+        //float xPos = (idx * scale) / resolution;
+        //float yPos = (idy * scale) / resolution;
+
+        float tileSize = GetPixelWorldSize();
+        float xPos = idx * tileSize;
+        float yPos = idy * tileSize;
+        yPos -= 1;
+
+        // xPos and yPos at the bottom-left corner, so we add half the size
+        xPos += tileSize * 0.5f;
+        yPos += tileSize * 0.5f;
+
+        return new Vector3(xPos, yPos, 0);
+    }
+
+    /*public Color SampleAtPosition(Vector3 position)
+    {
+        int pixelID = PositionToPixelID(position);
+
+        Color Cd = SampleAtID(pixelID);
+        return Cd;
+    }*/
+
+    // This could probably be optimized with better math logic
+    public int GetPixelAtOffset(int pixelID, int offsetX, int offsetY)
+    {
+        int idx = pixelID % LevelXSize;
+        int idy = pixelID / LevelXSize;
+        
+        idx = Mathf.Abs(idx);
+
+        idx += offsetX;
+        idy += offsetY;
+
+
+
+        Debug.Log("---------------");
+        Debug.Log(idx);
+        Debug.Log(idy);
+
+
+        // Sampling is Out of Bounds
+        if (idx < 0 || idy < 0 || idx > LevelXSize || idy > LevelXSize)
+            return -1;
+
+        int finalPixelID = idx + (idy * LevelXSize);
+        return finalPixelID;
+    }
+
+    // This logic could be changed to calculate tileWorldSize on Awake()
+    // Then just return that value
+    // I'm leaving that in as a special sauce example,
+    // no idea if this Nullable value method is bad practice
+    public float GetPixelWorldSize()
+    {
+        return 1.0f;
+    }
+
+    // Debug Feature
+    public void CreateQuadAtPixelID(int pixelID)
+    {
+        float size = GetPixelWorldSize();
+        Vector3 position = PixelIDToPosition(pixelID);
+
+        GameObject square = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        square.transform.localScale = new Vector3(size, size, size);
+        square.transform.position = position;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public void TogglePauseGame()
     {
         // HACK - exit Upgrades UI menu with Escape

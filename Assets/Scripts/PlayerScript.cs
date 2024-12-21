@@ -36,6 +36,9 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private bool DisableDamage = false;
     [SerializeField] private bool DisableFuel = false;
 
+    [Header("Items")]
+    public int item_explosive_count = 5;
+
     private GameManager gameManager;
 
     private bool isDigging = false;
@@ -59,6 +62,7 @@ public class PlayerScript : MonoBehaviour
         controls.Gameplay.Inventory.performed += ToggleInventory;
         controls.Gameplay.TogglePause.performed += TogglePause;
         controls.Gameplay.Interact.performed += Interact;
+        controls.Gameplay.Explosive.performed += Item_Explosive;
 
         controls.MenuControls.Cancel.performed += TogglePause;
         controls.MenuControls.Interact.performed += Interact;
@@ -75,6 +79,19 @@ public class PlayerScript : MonoBehaviour
 
         // Constant Fuel Consumption, always active
         StartCoroutine("FuelConsumption", 3); // Remove 1 fuel over X seconds
+
+
+        //gameManager.CreateQuadAtPixelID(5);
+        //gameManager.CreateQuadAtPixelID(101);
+
+        /*gameManager.CreateQuadAtPixelID(0);
+        gameManager.CreateQuadAtPixelID(6);
+        gameManager.CreateQuadAtPixelID(25);
+        gameManager.CreateQuadAtPixelID(50);
+        gameManager.CreateQuadAtPixelID(75);
+        gameManager.CreateQuadAtPixelID(99);
+        gameManager.CreateQuadAtPixelID(100);
+        gameManager.CreateQuadAtPixelID(106);*/
     }
 
 
@@ -114,6 +131,60 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    private void Item_Explosive(InputAction.CallbackContext context)
+    {
+        //int current_pixel_ID = gameManager.PositionToPixelID(transform.position);
+        //gameManager.CreateQuadAtPixelID(current_pixel_ID);
+
+        int pixel_ID = gameManager.PositionToPixelID(transform.position);
+        Debug.Log(pixel_ID);
+        Vector3 rayDirection = new Vector3(0, 0, 10);
+        int layerMask = LayerMask.GetMask("tile");
+
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                if (x == 0 && y == 0)
+                    continue;
+
+                int ID_to_dig = gameManager.GetPixelAtOffset(pixel_ID, x, y);
+                gameManager.CreateQuadAtPixelID(ID_to_dig);
+
+                /*
+                Vector3 center_to_dig = gameManager.PixelIDToPosition(ID_to_dig);
+
+                RaycastHit2D hit = Physics2D.Raycast(center_to_dig, rayDirection, rayDirection.magnitude, layerMask);
+
+                if (hit.collider != null)
+                {
+                    TileScript tile = hit.collider.GetComponent<TileScript>();
+                    tile.DigTile();
+                }*/
+            }
+        }
+
+
+        // Probably not the best place to have this
+        // Check how many explosives we have
+        if (item_explosive_count <= 0)
+        {
+            Debug.Log("No more explosive item.");
+
+            item_explosive_count = 0; // Not a necessary check, but inexpensive to do.
+            return;
+        }
+
+        // Do explosive action
+        Debug.Log("Explosive consumed");
+
+        // From player's tileID, get a range of X tiles,
+        // loop over that range around the player
+
+
+
+        item_explosive_count--;
+    }
 
     void Update()
     {
@@ -206,7 +277,6 @@ public class PlayerScript : MonoBehaviour
             if (canPlayerDig())
                 Dig(Vector3.right);
         }
-        
 
 
         // Apply Movement Force
