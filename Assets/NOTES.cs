@@ -219,3 +219,12 @@ We still need to compute the collision. We only need the Tiles Dug Up texture fo
 
 We will probably be able to remove the ray intersection to fetch the tile, since this would be replaced with the aforementioned script to handle the conversions and lookups.
  */
+
+/*
+Coding Conventions
+
+* PascalCase is used for classes and functions/methods
+* camelCase is used inspector variables
+* SCREAMING_SNAKE_CASE is used for constants
+* snake_case is used for everything else
+*/

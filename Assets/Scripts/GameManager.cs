@@ -13,8 +13,8 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     public OreInventory oreInventory;
     public GameObject oreInventoryUI;
-    public GameObject upgradesStore_UI;
-    public GameObject itemsStore_UI;
+    public GameObject upgradesStoreUI;
+    public GameObject itemsStoreUI;
     public bool isUpgradeStoreOpen = false;
     public bool isItemsStoreOpen = false;
 
@@ -56,8 +56,8 @@ public class GameManager : MonoBehaviour
 
     public bool ToggleUpgradeStoreUI()
     {
-        isUpgradeStoreOpen = !upgradesStore_UI.activeSelf;
-        upgradesStore_UI.SetActive(isUpgradeStoreOpen);
+        isUpgradeStoreOpen = !upgradesStoreUI.activeSelf;
+        upgradesStoreUI.SetActive(isUpgradeStoreOpen);
 
         if (isUpgradeStoreOpen)
         {
@@ -77,8 +77,8 @@ public class GameManager : MonoBehaviour
     // and simply take different arguments
     public bool ToggleItemsStoreUI()
     {
-        isItemsStoreOpen = !itemsStore_UI.activeSelf;
-        itemsStore_UI.SetActive(isItemsStoreOpen);
+        isItemsStoreOpen = !itemsStoreUI.activeSelf;
+        itemsStoreUI.SetActive(isItemsStoreOpen);
 
         if (isItemsStoreOpen)
         {

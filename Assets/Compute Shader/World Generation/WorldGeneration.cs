@@ -58,8 +58,8 @@ public class WorldGeneration : MonoBehaviour
 
         // SampleData stuff
         sData = new SampleData[1];
-        int colorSize = sizeof(float) * 4;
-        sampleBuffer = new ComputeBuffer(sData.Length, colorSize);
+        int color_size = sizeof(float) * 4;
+        sampleBuffer = new ComputeBuffer(sData.Length, color_size);
         sampleBuffer.SetData(sData);
         computeShader.SetBuffer(0, "sampleData", sampleBuffer);
 
@@ -70,54 +70,54 @@ public class WorldGeneration : MonoBehaviour
 
         // Send world generation data stuff
         // air, dirt, coal, iron
-        const int maxItems = 50; // matches with maxItems in Compute Shader. They need to stay in sync, manually
+        const int MAX_ITEMS = 50; // Matches with MAX_ITEMS in WorldGeneration.compute. They need to manually stay in sync.
 
         // This data will have to be automatically gathered from the Scriptable Objects.
-        float[] airPercents = { 0, 0.15f };
-        int[] airDepths = { 0, 5 };
+        float[] air_percents = { 0, 0.15f };
+        int[] air_depths = { 0, 5 };
         
-        float[] dirtPercents = { 1 };
-        int[] dirtDepths = { 0 };
+        float[] dirt_percents = { 1 };
+        int[] dirt_depths = { 0 };
 
-        float[] coalPercents = { 0, 0.25f, 0.25f, 0.1f };
-        int[] coalDepths = { 2, 4, 100, 110 };
+        float[] coal_percents = { 0, 0.25f, 0.25f, 0.1f };
+        int[] coal_depths = { 2, 4, 100, 110 };
 
-        float[] ironPercents = { 0, 0.2f }; // 0.2f
-        int[] ironDepths = { 50, 100 };
+        float[] iron_percents = { 0, 0.2f }; // 0.2f
+        int[] iron_depths = { 50, 100 };
 
-        float[] testPercents = { 0, 1, 1, 0 };
-        int[] testDepths = { 5, 10, 20, 30 };
+        float[] test_percents = { 0, 1, 1, 0 };
+        int[] test_depths = { 5, 10, 20, 30 };
 
 
-        List<int> strideOffsetList = new List<int>();
-        List<float> percentsList = new List<float>();
-        strideOffsetList.Add(percentsList.Count);
-        percentsList.AddRange(airPercents);
-        strideOffsetList.Add(percentsList.Count);
-        percentsList.AddRange(dirtPercents);
-        strideOffsetList.Add(percentsList.Count);
-        percentsList.AddRange(coalPercents);
-        strideOffsetList.Add(percentsList.Count);
-        percentsList.AddRange(ironPercents);
-        strideOffsetList.Add(percentsList.Count);
+        List<int> stride_offset_list = new List<int>();
+        List<float> percents_list = new List<float>();
+        stride_offset_list.Add(percents_list.Count);
+        percents_list.AddRange(air_percents);
+        stride_offset_list.Add(percents_list.Count);
+        percents_list.AddRange(dirt_percents);
+        stride_offset_list.Add(percents_list.Count);
+        percents_list.AddRange(coal_percents);
+        stride_offset_list.Add(percents_list.Count);
+        percents_list.AddRange(iron_percents);
+        stride_offset_list.Add(percents_list.Count);
         
-        //percentsList.AddRange(testPercents);
-        //strideOffsetList.Add(percentsList.Count);
+        //percents_list.AddRange(test_percents);
+        //stride_offset_list.Add(percents_list.Count);
         
-        if (percentsList.Count > maxItems)
-            Debug.LogError("Too many world generation items, please increase maxItems in C# and Compute Shader. -> " + percentsList.Count + ">" + maxItems);
+        if (percents_list.Count > MAX_ITEMS)
+            Debug.LogError("Too many world generation items, please increase MAX_ITEMS in C# and Compute Shader. -> " + percents_list.Count + ">" + MAX_ITEMS);
         
-        List<int> depthsList = new List<int>();
-        depthsList.AddRange(airDepths);
-        depthsList.AddRange(dirtDepths);
-        depthsList.AddRange(coalDepths);
-        depthsList.AddRange(ironDepths);
-        //depthsList.AddRange(testDepths);
+        List<int> depths_list = new List<int>();
+        depths_list.AddRange(air_depths);
+        depths_list.AddRange(dirt_depths);
+        depths_list.AddRange(coal_depths);
+        depths_list.AddRange(iron_depths);
+        //depths_list.AddRange(test_depths);
         
-        if (percentsList.Count != depthsList.Count)
-            Debug.LogError("percents[] and depths[] length mismatch. -> " + percentsList.Count + "!=" + depthsList.Count);
+        if (percents_list.Count != depths_list.Count)
+            Debug.LogError("percents[] and depths[] length mismatch. -> " + percents_list.Count + "!=" + depths_list.Count);
 
-        List<float> noiseSizesList = new List<float>()
+        List<float> noise_sizes_list = new List<float>()
         { 1.25f, 1.02f, 1.05f, 1.08f };
 
         // There is an issue where SetFloats() and SetInts() do not work properly.
@@ -127,47 +127,47 @@ public class WorldGeneration : MonoBehaviour
         // https://forum.unity.com/threads/compute-shader-setfloats-broken.804585/
         // https://forum.unity.com/threads/computeshader-setints-failing-or-me-failing.669829/
         // https://cmwdexint.com/2017/12/04/computeshader-setfloats/
-        List<float> PadList_Float(List<float> inputList, int maxItems)
+        List<float> PadList_Float(List<float> input_list, int max_items)
         {
-            List<float> paddedList = new List<float>();
-            for (int i = 0; i < maxItems; i++)
+            List<float> padded_list = new List<float>();
+            for (int i = 0; i < max_items; i++)
             {
-                if (i < inputList.Count)
-                    paddedList.Add(inputList[i]);
+                if (i < input_list.Count)
+                    padded_list.Add(input_list[i]);
                 else
-                    paddedList.Add(-1);
-                paddedList.Add(0);
-                paddedList.Add(0);
-                paddedList.Add(0);
+                    padded_list.Add(-1);
+                padded_list.Add(0);
+                padded_list.Add(0);
+                padded_list.Add(0);
             }
-            return paddedList;
+            return padded_list;
         }
 
-        List<int> PadList_Int(List<int> inputList, int maxItems)
+        List<int> PadList_Int(List<int> input_list, int max_items)
         {
-            List<int> paddedList = new List<int>();
-            for (int i = 0; i < maxItems; i++)
+            List<int> padded_list = new List<int>();
+            for (int i = 0; i < max_items; i++)
             {
-                if (i < inputList.Count)
-                    paddedList.Add(inputList[i]);
+                if (i < input_list.Count)
+                    padded_list.Add(input_list[i]);
                 else
-                    paddedList.Add(-1);
-                paddedList.Add(0);
-                paddedList.Add(0);
-                paddedList.Add(0);
+                    padded_list.Add(-1);
+                padded_list.Add(0);
+                padded_list.Add(0);
+                padded_list.Add(0);
             }
-            return paddedList;
+            return padded_list;
         }
 
-        List<float> paddedPercentsList = PadList_Float(percentsList, maxItems);
-        List<float> paddedNoiseSizesList = PadList_Float(noiseSizesList, maxItems);
-        List<int> paddedDepthsSizesList = PadList_Int(depthsList, maxItems);
-        List<int> paddedStrideOffsetList = PadList_Int(strideOffsetList, maxItems);
+        List<float> padded_percents_list = PadList_Float(percents_list, MAX_ITEMS);
+        List<float> padded_noise_sizes_list = PadList_Float(noise_sizes_list, MAX_ITEMS);
+        List<int> padded_depths_sizes_list = PadList_Int(depths_list, MAX_ITEMS);
+        List<int> padded_stride_offset_list = PadList_Int(stride_offset_list, MAX_ITEMS);
 
-        computeShader.SetFloats("percents", paddedPercentsList.ToArray());
-        computeShader.SetFloats("noiseSizes", paddedNoiseSizesList.ToArray());
-        computeShader.SetInts("depths", paddedDepthsSizesList.ToArray());
-        computeShader.SetInts("strideOffset", paddedStrideOffsetList.ToArray());
+        computeShader.SetFloats("percents", padded_percents_list.ToArray());
+        computeShader.SetFloats("noiseSizes", padded_noise_sizes_list.ToArray());
+        computeShader.SetInts("depths", padded_depths_sizes_list.ToArray());
+        computeShader.SetInts("strideOffset", padded_stride_offset_list.ToArray());
 
         computeShader.Dispatch(0, resolution / 8, resolution / 8, 1);
 
@@ -209,13 +209,13 @@ public class WorldGeneration : MonoBehaviour
         computeShader.Dispatch(0, resolution / 8, resolution / 8, 1);
     }
 
-    public Color SampleAtID(int pixelID, bool updateVisualizer = true)
+    public Color SampleAtID(int pixel_ID, bool update_visualizer = true)
     {
-        int idx = pixelID % resolution;
-        int idy = pixelID / resolution;
+        int idx = pixel_ID % resolution;
+        int idy = pixel_ID / resolution;
 
-        if (visualizeSample && updateVisualizer)
-            SetVisualizeIndex(pixelID);
+        if (visualizeSample && update_visualizer)
+            SetVisualizeIndex(pixel_ID);
 
         // A few ways to sample the data, they all give the same result
         // Don't know about performance
@@ -261,45 +261,45 @@ public class WorldGeneration : MonoBehaviour
         idx = Mathf.Clamp(idx, 0, resolution - 1);
         idy = Mathf.Clamp(idy, 0, resolution - 1);
 
-        int pixelID = idx + (idy * resolution);
-        return pixelID;
+        int pixel_ID = idx + (idy * resolution);
+        return pixel_ID;
     }
 
-    public Vector3 PixelIDToPosition(int pixelID)
+    public Vector3 PixelIDToPosition(int pixel_ID)
     {
-        int idx = pixelID % resolution;
-        int idy = pixelID / resolution;
+        int idx = pixel_ID % resolution;
+        int idy = pixel_ID / resolution;
         idy -= resolution; // cancel out "one page offset"
 
         //float scale = GetMaterialScale();
         //float xPos = (idx * scale) / resolution;
         //float yPos = (idy * scale) / resolution;
 
-        float tileSize = GetPixelWorldSize();
-        float xPos = idx * tileSize;
-        float yPos = idy * tileSize;
+        float tile_size = GetPixelWorldSize();
+        float x_pos = idx * tile_size;
+        float y_pos = idy * tile_size;
 
         // xPos and yPos at the bottom-left corner, so we add half the size
-        xPos += tileSize * 0.5f;
-        yPos += tileSize * 0.5f;
+        x_pos += tile_size * 0.5f;
+        y_pos += tile_size * 0.5f;
 
-        return new Vector3(xPos, yPos, 0);
+        return new Vector3(x_pos, y_pos, 0);
     }
 
     public Color SampleAtPosition(Vector3 position)
     {
-        int pixelID = PositionToPixelID(position);
+        int pixel_ID = PositionToPixelID(position);
 
-        Color Cd = SampleAtID(pixelID);
+        Color Cd = SampleAtID(pixel_ID);
         return Cd;
     }
 
-    private bool SetVisualizeIndex(int pixelID)
+    private bool SetVisualizeIndex(int pixel_ID)
     {
         if (visualizeSample)
         {
-            int idx = pixelID % resolution;
-            int idy = pixelID / resolution;
+            int idx = pixel_ID % resolution;
+            int idy = pixel_ID / resolution;
             computeShader.SetInt("idx", idx);
             computeShader.SetInt("idy", idy);
 
@@ -311,13 +311,13 @@ public class WorldGeneration : MonoBehaviour
         return false;
     }
 
-    private Color GetColorFromCSBuffer(int pixelID)
+    private Color GetColorFromCSBuffer(int pixel_ID)
     {
         // The problem with this method is that it's recomputing the ENTIRE Compute Shader
         // each time we need to make another sample. We don't _need_ to Visualize Sample,
         // but we'd still need to compute the shader just the same.
         // The advantage is that the data is NOT CLAMPED, which is a big deal.
-        SetVisualizeIndex(pixelID);
+        SetVisualizeIndex(pixel_ID);
         sampleBuffer.GetData(sData);
 
         return sData[0].color;
@@ -329,20 +329,20 @@ public class WorldGeneration : MonoBehaviour
     }
 
     // This could probably be optimized with better math logic
-    public int GetPixelAtOffset(int pixelID, int offsetX, int offsetY)
+    public int GetPixelAtOffset(int pixel_ID, int offset_x, int offset_y)
     {
-        int idx = pixelID % resolution;
-        int idy = pixelID / resolution;
+        int idx = pixel_ID % resolution;
+        int idy = pixel_ID / resolution;
 
-        idx += offsetX;
-        idy += offsetY;
+        idx += offset_x;
+        idy += offset_y;
 
         // Sampling is Out of Bounds
         if (idx < 0 || idy < 0 || idx > resolution || idy > resolution)
             return -1;
 
-        int finalPixelID = idx + (idy * resolution);
-        return finalPixelID;
+        int final_pixel_ID = idx + (idy * resolution);
+        return final_pixel_ID;
     }
 
     // This logic could be changed to calculate tileWorldSize on Awake()
@@ -363,10 +363,10 @@ public class WorldGeneration : MonoBehaviour
     }
 
     // Debug Feature
-    public void CreateQuadAtPixelID(int pixelID)
+    public void CreateQuadAtPixelID(int pixel_ID)
     {
         float size = GetPixelWorldSize();
-        Vector3 position = PixelIDToPosition(pixelID);
+        Vector3 position = PixelIDToPosition(pixel_ID);
 
         GameObject square = GameObject.CreatePrimitive(PrimitiveType.Quad);
         square.transform.localScale = new Vector3(size, size, size);

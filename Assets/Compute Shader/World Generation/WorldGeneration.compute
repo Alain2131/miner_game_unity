@@ -1,8 +1,8 @@
 #pragma kernel CSMain
 
-// The amount of actual items coming from C#
+// The amount of actual items coming from C# (matches with WorldGeneration.cs - both need to manually stay in sync)
 // need to match between depths[] and percents[]
-#define maxItems 50*4 // maybe +4 ? for last strideOffset
+#define MAX_ITEMS 50*4 // maybe +4 ? for last strideOffset
 #define air  0
 #define dirt 1
 #define coal 2
@@ -45,7 +45,7 @@ float rand(float2 co, float seed)
     return frac(sin(dot(co, float2(12.9898, 78.233))) * 43758.5453);
 }
 
-int getFinalTileID_BAK(uint3 id, int itemsCount, float noiseSizes[maxItems], float properPercents[maxItems])
+int getFinalTileID_BAK(uint3 id, int itemsCount, float noiseSizes[MAX_ITEMS], float properPercents[MAX_ITEMS])
 {
     // handle air
     float noiseSize = noiseSizes[0];
@@ -70,7 +70,7 @@ int getFinalTileID_BAK(uint3 id, int itemsCount, float noiseSizes[maxItems], flo
     return air; // air == 0
 }
 
-int getFinalTileID(uint3 id, int itemsCount, float noiseSizes[maxItems], float properPercents[maxItems])
+int getFinalTileID(uint3 id, int itemsCount, float noiseSizes[MAX_ITEMS], float properPercents[MAX_ITEMS])
 {
     // handle air
     float noiseSize = noiseSizes[0];
@@ -105,11 +105,11 @@ struct SampleData
 };
 
 
-int   depths[maxItems];
-float percents[maxItems];
-int   strideOffset[maxItems];
+int   depths[MAX_ITEMS];
+float percents[MAX_ITEMS];
+int   strideOffset[MAX_ITEMS];
 
-float noiseSizes[maxItems];
+float noiseSizes[MAX_ITEMS];
 
 
 RWTexture2D<float4> Result;
@@ -128,12 +128,12 @@ void CSMain(uint3 id : SV_DispatchThreadID)
     // Resolve Proper Percents
     // would be nice to put in a function,
     // but they cannot return an array AFAIK
-    float properPercents[maxItems];
+    float properPercents[MAX_ITEMS];
     int itemsCount = 0; // used to loop over the results
 
     int tileDepth = id.y;
     //float val = -1;
-    for (int tileID = air; tileID <= maxItems; tileID++)
+    for (int tileID = air; tileID <= MAX_ITEMS; tileID++)
     {
         if (strideOffset[tileID+1] == -1) // the last strideOffset is not an iteration we care about
             break;
@@ -202,7 +202,7 @@ void CSMain(uint3 id : SV_DispatchThreadID)
 
     Result[id.xy] = float4(finalTileID/float(itemsCount-1), 0, 0, id.y);
 
-    //if (id.x < maxItems)
+    //if (id.x < MAX_ITEMS)
         //Result[id.xy] = float4(percents[id.x], depths[id.x], id.y<=depths[2], id.y);
 
 

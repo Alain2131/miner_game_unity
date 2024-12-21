@@ -24,10 +24,10 @@ public class WorldGeneration_sample : MonoBehaviour
     {
         Vector3 position = sampleTransform.position;
 
-        int pixelID = script.PositionToPixelID(position);
-        if (pixelID != oldPixelID)
+        int pixel_ID = script.PositionToPixelID(position);
+        if (pixel_ID != oldPixelID)
         {
-            Color Cd = script.SampleAtID(pixelID);
+            Color Cd = script.SampleAtID(pixel_ID);
             // Equivalent, but we've already calculated pixelID
             //Cd = script.SampleAtPosition(position);
 
@@ -35,7 +35,7 @@ public class WorldGeneration_sample : MonoBehaviour
             result_vector = new Vector3(Cd.r, Cd.g, Cd.b); // I don't like how Vector4 is shown, so I choose to ditch the Alpha
             result_vector4 = Cd;
 
-            oldPixelID = pixelID;
+            oldPixelID = pixel_ID;
         }
     }
 }

@@ -2522,6 +2522,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 1204470071}
+--- !u!114 &782432829 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
+  m_PrefabInstance: {fileID: 199047072}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40118f4dee54b7a4181a6b3fe7a62797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &787142047
 GameObject:
   m_ObjectHideFlags: 0
@@ -3596,7 +3607,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!114 &1204470071
 MonoBehaviour:
@@ -3611,13 +3622,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1921623946}
-  playerScript: {fileID: 0}
+  playerScript: {fileID: 782432829}
   money: {fileID: 2060802741}
   upgradeManager: {fileID: 1724371121}
   oreInventory: {fileID: 800751850}
   oreInventoryUI: {fileID: 168886049}
-  upgradesStore_UI: {fileID: 1299523086}
-  itemsStore_UI: {fileID: 1065202188}
+  upgradesStoreUI: {fileID: 1299523086}
+  itemsStoreUI: {fileID: 1065202188}
   isUpgradeStoreOpen: 0
   isItemsStoreOpen: 0
   pauseGameUI: {fileID: 787142047}

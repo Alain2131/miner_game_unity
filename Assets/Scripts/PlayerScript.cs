@@ -32,12 +32,12 @@ public class PlayerScript : MonoBehaviour
     public int cargoSize = 1000;
 
     [Header("Debug")]
-    [SerializeField] private bool DisableDigAnimation = false;
-    [SerializeField] private bool DisableDamage = false;
-    [SerializeField] private bool DisableFuel = false;
+    [SerializeField] private bool disableDigAnimation = false;
+    [SerializeField] private bool disableDamage = false;
+    [SerializeField] private bool disableFuel = false;
 
     [Header("Items")]
-    public int item_explosive_count = 5;
+    public int itemExplosiveCount = 5;
 
     private GameManager gameManager;
 
@@ -167,11 +167,11 @@ public class PlayerScript : MonoBehaviour
 
         // Probably not the best place to have this
         // Check how many explosives we have
-        if (item_explosive_count <= 0)
+        if (itemExplosiveCount <= 0)
         {
             Debug.Log("No more explosive item.");
 
-            item_explosive_count = 0; // Not a necessary check, but inexpensive to do.
+            itemExplosiveCount = 0; // Not a necessary check, but inexpensive to do.
             return;
         }
 
@@ -183,7 +183,7 @@ public class PlayerScript : MonoBehaviour
 
 
 
-        item_explosive_count--;
+        itemExplosiveCount--;
     }
 
     void Update()
@@ -316,7 +316,7 @@ public class PlayerScript : MonoBehaviour
                 // we are not allowed to dig (Falling State)
                 // if (playerState.onGround) doDig();
                 TileScript tile = hit.collider.GetComponent<TileScript>();
-                if (DisableDigAnimation)
+                if (disableDigAnimation)
                     tile.DigTile();
                 else
                     StartCoroutine("DigAnimation", tile);
@@ -396,7 +396,7 @@ public class PlayerScript : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (DisableDamage)
+        if (disableDamage)
             return;
 
         currentHealth -= damage;
@@ -411,7 +411,7 @@ public class PlayerScript : MonoBehaviour
 
     public void SetHealth(int amount)
     {
-        if (DisableDamage)
+        if (disableDamage)
             return;
 
         currentHealth = amount;
@@ -422,7 +422,7 @@ public class PlayerScript : MonoBehaviour
 
     public void ReduceFuel(float consumption)
     {
-        if (DisableFuel)
+        if (disableFuel)
             return;
 
         if (gameManager.gamePaused)
@@ -437,7 +437,7 @@ public class PlayerScript : MonoBehaviour
 
     public void SetFuel(float amount)
     {
-        if (DisableFuel)
+        if (disableFuel)
             return;
 
         currentFuel = amount;
@@ -502,7 +502,7 @@ public class PlayerScript : MonoBehaviour
         bool slowEnough = rb.velocity.magnitude < 0.5f;
 
         // Debug feature to be able to dig as fast as I want
-        if (DisableDigAnimation)
+        if (disableDigAnimation)
             slowEnough = true;
 
         return grounded && slowEnough;
