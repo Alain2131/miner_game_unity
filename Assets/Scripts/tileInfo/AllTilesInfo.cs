@@ -19,7 +19,8 @@ public class AllTilesInfo : ScriptableObject
 
     public TileInfo[] GetAllTiles()
     {
-        return new TileInfo[] { ironTile, coalTile, dirtTile };
+        // This is the priority of placement. The first that can be placed is the choosen one.
+        return new TileInfo[] { airTile, ironTile, coalTile, dirtTile };
     }
 }
 

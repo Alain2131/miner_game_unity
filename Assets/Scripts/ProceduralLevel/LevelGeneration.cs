@@ -18,9 +18,14 @@ public class LevelGeneration : MonoBehaviour
         game_manager = GameManager.Instance;
         y_size = game_manager.levelYSize;
 
+        InstantiateLines();
+    }
+
+    private void InstantiateLines()
+    {
         // I don't know if initializing the size is better versus simply doing List.Add()
         lines = new List<LineGeneration>(new LineGeneration[y_size]); // initialize list length
-        for (int i=0; i<y_size; i++)
+        for (int i = 0; i < y_size; i++)
         {
             Vector3 pos = transform.position;
             pos.y -= i;
@@ -48,10 +53,10 @@ public class LevelGeneration : MonoBehaviour
     private void UpdateLevelHeight()
     {
         // Generate level as the player moves vertically
-        float height = game_manager.player.position.y;
-        int buffer_zone = 2; // could be exposed on the script. Must be >0
+        float player_height = game_manager.player.position.y;
+        const int BUFFER_ZONE = 2; // could be exposed on the script. Must be >0
 
-        if (height > height_threshold + buffer_zone) // upper bound
+        if (player_height > height_threshold + BUFFER_ZONE) // upper bound
         {
             if (height_threshold >= -(y_size / 2f))
                 return;
@@ -82,7 +87,7 @@ public class LevelGeneration : MonoBehaviour
             // Update heightThreshold
             height_threshold++;
         }
-        else if (height < height_threshold - buffer_zone) // lower bound
+        else if (player_height < height_threshold - BUFFER_ZONE) // lower bound
         {
             // Extract relevant lines
             LineGeneration current_line = lines[0];

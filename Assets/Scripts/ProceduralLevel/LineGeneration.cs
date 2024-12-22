@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/*
+ * Contains the core logic to choose which tiles to use.
+ */
+
 [RequireComponent(typeof(PolygonCollider2D))]
 public class LineGeneration : MonoBehaviour
 {
@@ -10,7 +14,7 @@ public class LineGeneration : MonoBehaviour
     public Object tileObject;
     public int lineID = -1; // Basically, depth. We don't need to see it in Unity, but it's helpful for debugging. It could be set to readonly
     
-    private bool[] air_tiles; // True is a tile, False is air/digged up
+    private bool[] air_tiles; // True is a tile, False is air/digged up <- I FIND THAT SUPER CONFUSING, plz change
     private TileScript[] line_tiles; // References all child tiles in the line. Only modified on Start.
     private TileInfo[] tiles_info; // Init'ed in Start from allTilesObject
 
@@ -51,61 +55,56 @@ public class LineGeneration : MonoBehaviour
     // Called on Start and when the line is moved/reused
     public void GenerateLine(int line_ID, float seed = 0f)
     {
-        // We can't use lineID directly,
-        // because it doesn't update correctly inside the same frame
+        // We can't use line_ID directly,
+        // because it doesn't update during the same frame.
         // So, we pass it manually
 
-        float noise_value, threshold, noise_size;
-        float bias = 0.001f; // smol bias to remove 0 in noiseVal
+        float noise_value, noise_size, current_depth_spawn_percent;
+        float bias = 0.001f; // smol bias to remove 0 in noise_value
         for (int x = 0; x < x_size; x++)
         {
             TileScript current_tile = line_tiles[x];
 
-            // Update uniqueID
+            // Update unique_ID
             int unique_ID = line_ID * x_size + x;
             current_tile.uniqueID = unique_ID;
 
-            if (IsTileDugUp(unique_ID) == true) // Handle the tiles already dug up
+            // Flag as air if the tile is already dug up
+            if (IsTileDugUp(unique_ID))
                 air_tiles[x] = false;
             else
-            {
-                // Add Air
-                noise_size = allTilesInfo.airTile.noiseSize;
-                threshold = allTilesInfo.airTile.GetSpawnPercent(line_ID);
-
-                noise_value = Mathf.PerlinNoise(x * noise_size + seed, line_ID * noise_size + seed);
-                noise_value = Mathf.Clamp01(noise_value) + bias;
-                air_tiles[x] = noise_value > threshold;
-
-                if (this.lineID == 0) // If we're the first line,
-                    air_tiles[x] = true; // remove all air.
-            }
-            
-            // Disable air tile, Enable non-air tile
-            current_tile.SetEnabled(air_tiles[x]);
+                air_tiles[x] = true;
 
 
             if (air_tiles[x]) // If we know it's not an air tile
             {
-                // Loop through all the TileInfo, and place the first "valid" tile
-                foreach(TileInfo tile_info in tiles_info)
+                // Loop through all TileInfos, and place the first "valid" tile
+                // Essentially, we give priority to the first types of tile.
+                // See allTilesInfo.GetAllTiles() for the order.
+                foreach (TileInfo tile_info in tiles_info)
                 {
                     noise_size = tile_info.GetNoiseSize();
-                    threshold = tile_info.GetSpawnPercent(line_ID);
+                    current_depth_spawn_percent = tile_info.GetSpawnPercent(line_ID);
 
-                    if (threshold == 0)
+                    if (current_depth_spawn_percent == 0)
                         continue;
                     
                     noise_value = Mathf.PerlinNoise(x * noise_size + seed, line_ID * noise_size + seed);
                     noise_value = Mathf.Clamp01(noise_value) + bias;
-                    if (noise_value < threshold)
+                    if (noise_value < current_depth_spawn_percent)
                     {
+                        if (tile_info.type.ToString() == "air")
+                            air_tiles[x] = false;
+                        
                         current_tile.SetMaterial(tile_info.GetMaterial());
                         current_tile.tileInfo = tile_info;
                         break;
                     }
                 }
             }
+
+            // Disable air tile, Enable non-air tile
+            current_tile.SetEnabled(air_tiles[x]);
 
             // We could randomize rotation,
             // but it's not necessary when re-using the line.
@@ -121,7 +120,7 @@ public class LineGeneration : MonoBehaviour
     private bool IsTileDugUp(int unique_ID)
     {
         // I wonder how fast that will be when the List will be thousands long
-        bool is_dug = GameManager.Instance.tilesDugUp.Contains(unique_ID);
+        bool is_dug = game_manager.tilesDugUp.Contains(unique_ID);
         return is_dug;
     }
 
