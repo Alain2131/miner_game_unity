@@ -25,7 +25,7 @@ public class UIDebugInfo : MonoBehaviour
         int FPS = (int)(1f / Time.unscaledDeltaTime);
         FPS_counter.text = FPS.ToString() + " FPS";
 
-        int height = -(int)player_transform.position.y;
+        int height = -Mathf.FloorToInt(player_transform.position.y);
         depth_meter.text = "Depth : " + height.ToString() + " M";
 
         int pixel_ID = (int)GameManager.Instance.PositionToPixelID(player_transform.position);
