@@ -23,12 +23,12 @@ public class UIDebugInfo : MonoBehaviour
     public void Update()
     {
         int FPS = (int)(1f / Time.unscaledDeltaTime);
-        FPS_counter.text = FPS.ToString() + " FPS";
+        FPS_counter.text = $"{FPS} FPS";
 
         int height = -Mathf.FloorToInt(player_transform.position.y);
-        depth_meter.text = "Depth : " + height.ToString() + " M";
+        depth_meter.text = $"Depth : {height} M";
 
-        int pixel_ID = (int)GameManager.Instance.PositionToPixelID(player_transform.position);
-        pixel_ID_info.text = "Pixel ID : " + pixel_ID.ToString();
+        int pixel_ID = GameManager.Instance.PositionToPixelID(player_transform.position);
+        pixel_ID_info.text = $"Pixel ID : {pixel_ID}";
     }
 }

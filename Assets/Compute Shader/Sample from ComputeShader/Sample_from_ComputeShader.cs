@@ -101,10 +101,10 @@ public class Sample_from_ComputeShader : MonoBehaviour
         bool differentColors = Cd != Cd1 || Cd != Cd2 || Cd != Cd0;
         if (printDebug || differentColors)
         {
-            Debug.Log("CS result\t\t: " + Cd0);
-            Debug.Log("GetPixel (full)\t\t: " + Cd);
-            Debug.Log("GetPixel (new1)\t: " + Cd1);
-            Debug.Log("GetPixel (new2)\t: " + Cd2);
+            Debug.Log($"CS result\t\t: {Cd0}");
+            Debug.Log($"GetPixel (full)\t\t: {Cd}");
+            Debug.Log($"GetPixel (new1)\t: {Cd1}");
+            Debug.Log($"GetPixel (new2)\t: {Cd2}");
             Debug.Log("------------------------------------------");
         }
         //*/

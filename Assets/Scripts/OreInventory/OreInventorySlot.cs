@@ -48,8 +48,8 @@ public class OreInventorySlot : MonoBehaviour
         oreQty.text = count.ToString();
 
         float total_weight = tileInfo.weight * count;
-        oreWeight.text = total_weight.ToString() + "KG";
-        oreValue.text = "$" + tileInfo.value.ToString();
+        oreWeight.text = $"{total_weight}KG";
+        oreValue.text = $"${tileInfo.value}";
     }
 
     public void RemoveItem()

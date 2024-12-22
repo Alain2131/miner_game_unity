@@ -215,7 +215,7 @@ public class PlayerScript : MonoBehaviour
             float fall_damage = (Mathf.Abs(delta) - threshold) * damage_multiplier;
 
             TakeDamage((int)fall_damage);
-            //Debug.Log("Youch ! Took " + (int)fallDamage + " damage.");
+            //Debug.Log($"Youch ! Took {(int)fall_damage} damage.");
         }
 
         previous_frame_speed = current_frame_speed;

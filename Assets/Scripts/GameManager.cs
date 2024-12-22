@@ -140,7 +140,7 @@ public class GameManager : MonoBehaviour
             return new Vector3(-1, -1, 0);
 
         
-        int idx = pixel_ID % levelXSize;
+        int idx =  pixel_ID % levelXSize;
         int idy = -pixel_ID / levelXSize;
         //idy -= LevelYSize; // cancel out "one page offset"
 

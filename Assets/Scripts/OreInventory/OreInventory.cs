@@ -82,7 +82,7 @@ public class OreInventory : MonoBehaviour
         }
         else
         {
-            Debug.LogError(tile.name + " not in the inventory !");
+            Debug.LogError($"{tile.name} not in the inventory !");
             return;
         }
     }
@@ -194,7 +194,7 @@ public class OreInventory : MonoBehaviour
             }
             if (!found)
             {
-                Debug.LogError("Missing UI Inventory Slot for " + entry.tileInfo.name);
+                Debug.LogError($"Missing UI Inventory Slot for {entry.tileInfo.name}");
             }
         }
     }

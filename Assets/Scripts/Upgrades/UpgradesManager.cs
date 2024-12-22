@@ -94,7 +94,7 @@ public class UpgradesManager : MonoBehaviour
         else if (type == upgradeTypes.propeller)
             success = Upgrade_Propeller(upgrade_level);
         else
-            Debug.LogError("Unrecognised upgrade type " + type);
+            Debug.LogError($"Unrecognised upgrade type {type}");
 
         return success;
     }
@@ -106,7 +106,7 @@ public class UpgradesManager : MonoBehaviour
         Upgrade current_upgrade = cargoUpgrades.upgrades[upgrade_level];
         int new_capacity = (int)current_upgrade.value;
         player_script.cargoSize = new_capacity;
-        inventoryMaximumWeight.text = "Maximum Weight : " + new_capacity + "KG";
+        inventoryMaximumWeight.text = $"Maximum Weight : {new_capacity}KG";
 
         return true;
     }

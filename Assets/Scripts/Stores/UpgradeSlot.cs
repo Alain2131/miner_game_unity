@@ -42,14 +42,14 @@ public class UpgradeSlot : MonoBehaviour
 
             upgradeCost.text = "Sold Out";
             upgradeName.text = upgradeInfo.upgrades[current_level].name;
-            upgradeLevel.text = current_level + "/" + current_level;
+            upgradeLevel.text = $"{current_level}/{current_level}";
             
             return;
         }
 
         upgradeCost.text = upgradeInfo.upgrades[current_level + 1].cost.ToString();
         upgradeName.text = upgradeInfo.upgrades[current_level + 1].name;
-        upgradeLevel.text = current_level + "/" + (upgrades_count);
+        upgradeLevel.text = $"{current_level}/{upgrades_count}";
     }
 
     public void BuyUpgrade()
@@ -57,15 +57,15 @@ public class UpgradeSlot : MonoBehaviour
         int current_level = upgrades_manager.GetUpgradeLevel(upgrade_type);
         if (upgrades_count == current_level)
         {
-            Debug.LogError("No more upgrades to buy for " + upgrade_type);
+            Debug.LogError($"No more upgrades to buy for {upgrade_type}");
             return;
         }
 
         int balance = money.GetMoney();
-        int cost = upgradeInfo.upgrades[current_level+1].cost;
+        int cost = upgradeInfo.upgrades[current_level + 1].cost;
         if(cost > balance)
         {
-            Debug.LogError("Not enough money to buy upgrade " + upgrade_type + " at cost " + cost);
+            Debug.LogError($"Not enough money to buy {cost}$ {upgrade_type} upgrade.");
             return;
         }
 

@@ -105,7 +105,7 @@ public class WorldGeneration : MonoBehaviour
         //stride_offset_list.Add(percents_list.Count);
         
         if (percents_list.Count > MAX_ITEMS)
-            Debug.LogError("Too many world generation items, please increase MAX_ITEMS in C# and Compute Shader. -> " + percents_list.Count + ">" + MAX_ITEMS);
+            Debug.LogError($"Too many world generation items, please increase MAX_ITEMS in C# and Compute Shader. -> {percents_list.Count}>{MAX_ITEMS}");
         
         List<int> depths_list = new List<int>();
         depths_list.AddRange(air_depths);
@@ -115,7 +115,7 @@ public class WorldGeneration : MonoBehaviour
         //depths_list.AddRange(test_depths);
         
         if (percents_list.Count != depths_list.Count)
-            Debug.LogError("percents[] and depths[] length mismatch. -> " + percents_list.Count + "!=" + depths_list.Count);
+            Debug.LogError($"percents[] and depths[] length mismatch. -> {percents_list.Count}!={depths_list.Count}");
 
         List<float> noise_sizes_list = new List<float>()
         { 1.25f, 1.02f, 1.05f, 1.08f };
@@ -239,10 +239,10 @@ public class WorldGeneration : MonoBehaviour
         bool differentColors = Cd != Cd1 || Cd != Cd2 || Cd != Cd0;
         if (printDebug || differentColors)
         {
-            Debug.Log("CS result\t\t: " + Cd0);
-            Debug.Log("GetPixel (full)\t\t: " + Cd);
-            Debug.Log("GetPixel (new1)\t: " + Cd1);
-            Debug.Log("GetPixel (new2)\t: " + Cd2);
+            Debug.Log($"CS result\t\t: {Cd0}");
+            Debug.Log($"GetPixel (full)\t\t: {Cd}");
+            Debug.Log($"GetPixel (new1)\t: {Cd1}");
+            Debug.Log($"GetPixel (new2)\t: {Cd2}");
             Debug.Log("------------------------------------------");
         }
         //*/

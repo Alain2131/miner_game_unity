@@ -30,7 +30,7 @@ public class Money : MonoBehaviour
 
     private void UpdateMoneyUI()
     {
-        moneyText.text = "Moneys : " + money.ToString() + "$";
+        moneyText.text = $"Moneys : {money}$";
     }
 
     // Add an object in-game with a green/red color
