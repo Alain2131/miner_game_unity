@@ -12,11 +12,11 @@ public class WorldGeneration : MonoBehaviour
     private Material material;
 
     private int resolution = 128;
-    private bool visualizeSample = false;
+    private bool visualize_sample = false;
 
     // https://stackoverflow.com/questions/12413948/c-sharp-checking-if-a-variable-is-initialized
     // https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types
-    private float? tileWorldSize = null;
+    private float? tile_world_size = null;
 
 
     private struct SampleData
@@ -203,9 +203,9 @@ public class WorldGeneration : MonoBehaviour
 
     public void SetVisualize(bool mode)
     {
-        visualizeSample = mode;
+        visualize_sample = mode;
 
-        computeShader.SetBool("visualizeSample", visualizeSample);
+        computeShader.SetBool("visualizeSample", visualize_sample);
         computeShader.Dispatch(0, resolution / 8, resolution / 8, 1);
     }
 
@@ -214,7 +214,7 @@ public class WorldGeneration : MonoBehaviour
         int idx = pixel_ID % resolution;
         int idy = pixel_ID / resolution;
 
-        if (visualizeSample && update_visualizer)
+        if (visualize_sample && update_visualizer)
             SetVisualizeIndex(pixel_ID);
 
         // A few ways to sample the data, they all give the same result
@@ -296,7 +296,7 @@ public class WorldGeneration : MonoBehaviour
 
     private bool SetVisualizeIndex(int pixel_ID)
     {
-        if (visualizeSample)
+        if (visualize_sample)
         {
             int idx = pixel_ID % resolution;
             int idy = pixel_ID / resolution;
@@ -351,15 +351,15 @@ public class WorldGeneration : MonoBehaviour
     // no idea if this Nullable value method is bad practice
     public float GetPixelWorldSize()
     {
-        if (tileWorldSize.HasValue == false)
+        if (tile_world_size.HasValue == false)
         {
             // Distance between pixelID 0 and pixelID 1
             // pixelID 0 is (0*scale)/resolution, which is 0
             // pixelID 1 is (1*scale)/resolution, which is scale/resolution
-            tileWorldSize = GetMaterialScale() / resolution;
+            tile_world_size = GetMaterialScale() / resolution;
         }
 
-        return tileWorldSize.Value;
+        return tile_world_size.Value;
     }
 
     // Debug Feature

@@ -13,7 +13,7 @@ public class WorldGeneration_sample : MonoBehaviour
     // Each script that fetches the Color would
     // handle their own caching, for instance
     // oldID==newID ? oldColor : sampleColor()
-    private int oldPixelID;
+    private int old_pixel_ID;
 
     private void Start()
     {
@@ -25,7 +25,7 @@ public class WorldGeneration_sample : MonoBehaviour
         Vector3 position = sampleTransform.position;
 
         int pixel_ID = script.PositionToPixelID(position);
-        if (pixel_ID != oldPixelID)
+        if (pixel_ID != old_pixel_ID)
         {
             Color Cd = script.SampleAtID(pixel_ID);
             // Equivalent, but we've already calculated pixelID
@@ -35,7 +35,7 @@ public class WorldGeneration_sample : MonoBehaviour
             result_vector = new Vector3(Cd.r, Cd.g, Cd.b); // I don't like how Vector4 is shown, so I choose to ditch the Alpha
             result_vector4 = Cd;
 
-            oldPixelID = pixel_ID;
+            old_pixel_ID = pixel_ID;
         }
     }
 }

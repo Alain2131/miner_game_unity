@@ -5,7 +5,7 @@ public class SliderBar : MonoBehaviour
 {
     public Slider slider;
 
-    private bool isDead = false;
+    private bool is_player_dead = false;
 
     public void SetMaxValue(float value)
     {
@@ -16,7 +16,7 @@ public class SliderBar : MonoBehaviour
     public void SetValue(float value)
     {
         slider.value = value;
-        if(!isDead)
+        if(!is_player_dead)
             CheckForDeath();
     }
 
@@ -25,7 +25,7 @@ public class SliderBar : MonoBehaviour
     {
         if (slider.value <= 0)
         {
-            isDead = true;
+            is_player_dead = true;
             Debug.LogWarning("Yer dead !");
         }
     }

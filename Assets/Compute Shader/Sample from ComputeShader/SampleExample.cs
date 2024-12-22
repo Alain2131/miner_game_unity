@@ -5,14 +5,14 @@ public class SampleExample : MonoBehaviour
     public Sample_from_ComputeShader script; // should find a better name
     public Transform sampleTransform;
 
-    public Color result_color;
-    public Vector3 result_vector;
+    public Color resultColor;
+    public Vector3 resultVector;
 
     // Used to cache calculations
     // Each script that fetches the Color would
     // handle their own caching, for instance
     // oldID==newID ? oldColor : sampleColor()
-    private int oldPixelID;
+    private int old_pixel_ID;
 
     private void Start()
     {
@@ -23,17 +23,17 @@ public class SampleExample : MonoBehaviour
     {
         Vector3 position = sampleTransform.position;
 
-        int pixelID = script.PositionToPixelID(position);
-        if(pixelID != oldPixelID)
+        int pixel_ID = script.PositionToPixelID(position);
+        if(pixel_ID != old_pixel_ID)
         {
-            Color Cd = script.SampleAtID(pixelID);
+            Color Cd = script.SampleAtID(pixel_ID);
             // Equivalent, but we've already calculated pixelID
             //Cd = script.SampleAtPosition(position);
 
-            result_color = Cd;
-            result_vector = new Vector3(Cd.r, Cd.g, Cd.b); // I don't like how Vector4 is shown, so I choose to ditch the Alpha
+            resultColor = Cd;
+            resultVector = new Vector3(Cd.r, Cd.g, Cd.b); // I don't like how Vector4 is shown, so I choose to ditch the Alpha
 
-            oldPixelID = pixelID;
+            old_pixel_ID = pixel_ID;
         }
     }
 }

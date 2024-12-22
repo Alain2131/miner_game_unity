@@ -24,8 +24,8 @@ public class GameManager : MonoBehaviour
     public bool gamePaused = false;
 
     [Header("Level Generation Stuff")]
-    public int LevelXSize = 100; // the width of the level
-    public int LevelYSize = 20; // how many lines exists at once. Might need to rename this
+    public int levelXSize = 100; // the width of the level
+    public int levelYSize = 20; // how many lines exists at once. Might need to rename this
 
 
     public Controls controls;
@@ -95,9 +95,9 @@ public class GameManager : MonoBehaviour
     }
 
     // Should probably be in a "level" class or something, so we can call it with gameManager.level.AddDugUpTile()
-    public void AddDugUpTile(int tileID)
+    public void AddDugUpTile(int tile_ID)
     {
-        tilesDugUp.Add(tileID);
+        tilesDugUp.Add(tile_ID);
     }
 
 
@@ -123,56 +123,56 @@ public class GameManager : MonoBehaviour
         int idx = Mathf.FloorToInt(position.x);
         int idy = -Mathf.FloorToInt(position.y);
 
-        idx = Mathf.Clamp(idx, 0, LevelXSize - 1);
-        idy = Mathf.Clamp(idy, 0, LevelXSize - 1);
+        idx = Mathf.Clamp(idx, 0, levelXSize - 1);
+        idy = Mathf.Clamp(idy, 0, levelXSize - 1);
 
-        int pixelID = idx + (idy * LevelXSize) - LevelXSize;
-        return pixelID;
+        int pixel_ID = idx + (idy * levelXSize) - levelXSize;
+        return pixel_ID;
     }
 
-    public Vector3 PixelIDToPosition(int pixelID)
+    public Vector3 PixelIDToPosition(int pixel_ID)
     {
         // Need to handle negative pixelID properly
         // Decide on what -1 will be.
         // * Above 0
         // * Above 99
-        if(pixelID < 0)
+        if(pixel_ID < 0)
             return new Vector3(-1, -1, 0);
 
         
-        int idx = pixelID % LevelXSize;
-        int idy = -pixelID / LevelXSize;
+        int idx = pixel_ID % levelXSize;
+        int idy = -pixel_ID / levelXSize;
         //idy -= LevelYSize; // cancel out "one page offset"
 
         //float scale = GetMaterialScale();
-        //float xPos = (idx * scale) / resolution;
-        //float yPos = (idy * scale) / resolution;
+        //float x_pos = (idx * scale) / resolution;
+        //float y_pos = (idy * scale) / resolution;
 
         float tile_size = GetPixelWorldSize();
-        float xPos = idx * tile_size;
-        float yPos = idy * tile_size;
-        yPos -= 1;
+        float x_pos = idx * tile_size;
+        float y_pos = idy * tile_size;
+        y_pos -= 1;
 
-        // xPos and yPos at the bottom-left corner, so we add half the size
-        xPos += tile_size * 0.5f;
-        yPos += tile_size * 0.5f;
+        // x_pos and y_pos are at the bottom-left corner, so we add half the size
+        x_pos += tile_size * 0.5f;
+        y_pos += tile_size * 0.5f;
 
-        return new Vector3(xPos, yPos, 0);
+        return new Vector3(x_pos, y_pos, 0);
     }
 
     /*public Color SampleAtPosition(Vector3 position)
     {
-        int pixelID = PositionToPixelID(position);
+        int pixel_ID = PositionToPixelID(position);
 
-        Color Cd = SampleAtID(pixelID);
+        Color Cd = SampleAtID(pixel_ID);
         return Cd;
     }*/
 
     // This could probably be optimized with better math logic
     public int GetPixelAtOffset(int pixel_ID, int offsetx, int offsety)
     {
-        int idx = pixel_ID % LevelXSize;
-        int idy = pixel_ID / LevelXSize;
+        int idx = pixel_ID % levelXSize;
+        int idy = pixel_ID / levelXSize;
         
         idx = Mathf.Abs(idx);
 
@@ -187,10 +187,10 @@ public class GameManager : MonoBehaviour
 
 
         // Sampling is Out of Bounds
-        if (idx < 0 || idy < 0 || idx > LevelXSize || idy > LevelXSize)
+        if (idx < 0 || idy < 0 || idx > levelXSize || idy > levelXSize)
             return -1;
 
-        int final_pixel_ID = idx + (idy * LevelXSize);
+        int final_pixel_ID = idx + (idy * levelXSize);
         return final_pixel_ID;
     }
 
@@ -204,10 +204,10 @@ public class GameManager : MonoBehaviour
     }
 
     // Debug Feature
-    public void CreateQuadAtPixelID(int pixelID)
+    public void CreateQuadAtPixelID(int pixel_ID)
     {
         float size = GetPixelWorldSize();
-        Vector3 position = PixelIDToPosition(pixelID);
+        Vector3 position = PixelIDToPosition(pixel_ID);
 
         GameObject square = GameObject.CreatePrimitive(PrimitiveType.Quad);
         square.transform.localScale = new Vector3(size, size, size);

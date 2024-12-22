@@ -14,19 +14,22 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class Floor : MonoBehaviour
 {
-    private GameManager gameManager;
-    private int xSize;
+    private GameManager game_manager;
+    private int x_size;
     new private BoxCollider2D collider;
+
+    private Transform player_transform;
 
     private void Start()
     {
-        gameManager = GameManager.Instance;
-        xSize = gameManager.LevelXSize;
+        game_manager = GameManager.Instance;
+        x_size = game_manager.levelXSize;
         collider = transform.GetComponent<BoxCollider2D>();
+        player_transform = game_manager.player.transform;
 
         // Set the collider to the right size
-        Vector2 offset = new Vector2(xSize * 0.5f, -0.5f);
-        Vector2 size = new Vector2(xSize, 1);
+        Vector2 offset = new Vector2(x_size * 0.5f, -0.5f);
+        Vector2 size = new Vector2(x_size, 1);
         collider.offset = offset;
         collider.size = size;
     }
@@ -42,7 +45,7 @@ public class Floor : MonoBehaviour
 
         // If we stop overlapping with trigger1 and trigger2 is overlapping with the player,
         // enable the floor.
-        if(gameManager.player.transform.position.y > 0.5f)
+        if(player_transform.position.y > 0.5f)
         {
             Enable();
         }

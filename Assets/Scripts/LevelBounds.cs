@@ -7,26 +7,28 @@ using UnityEngine;
 
 public class LevelBounds : MonoBehaviour
 {
-    private GameManager gameManager;
-    private int xSize;
+    private GameManager game_manager;
+    private int x_size;
     private BoxCollider2D collider1;
     private BoxCollider2D collider2;
+    private Transform player_transform;
 
     // Automatically add two BoxCollider2D
     // (because RequireComponent can only add one)
     void Reset()
     {
-        int numColliders = GetComponents<BoxCollider2D>().Length;
-        for (int i = 0; i < 2 - numColliders; i++)
+        int num_colliders = GetComponents<BoxCollider2D>().Length;
+        for (int i = 0; i < 2 - num_colliders; i++)
             gameObject.AddComponent<BoxCollider2D>();
     }
 
     void Start()
     {
-        gameManager = GameManager.Instance;
-        xSize = gameManager.LevelXSize;
+        game_manager = GameManager.Instance;
+        x_size = game_manager.levelXSize;
         collider1 = GetComponents<BoxCollider2D>()[0];
         collider2 = GetComponents<BoxCollider2D>()[1];
+        player_transform = game_manager.player.transform;
 
         // Set sizes and offsets
         Vector2 offset = new Vector2(-0.5f, 0);
@@ -36,14 +38,14 @@ public class LevelBounds : MonoBehaviour
         collider2.size = size;
 
         collider1.offset = offset;
-        offset.x = xSize + 0.5f;
+        offset.x = x_size + 0.5f;
         collider2.offset = offset;
     }
 
     void Update()
     {
         // Move with player
-        Vector3 pos = gameManager.player.transform.position;
+        Vector3 pos = player_transform.position;
         pos.x = 0;
         pos.z = 0;
         transform.position = pos;

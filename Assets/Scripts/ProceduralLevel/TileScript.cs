@@ -9,19 +9,25 @@ using UnityEngine;
 public class TileScript : MonoBehaviour
 {
     public TileInfo tileInfo;
-    public int x_ID; // the lateral position on the line, including air tiles
-    public int uniqueID = -1; // lineID * xSize + x_ID, a unique ID for every single tiles to store which tiles have been dug up
+    public int xID; // the lateral position on the line, including air tiles
+
+    // lineID * xSize + x_ID, a unique ID for every single tiles to store which tiles have been dug up
+    // coincidendally matches up with Pixel ID, should probably only calculate once and share the info
+    public int uniqueID = -1;
+
+
+    private GameManager game_manager;
+    private OreInventory ore_inventory;
+
+    private void Start()
+    {
+        game_manager = GameManager.Instance;
+        ore_inventory = game_manager.oreInventory;
+    }
 
     public void SetEnabled(bool enabled)
     {
-        if (enabled)
-        {
-            transform.gameObject.SetActive(true);
-        }
-        else
-        {
-            transform.gameObject.SetActive(false);
-        }
+        transform.gameObject.SetActive(enabled);
     }
 
     public void SetMaterial(Material mat)
@@ -33,15 +39,13 @@ public class TileScript : MonoBehaviour
     {
         SetEnabled(false);
 
-        GameManager gameManager = GameManager.Instance;
-        gameManager.AddDugUpTile(uniqueID); // add the tile to the tilesDugUp List
+        game_manager.AddDugUpTile(uniqueID); // add the tile to the tilesDugUp List
 
-        OreInventory oreInventory = gameManager.oreInventory;
         if(tileInfo.addToInventory)
-            oreInventory.AddSingleOre(tileInfo); // increase the tile count in the inventory (if applicable)
+            ore_inventory.AddSingleOre(tileInfo); // increase the tile count in the inventory (if applicable)
 
         // Recompute Collision on the line
-        GameObject parent = transform.parent.gameObject;
-        parent.GetComponent<LineGeneration>().RecomputeCollision(x_ID);
+        GameObject line_object = transform.parent.gameObject;
+        line_object.GetComponent<LineGeneration>().RecomputeCollision(xID);
     }
 }

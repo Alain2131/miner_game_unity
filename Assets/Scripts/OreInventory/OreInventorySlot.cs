@@ -18,11 +18,11 @@ public class OreInventorySlot : MonoBehaviour
     public TileInfo tileInfo;
 
     //private OreInventory oreInventory;
-    private GameManager gameManager;
+    private GameManager game_manager;
 
     private void Awake()
     {
-        gameManager = GameManager.Instance;
+        game_manager = GameManager.Instance;
         //oreInventory = gameManager.oreInventory;
     }
 
@@ -44,16 +44,16 @@ public class OreInventorySlot : MonoBehaviour
         /*if (!oreInventory)
             oreInventory = gameManager.oreInventory;*/
 
-        int count = gameManager.oreInventory.GetOreCount(tileInfo);
+        int count = game_manager.oreInventory.GetOreCount(tileInfo);
         oreQty.text = count.ToString();
 
-        float totalWeight = tileInfo.weight * count;
-        oreWeight.text = totalWeight.ToString() + "KG";
+        float total_weight = tileInfo.weight * count;
+        oreWeight.text = total_weight.ToString() + "KG";
         oreValue.text = "$" + tileInfo.value.ToString();
     }
 
     public void RemoveItem()
     {
-        gameManager.oreInventory.RemoveSingleOre(tileInfo);
+        game_manager.oreInventory.RemoveSingleOre(tileInfo);
     }
 }

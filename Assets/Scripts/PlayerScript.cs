@@ -39,25 +39,25 @@ public class PlayerScript : MonoBehaviour
     [Header("Items")]
     public int itemExplosiveCount = 5;
 
-    private GameManager gameManager;
+    private GameManager game_manager;
 
-    private bool isDigging = false;
-    private bool isFalling = false; // flying as well
+    private bool is_digging = false;
+    private bool is_falling = false; // flying as well
 
-    private float previousFrameSpeed = 0;
+    private float previous_frame_speed = 0;
 
 
     private Controls controls;
     private void Awake()
     {
-        gameManager = GameManager.Instance;
+        game_manager = GameManager.Instance;
 
         // Bind controls Callbacks
         // rebind -> https://youtu.be/Yjee_e4fICc?t=2478
         // save rebind -> https://youtu.be/Yjee_e4fICc?t=2573
         // mobile (on-screen) controls -> https://youtu.be/Yjee_e4fICc?t=2578
 
-        controls = gameManager.controls;
+        controls = game_manager.controls;
         controls.Gameplay.Enable();
         controls.Gameplay.Inventory.performed += ToggleInventory;
         controls.Gameplay.TogglePause.performed += TogglePause;
@@ -101,31 +101,31 @@ public class PlayerScript : MonoBehaviour
 
         HandleInputs();
 
-        isFalling = !IsPlayerOnGround();
+        is_falling = !IsPlayerOnGround();
 
         HandleFallDamage();
     }
 
     private void ToggleInventory(InputAction.CallbackContext context)
     {
-        gameManager.oreInventory.ToggleInventoryUI();
+        game_manager.oreInventory.ToggleInventoryUI();
     }
 
     private void TogglePause(InputAction.CallbackContext context)
     {
-        gameManager.TogglePauseGame();
+        game_manager.TogglePauseGame();
     }
 
     private void Interact(InputAction.CallbackContext context)
     {
         // Allow for interaction only when the game is not paused
         // Much like gameManager.TogglePauseGame(), this feels like a hack.
-        if (gameManager.gamePaused)
+        if (game_manager.gamePaused)
             return;
         
         // Building Interact
         // This could be IsPlayerOnGround(), why not ?
-        if (fetchFloor()) // There will always be a floor under a building <- what do you mean ? "Floor" as in "Tiles", or "Floor" as in "the Floor object" ?
+        if (FetchFloor()) // There will always be a floor under a building <- what do you mean ? "Floor" as in "Tiles", or "Floor" as in "the Floor object" ?
         {
             CheckInteraction();
         }
@@ -136,10 +136,10 @@ public class PlayerScript : MonoBehaviour
         //int current_pixel_ID = gameManager.PositionToPixelID(transform.position);
         //gameManager.CreateQuadAtPixelID(current_pixel_ID);
 
-        int pixel_ID = gameManager.PositionToPixelID(transform.position);
+        int pixel_ID = game_manager.PositionToPixelID(transform.position);
         Debug.Log(pixel_ID);
-        Vector3 rayDirection = new Vector3(0, 0, 10);
-        int layerMask = LayerMask.GetMask("tile");
+        Vector3 ray_direction = new Vector3(0, 0, 10);
+        int layer_mask = LayerMask.GetMask("tile");
         //*
         for (int x = -1; x <= 1; x++)
         {
@@ -148,13 +148,13 @@ public class PlayerScript : MonoBehaviour
                 if (x == 0 && y == 0)
                     continue;
 
-                int ID_to_dig = gameManager.GetPixelAtOffset(pixel_ID, x, y);
-                gameManager.CreateQuadAtPixelID(ID_to_dig);
+                int ID_to_dig = game_manager.GetPixelAtOffset(pixel_ID, x, y);
+                game_manager.CreateQuadAtPixelID(ID_to_dig);
 
                 //*
-                Vector3 center_to_dig = gameManager.PixelIDToPosition(ID_to_dig);
+                Vector3 center_to_dig = game_manager.PixelIDToPosition(ID_to_dig);
 
-                RaycastHit2D hit = Physics2D.Raycast(center_to_dig, rayDirection, rayDirection.magnitude, layerMask);
+                RaycastHit2D hit = Physics2D.Raycast(center_to_dig, ray_direction, ray_direction.magnitude, layer_mask);
 
                 if (hit.collider != null)
                 {
@@ -196,51 +196,51 @@ public class PlayerScript : MonoBehaviour
     {
         // This feels super janky, but it kinda works
         float threshold = 5;
-        float damageMultiplier = 10;
+        float damage_multiplier = 10;
 
 
-        float currentFrameSpeed = rb.velocity.magnitude;
+        float current_frame_speed = rb.velocity.magnitude;
         if (!omnidirectionalDamage)
         {
             // Clamp negative velocity (going down), then inverse
-            currentFrameSpeed = rb.velocity.y;
-            currentFrameSpeed = Mathf.Min(currentFrameSpeed, 0);
-            currentFrameSpeed *= -1;
+            current_frame_speed = rb.velocity.y;
+            current_frame_speed = Mathf.Min(current_frame_speed, 0);
+            current_frame_speed *= -1;
         }
 
 
-        float delta = currentFrameSpeed - previousFrameSpeed;
+        float delta = current_frame_speed - previous_frame_speed;
         if (delta < -threshold)
         {
-            float fallDamage = (Mathf.Abs(delta) - threshold) * damageMultiplier;
+            float fall_damage = (Mathf.Abs(delta) - threshold) * damage_multiplier;
 
-            TakeDamage((int)fallDamage);
+            TakeDamage((int)fall_damage);
             //Debug.Log("Youch ! Took " + (int)fallDamage + " damage.");
         }
 
-        previousFrameSpeed = currentFrameSpeed;
+        previous_frame_speed = current_frame_speed;
     }
 
     private void ClampPlayerSpeed()
     {
         // Make sure the player can't move faster than a certain speed
         // Especially useful when falling
-        float maxSpeed = 20f;
-        float playerSpeed = rb.velocity.magnitude;
-        if (playerSpeed > maxSpeed)
+        float max_speed = 20f;
+        float player_speed = rb.velocity.magnitude;
+        if (player_speed > max_speed)
         {
-            float mult = maxSpeed / playerSpeed;
+            float mult = max_speed / player_speed;
             rb.velocity = new Vector2(rb.velocity.x * mult, rb.velocity.y * mult);
         }
     }
 
     private void HandleInputs()
     {
-        Vector2 inputVector = controls.Gameplay.Movement.ReadValue<Vector2>();
+        Vector2 input_vector = controls.Gameplay.Movement.ReadValue<Vector2>();
 
         // Need to disable movement when digging or when the store is open
         // digging is done, but not the store
-        if (gameManager.isUpgradeStoreOpen || gameManager.gamePaused)
+        if (game_manager.isUpgradeStoreOpen || game_manager.gamePaused)
             return;
 
         
@@ -248,7 +248,7 @@ public class PlayerScript : MonoBehaviour
         float down = controls.Gameplay.Down.ReadValue<float>();
         if (down > 0.5)
         {
-            if (canPlayerDig())
+            if (CanPlayerDig())
             {
                 Dig(Vector3.down);
 
@@ -257,41 +257,41 @@ public class PlayerScript : MonoBehaviour
                 // Right now, the player can have two separate holes,
                 // disable the floor on one hole (without going through it),
                 // then move to the other hole and fall through it, which is weird.
-                RaycastHit2D floorHit = fetchFloor();
-                if (floorHit)
+                RaycastHit2D floor_hit = FetchFloor();
+                if (floor_hit)
                 {
-                    Transform floor = floorHit.transform;
+                    Transform floor = floor_hit.transform;
                     floor.GetComponent<Floor>().Disable();
                 }
             }
         }
 
         //Debug.Log(inputVector.x);
-        if (inputVector.x < -0.5) // left
+        if (input_vector.x < -0.5) // left
         {
-            if (canPlayerDig())
+            if (CanPlayerDig())
                 Dig(Vector3.left);
         }
-        else if (inputVector.x > 0.5) // right
+        else if (input_vector.x > 0.5) // right
         {
-            if (canPlayerDig())
+            if (CanPlayerDig())
                 Dig(Vector3.right);
         }
 
 
         // Apply Movement Force
-        if (inputVector.magnitude > 0 && !isDigging)
+        if (input_vector.magnitude > 0 && !is_digging)
         {
             Vector2 speedMult = new Vector2(lateralSpeed, upForce) * propellerMultiplier; // could be defined only once
-            rb.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speedMult * Time.deltaTime);
+            rb.AddForce(new Vector3(input_vector.x, input_vector.y, 0) * speedMult * Time.deltaTime);
 
 
             float lateralMovementCost = 0.5f;
-            if (isFalling) // Barely consume fuel when moving left/right while flying
+            if (is_falling) // Barely consume fuel when moving left/right while flying
                 lateralMovementCost = 0.1f;
 
             // Flying is more expensive than moving left/right
-            float fuelConsumption = inputVector.y + Mathf.Abs(inputVector.x) * lateralMovementCost;
+            float fuelConsumption = input_vector.y + Mathf.Abs(input_vector.x) * lateralMovementCost;
             // Could modulate based on movement input
             // At one point, I want to get movement to be quick from idle, then taper off
             // fuel consumption could reflect that (granted, it's not the most important detail)
@@ -301,14 +301,14 @@ public class PlayerScript : MonoBehaviour
     }
 
     // "Dig" isn't really what this does, this is just in-between the input and the actual dig
-    private void Dig(Vector3 DigDirection)
+    private void Dig(Vector3 dig_direction)
     {
         // Fetch Tile
-        RaycastHit2D hit = PlayerRaycast(DigDirection * 0.6f, "tile", false);
+        RaycastHit2D hit = PlayerRaycast(dig_direction * 0.6f, "tile", false);
 
         if (hit.collider != null)
         {
-            if (!isDigging)
+            if (!is_digging)
             {
                 // Make sure we didn't just bounce
                 // This might have to be handled with a PlayerState
@@ -327,41 +327,41 @@ public class PlayerScript : MonoBehaviour
     private IEnumerator DigAnimation(TileScript tile)
     {
         //Debug.Log("Diggy diggy hole");
-        isDigging = true;
+        is_digging = true;
 
         // We'll have to make sure to not dig if the player just took damage from falling,
         // we don't want to cancel the bounce nor be able to dig at that moment.
         rb.velocity = Vector2.zero;
         rb.simulated = false; // Disable RigidBody when digging
 
-        float digTime = tile.tileInfo.GetDigTime();
-        digTime /= drillSpeed;
+        float dig_time = tile.tileInfo.GetDigTime();
+        dig_time /= drillSpeed;
 
-        Vector3 currentPos = transform.position;
-        Vector3 targetPosition = currentPos;
-        targetPosition.x = tile.transform.position.x;
+        Vector3 current_pos = transform.position;
+        Vector3 target_position = current_pos;
+        target_position.x = tile.transform.position.x;
 
-        bool diggingDown = (tile.transform.position - currentPos).y < -0.5;
-        if (diggingDown)
+        bool digging_down = (tile.transform.position - current_pos).y < -0.5;
+        if (digging_down)
         {
-            targetPosition.y -= 1;
+            target_position.y -= 1;
         }
 
 
-        float startingFuel = currentFuel;
-        float targetFuel = currentFuel - tile.tileInfo.GetFuelConsumption();
+        float starting_fuel = currentFuel;
+        float target_fuel = currentFuel - tile.tileInfo.GetFuelConsumption();
 
-        float t = 0f;
-        while (t < 1)
+        float time = 0f;
+        while (time < 1)
         {
-            t += Time.deltaTime / digTime;
+            time += Time.deltaTime / dig_time;
 
             // Update Player Position
-            transform.position = Vector3.Lerp(currentPos, targetPosition, t);
+            transform.position = Vector3.Lerp(current_pos, target_position, time);
             transform.position += AddJitter();
 
             // Digging Fuel Consumption
-            SetFuel(Mathf.Lerp(startingFuel, targetFuel, t));
+            SetFuel(Mathf.Lerp(starting_fuel, target_fuel, time));
 
             yield return new WaitForSeconds(Time.deltaTime);
         }
@@ -369,7 +369,7 @@ public class PlayerScript : MonoBehaviour
         tile.DigTile();
 
         rb.simulated = true;
-        isDigging = false;
+        is_digging = false;
     }
 
     private Vector3 AddJitter()
@@ -379,19 +379,19 @@ public class PlayerScript : MonoBehaviour
         // over like 0.1 seconds
 
         // You can make those public at the top to tweak them
-        float jitterIntensity = 0.05f;
-        float jitterScale = 15f;
+        float jitter_intensity = 0.05f;
+        float jitter_scale = 15f;
 
         float time = Time.realtimeSinceStartup;
 
-        Vector3 jitterOffset;
-        jitterOffset.x = Mathf.PerlinNoise((time + 12.4f) * jitterScale, 0f) - 0.5f;
-        jitterOffset.y = Mathf.PerlinNoise((time + 9.647f) * jitterScale, 0f) - 0.5f;
-        jitterOffset.z = 0;
+        Vector3 jitter_offset;
+        jitter_offset.x = Mathf.PerlinNoise((time + 12.4f) * jitter_scale, 0f) - 0.5f;
+        jitter_offset.y = Mathf.PerlinNoise((time + 9.647f) * jitter_scale, 0f) - 0.5f;
+        jitter_offset.z = 0;
 
-        jitterOffset *= jitterIntensity;
+        jitter_offset *= jitter_intensity;
 
-        return jitterOffset;
+        return jitter_offset;
     }
 
     public void TakeDamage(int damage)
@@ -425,10 +425,10 @@ public class PlayerScript : MonoBehaviour
         if (disableFuel)
             return;
 
-        if (gameManager.gamePaused)
+        if (game_manager.gamePaused)
             return;
 
-        if (gameManager.isUpgradeStoreOpen)
+        if (game_manager.isUpgradeStoreOpen)
             return;
 
         currentFuel -= consumption;
@@ -469,17 +469,17 @@ public class PlayerScript : MonoBehaviour
     }
 
     // Utility methods
-    private RaycastHit2D PlayerRaycast(Vector3 rayDirection, string layerName = "tile", bool debugDraw = false)
+    private RaycastHit2D PlayerRaycast(Vector3 ray_direction, string layer_name = "tile", bool debug_draw = false)
     {
-        int layerMask = LayerMask.GetMask(layerName);
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, rayDirection, rayDirection.magnitude, layerMask);
+        int layer_mask = LayerMask.GetMask(layer_name);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, ray_direction, ray_direction.magnitude, layer_mask);
 
-        if (debugDraw)
+        if (debug_draw)
         {
             if (hit.collider != null)
-                Debug.DrawRay(transform.position, rayDirection.normalized * hit.distance, Color.green);
+                Debug.DrawRay(transform.position, ray_direction.normalized * hit.distance, Color.green);
             else
-                Debug.DrawRay(transform.position, rayDirection, Color.red);
+                Debug.DrawRay(transform.position, ray_direction, Color.red);
         }
 
         return hit;
@@ -491,24 +491,24 @@ public class PlayerScript : MonoBehaviour
         return (nmax - nmin) * (value - omin) / (omax - omin) + nmin;
     }
 
-    private bool canPlayerDig()
+    private bool CanPlayerDig()
     {
         // We want a ray that's barely larger than the player. 0.475 is ~half the size of the player.
         RaycastHit2D hit = PlayerRaycast(Vector3.down * 0.475f, "tile", false);
         if(!hit)
-            hit = fetchFloor();
-        bool grounded = hit.collider != null;
+            hit = FetchFloor();
+        bool is_player_grounded = hit.collider != null;
 
-        bool slowEnough = rb.velocity.magnitude < 0.5f;
+        bool slow_enough_to_dig = rb.velocity.magnitude < 0.5f;
 
         // Debug feature to be able to dig as fast as I want
         if (disableDigAnimation)
-            slowEnough = true;
+            slow_enough_to_dig = true;
 
-        return grounded && slowEnough;
+        return is_player_grounded && slow_enough_to_dig;
     }
 
-    private RaycastHit2D fetchFloor()
+    private RaycastHit2D FetchFloor()
     {
         // We want a ray that's barely larger than the player. 0.475 is ~half the size of the player.
         RaycastHit2D hit = PlayerRaycast(Vector3.down * 0.475f, "floor", false);
@@ -540,15 +540,15 @@ public class PlayerScript : MonoBehaviour
     // Is different from isPlayerOnTile/Floor since those returns the specific hit object
     public bool IsPlayerOnGround()
     {
-        if (isDigging) // If we are digging, we are "on the ground"
+        if (is_digging) // If we are digging, we are "on the ground"
             return true;
 
-        bool touchingFloor = rb.IsTouchingLayers(LayerMask.GetMask("floor"));
+        bool is_player_touching_floor = rb.IsTouchingLayers(LayerMask.GetMask("floor"));
         // We want a ray that's barely larger than the player. 0.475 is ~half the size of the player.
         RaycastHit2D hit = PlayerRaycast(Vector3.down * 0.475f, "tile", false);
-        bool touchingTile = hit.collider != null;
+        bool is_player_touching_tile = hit.collider != null;
 
         //Debug.Log("Touching floor " + touchingFloor + " Touching tile " + touchingTile);
-        return touchingFloor || touchingTile;
+        return is_player_touching_floor || is_player_touching_tile;
     }
 }

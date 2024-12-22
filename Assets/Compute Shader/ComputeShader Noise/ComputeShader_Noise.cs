@@ -13,7 +13,7 @@ public class ComputeShader_Noise : MonoBehaviour
     private int resolution = 128;
 
     private ComputeBuffer gradients;
-    private int perlinNoiseHandle;
+    private int perlin_noise_handle;
 
     void Start()
     {
@@ -25,11 +25,11 @@ public class ComputeShader_Noise : MonoBehaviour
         renderTexture.filterMode = FilterMode.Point;
         renderTexture.Create();
 
-        perlinNoiseHandle = computeShader.FindKernel("CSMain");
-        computeShader.SetTexture(perlinNoiseHandle, "Result", renderTexture);
+        perlin_noise_handle = computeShader.FindKernel("CSMain");
+        computeShader.SetTexture(perlin_noise_handle, "Result", renderTexture);
 
         computeShader.SetFloat("res", (float)resolution);
-        computeShader.SetBuffer(perlinNoiseHandle, "gradients", gradients);
+        computeShader.SetBuffer(perlin_noise_handle, "gradients", gradients);
 
         material.SetTexture("_MainTex", renderTexture);
     }
@@ -37,7 +37,7 @@ public class ComputeShader_Noise : MonoBehaviour
     void Update()
     {
         computeShader.SetFloat("t", (float)EditorApplication.timeSinceStartup);
-        computeShader.Dispatch(perlinNoiseHandle, resolution / 8, resolution / 8, 1);
+        computeShader.Dispatch(perlin_noise_handle, resolution / 8, resolution / 8, 1);
     }
 
     private void OnApplicationQuit()

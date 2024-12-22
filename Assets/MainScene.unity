@@ -3037,7 +3037,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c000edb4598de4c9f801936d90d325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1921623946}
+  playerTransform: {fileID: 1921623946}
 --- !u!1001 &1039633069
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3634,8 +3634,8 @@ MonoBehaviour:
   pauseGameUI: {fileID: 787142047}
   resumeButton: {fileID: 120381766}
   gamePaused: 0
-  LevelXSize: 100
-  LevelYSize: 20
+  levelXSize: 100
+  levelYSize: 20
   tilesDugUp: 
 --- !u!4 &1204470072
 Transform:
@@ -4680,16 +4680,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e778a5864dfe6e545ae085019df93293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cargo_upgrades: {fileID: 11400000, guid: 661e83fae10ddd14e8ca0668b8b5f829, type: 2}
-  cargo_upgrade_level: 0
-  drill_upgrades: {fileID: 11400000, guid: 2b23448e016b9e845a72f1f879791d2f, type: 2}
-  drill_upgrade_level: 0
-  fuel_upgrades: {fileID: 11400000, guid: 0facad21301b19f46b9e7907ecf42a1f, type: 2}
-  fuel_upgrade_level: 0
-  hull_upgrades: {fileID: 11400000, guid: e07323cc45d172642adde77a73addd15, type: 2}
-  hull_upgrade_level: 0
-  propeller_upgrades: {fileID: 11400000, guid: 6e6ae8d83f043af468b87feb64ae2f7b, type: 2}
-  propeller_upgrade_level: 0
+  cargoUpgrades: {fileID: 11400000, guid: 661e83fae10ddd14e8ca0668b8b5f829, type: 2}
+  cargoUpgradeLevel: 0
+  drillUpgrades: {fileID: 11400000, guid: 2b23448e016b9e845a72f1f879791d2f, type: 2}
+  drillUpgradeLevel: 0
+  fuelUpgrades: {fileID: 11400000, guid: 0facad21301b19f46b9e7907ecf42a1f, type: 2}
+  fuelUpgradeLevel: 0
+  hullUpgrades: {fileID: 11400000, guid: e07323cc45d172642adde77a73addd15, type: 2}
+  hullUpgradeLevel: 0
+  propellerUpgrades: {fileID: 11400000, guid: 6e6ae8d83f043af468b87feb64ae2f7b, type: 2}
+  propellerUpgradeLevel: 0
   fuelSlider: {fileID: 1930581995}
   healthSlider: {fileID: 1999159836}
   inventoryMaximumWeight: {fileID: 1420759948}

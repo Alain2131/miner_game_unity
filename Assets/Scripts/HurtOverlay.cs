@@ -27,14 +27,14 @@ public class HurtOverlay : MonoBehaviour
     
     IEnumerator HurtAnimation(float opacity)
     {
-        float maxAlpha = 0.75f * opacity;
+        float max_alpha = 0.75f * opacity;
 
-        float t = 0f;
-        while (t < 1)
+        float time = 0f;
+        while (time < 1)
         {
-            t += Time.deltaTime / 0.0125f; // fadein time
+            time += Time.deltaTime / 0.0125f; // fadein time
 
-            color.a = Mathf.Lerp(0, maxAlpha, t); // fade in
+            color.a = Mathf.Lerp(0, max_alpha, time); // fade in
             image.color = color;
 
             yield return new WaitForSeconds(Time.deltaTime);
@@ -42,12 +42,12 @@ public class HurtOverlay : MonoBehaviour
 
         yield return new WaitForSeconds(0.05f); // small pause
 
-        t = 0f;
-        while (t < 1)
+        time = 0f;
+        while (time < 1)
         {
-            t += Time.deltaTime / 0.1f; // fadeout time
+            time += Time.deltaTime / 0.1f; // fadeout time
 
-            color.a = Mathf.Lerp(maxAlpha, 0, t); // fade out
+            color.a = Mathf.Lerp(max_alpha, 0, time); // fade out
             image.color = color;
 
             yield return new WaitForSeconds(Time.deltaTime);

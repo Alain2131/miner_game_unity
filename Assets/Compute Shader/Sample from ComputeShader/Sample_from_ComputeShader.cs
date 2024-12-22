@@ -11,13 +11,13 @@ public class Sample_from_ComputeShader : MonoBehaviour
     private Material material;
 
     private int resolution = 128;
-    private bool visualizeSample = false;
+    private bool visualize_sample = false;
 
     private struct SampleData
     {
         public Color color;
     }
-    private ComputeBuffer sampleBuffer;
+    private ComputeBuffer sample_buffer;
     private SampleData[] sData;
 
 
@@ -34,10 +34,10 @@ public class Sample_from_ComputeShader : MonoBehaviour
 
         // SampleData stuff
         sData = new SampleData[1];
-        int colorSize = sizeof(float) * 4;
-        sampleBuffer = new ComputeBuffer(sData.Length, colorSize);
-        sampleBuffer.SetData(sData);
-        computeShader.SetBuffer(0, "sampleData", sampleBuffer);
+        int color_size = sizeof(float) * 4;
+        sample_buffer = new ComputeBuffer(sData.Length, color_size);
+        sample_buffer.SetData(sData);
+        computeShader.SetBuffer(0, "sampleData", sample_buffer);
         computeShader.SetBool("visualizeSample", false); // will be set to true later if needed
 
         computeShader.SetTexture(0, "Result", renderTexture);
@@ -65,19 +65,19 @@ public class Sample_from_ComputeShader : MonoBehaviour
 
     public void SetVisualize(bool mode)
     {
-        visualizeSample = mode;
+        visualize_sample = mode;
 
-        computeShader.SetBool("visualizeSample", visualizeSample);
+        computeShader.SetBool("visualizeSample", visualize_sample);
         computeShader.Dispatch(0, resolution / 8, resolution / 8, 1);
     }
 
-    public Color SampleAtID(int pixelID)
+    public Color SampleAtID(int pixel_ID)
     {
-        int idx = pixelID % resolution;
-        int idy = pixelID / resolution;
+        int idx = pixel_ID % resolution;
+        int idy = pixel_ID / resolution;
 
-        if (visualizeSample)
-            SetVisualizeIndex(pixelID);
+        if (visualize_sample)
+            SetVisualizeIndex(pixel_ID);
 
         // A few ways to sample the data, they all give the same result
         // Don't know about performance
@@ -123,24 +123,24 @@ public class Sample_from_ComputeShader : MonoBehaviour
         idx = Mathf.Clamp(idx, 0, resolution - 1);
         idy = Mathf.Clamp(idy, 0, resolution - 1);
 
-        int pixelID = idx + (idy * resolution);
-        return pixelID;
+        int pixel_ID = idx + (idy * resolution);
+        return pixel_ID;
     }
 
     public Color SampleAtPosition(Vector3 position)
     {
-        int pixelID = PositionToPixelID(position);
+        int pixel_ID = PositionToPixelID(position);
 
-        Color Cd = SampleAtID(pixelID);
+        Color Cd = SampleAtID(pixel_ID);
         return Cd;
     }
 
-    private bool SetVisualizeIndex(int pixelID)
+    private bool SetVisualizeIndex(int pixel_ID)
     {
-        if (visualizeSample)
+        if (visualize_sample)
         {
-            int idx = pixelID % resolution;
-            int idy = pixelID / resolution;
+            int idx = pixel_ID % resolution;
+            int idy = pixel_ID / resolution;
             computeShader.SetInt("idx", idx);
             computeShader.SetInt("idy", idy);
 
@@ -152,14 +152,14 @@ public class Sample_from_ComputeShader : MonoBehaviour
         return false;
     }
 
-    private Color GetColorFromCSBuffer(int pixelID)
+    private Color GetColorFromCSBuffer(int pixel_ID)
     {
         // The problem with this method is that it's recomputing the ENTIRE Compute Shader
         // each time we need to make another sample. We don't _need_ to Visualize Sample,
         // but we'd still need to compute the shader just the same.
         // The advantage is that the data is NOT CLAMPED, which is a big deal.
-        SetVisualizeIndex(pixelID);
-        sampleBuffer.GetData(sData);
+        SetVisualizeIndex(pixel_ID);
+        sample_buffer.GetData(sData);
 
         return sData[0].color;
     }
@@ -172,7 +172,7 @@ public class Sample_from_ComputeShader : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        sampleBuffer.Dispose();
+        sample_buffer.Dispose();
     }
 
     /*

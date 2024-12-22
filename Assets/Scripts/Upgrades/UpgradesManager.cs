@@ -5,58 +5,58 @@ using UnityEngine.UI;
 
 public class UpgradesManager : MonoBehaviour
 {
-    public Upgrades cargo_upgrades;
-    public int cargo_upgrade_level = 0;
+    public Upgrades cargoUpgrades;
+    public int cargoUpgradeLevel = 0;
 
-    public Upgrades drill_upgrades;
-    public int drill_upgrade_level = 0;
+    public Upgrades drillUpgrades;
+    public int drillUpgradeLevel = 0;
 
-    public Upgrades fuel_upgrades;
-    public int fuel_upgrade_level = 0;
+    public Upgrades fuelUpgrades;
+    public int fuelUpgradeLevel = 0;
 
-    public Upgrades hull_upgrades;
-    public int hull_upgrade_level = 0;
+    public Upgrades hullUpgrades;
+    public int hullUpgradeLevel = 0;
 
-    public Upgrades propeller_upgrades;
-    public int propeller_upgrade_level = 0;
+    public Upgrades propellerUpgrades;
+    public int propellerUpgradeLevel = 0;
     
     public SliderBar fuelSlider;
     public SliderBar healthSlider;
 
     public Text inventoryMaximumWeight;
 
-    private GameManager gameManager;
-    private PlayerScript playerScript;
+    private GameManager game_manager;
+    private PlayerScript player_script;
 
     void Start()
     {
-        gameManager = GameManager.Instance;
-        playerScript = gameManager.playerScript;
+        game_manager = GameManager.Instance;
+        player_script = game_manager.playerScript;
 
         // Apply upgrades
-        Upgrade(upgradeTypes.cargo, cargo_upgrade_level);
-        Upgrade(upgradeTypes.drill, drill_upgrade_level);
-        Upgrade(upgradeTypes.fuel, fuel_upgrade_level);
-        Upgrade(upgradeTypes.hull, hull_upgrade_level);
-        Upgrade(upgradeTypes.propeller, propeller_upgrade_level);
+        Upgrade(upgradeTypes.cargo, cargoUpgradeLevel);
+        Upgrade(upgradeTypes.drill, drillUpgradeLevel);
+        Upgrade(upgradeTypes.fuel, fuelUpgradeLevel);
+        Upgrade(upgradeTypes.hull, hullUpgradeLevel);
+        Upgrade(upgradeTypes.propeller, propellerUpgradeLevel);
     }
 
     public int GetUpgradeLevel(upgradeTypes type)
     {
         if (type == upgradeTypes.drill)
-            return drill_upgrade_level;
+            return drillUpgradeLevel;
 
         if (type == upgradeTypes.cargo)
-            return cargo_upgrade_level;
+            return cargoUpgradeLevel;
 
         if (type == upgradeTypes.fuel)
-            return fuel_upgrade_level;
+            return fuelUpgradeLevel;
 
         if (type == upgradeTypes.hull)
-            return hull_upgrade_level;
+            return hullUpgradeLevel;
 
         if (type == upgradeTypes.propeller)
-            return propeller_upgrade_level;
+            return propellerUpgradeLevel;
         
         return -1;
     }
@@ -64,106 +64,106 @@ public class UpgradesManager : MonoBehaviour
     public void SetUpgradeLevel(upgradeTypes type, int level)
     {
         if (type == upgradeTypes.drill)
-            drill_upgrade_level = level;
+            drillUpgradeLevel = level;
 
         if (type == upgradeTypes.cargo)
-            cargo_upgrade_level = level;
+            cargoUpgradeLevel = level;
 
         if (type == upgradeTypes.fuel)
-            fuel_upgrade_level = level;
+            fuelUpgradeLevel = level;
 
         if (type == upgradeTypes.hull)
-            hull_upgrade_level = level;
+            hullUpgradeLevel = level;
 
         if (type == upgradeTypes.propeller)
-            propeller_upgrade_level = level;
+            propellerUpgradeLevel = level;
     }
 
 
-    public bool Upgrade(upgradeTypes type, int upgradeLevel)
+    public bool Upgrade(upgradeTypes type, int upgrade_level)
     {
         bool success = false;
         if (type == upgradeTypes.cargo)
-            success = Upgrade_Cargo(upgradeLevel);
+            success = Upgrade_Cargo(upgrade_level);
         else if (type == upgradeTypes.drill)
-            success = Upgrade_Drill(upgradeLevel);
+            success = Upgrade_Drill(upgrade_level);
         else if (type == upgradeTypes.fuel)
-            success = Upgrade_Fuel(upgradeLevel);
+            success = Upgrade_Fuel(upgrade_level);
         else if (type == upgradeTypes.hull)
-            success = Upgrade_Hull(upgradeLevel);
+            success = Upgrade_Hull(upgrade_level);
         else if (type == upgradeTypes.propeller)
-            success = Upgrade_Propeller(upgradeLevel);
+            success = Upgrade_Propeller(upgrade_level);
         else
             Debug.LogError("Unrecognised upgrade type " + type);
 
         return success;
     }
 
-    private bool Upgrade_Cargo(int upgradeLevel)
+    private bool Upgrade_Cargo(int upgrade_level)
     {
         //Debug.Log("Cargo");
 
-        Upgrade currentUpgrade = cargo_upgrades.upgrades[upgradeLevel];
-        int newCapacity = (int)currentUpgrade.value;
-        playerScript.cargoSize = newCapacity;
-        inventoryMaximumWeight.text = "Maximum Weight : " + newCapacity + "KG";
+        Upgrade current_upgrade = cargoUpgrades.upgrades[upgrade_level];
+        int new_capacity = (int)current_upgrade.value;
+        player_script.cargoSize = new_capacity;
+        inventoryMaximumWeight.text = "Maximum Weight : " + new_capacity + "KG";
 
         return true;
     }
 
-    private bool Upgrade_Drill(int upgradeLevel)
+    private bool Upgrade_Drill(int upgrade_level)
     {
         //Debug.Log("Drill");
 
-        Upgrade currentUpgrade = drill_upgrades.upgrades[upgradeLevel];
-        float newSpeed = currentUpgrade.value;
-        playerScript.drillSpeed = newSpeed;
+        Upgrade current_upgrade = drillUpgrades.upgrades[upgrade_level];
+        float new_speed = current_upgrade.value;
+        player_script.drillSpeed = new_speed;
 
         return true;
     }
 
-    private bool Upgrade_Fuel(int upgradeLevel)
+    private bool Upgrade_Fuel(int upgrade_level)
     {
         //Debug.Log("Fuel");
 
-        Upgrade currentUpgrade = fuel_upgrades.upgrades[upgradeLevel];
+        Upgrade current_upgrade = fuelUpgrades.upgrades[upgrade_level];
 
-        int newCapacity = (int)currentUpgrade.value;
-        playerScript.maxFuel = newCapacity;
-        fuelSlider.SetMaxValue(newCapacity);
+        int new_capacity = (int)current_upgrade.value;
+        player_script.maxFuel = new_capacity;
+        fuelSlider.SetMaxValue(new_capacity);
         
         // refuel
-        playerScript.currentFuel = newCapacity;
+        player_script.currentFuel = new_capacity;
 
         return true;
     }
 
-    private bool Upgrade_Hull(int upgradeLevel)
+    private bool Upgrade_Hull(int upgrade_level)
     {
         //Debug.Log("Hull");
 
-        Upgrade currentUpgrade = hull_upgrades.upgrades[upgradeLevel];
+        Upgrade current_upgrade = hullUpgrades.upgrades[upgrade_level];
 
-        int newCapacity = (int)currentUpgrade.value;
-        playerScript.maxHealth = newCapacity;
-        healthSlider.SetMaxValue(newCapacity);
+        int new_capacity = (int)current_upgrade.value;
+        player_script.maxHealth = new_capacity;
+        healthSlider.SetMaxValue(new_capacity);
 
         // heal up
-        playerScript.currentHealth = newCapacity;
+        player_script.currentHealth = new_capacity;
 
         return true;
     }
 
     // Propeller will have to be done differently.
     // Acceleration based on weight, max speed, something something, right now it feels super bad.
-    private bool Upgrade_Propeller(int upgradeLevel)
+    private bool Upgrade_Propeller(int upgrade_level)
     {
         //Debug.Log("Propeller");
 
-        Upgrade currentUpgrade = propeller_upgrades.upgrades[upgradeLevel];
-        float newSpeed = currentUpgrade.value;
+        Upgrade current_upgrade = propellerUpgrades.upgrades[upgrade_level];
+        float new_speed = current_upgrade.value;
 
-        playerScript.propellerMultiplier = newSpeed;
+        player_script.propellerMultiplier = new_speed;
 
         return true;
     }

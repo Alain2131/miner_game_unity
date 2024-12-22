@@ -8,7 +8,7 @@ public class OreInventory : MonoBehaviour
     public Transform itemsParent;
     public GameObject oreInventoryUI;
 
-    private OreInventory oreInventory;
+    private OreInventory ore_inventory;
     private OreInventorySlot[] slots;
 
     [System.Serializable]
@@ -29,16 +29,16 @@ public class OreInventory : MonoBehaviour
         {
             if (tile.addToInventory)
             {
-                OreEntry newOre = new OreEntry();
-                newOre.tileInfo = tile;
-                newOre.amount = 0;
-                oresInCargo.Add(newOre);
+                OreEntry new_ore = new OreEntry();
+                new_ore.tileInfo = tile;
+                new_ore.amount = 0;
+                oresInCargo.Add(new_ore);
             }
         }
 
 
         // UI stuff
-        oreInventory = GameManager.Instance.oreInventory;
+        ore_inventory = GameManager.Instance.oreInventory;
 
         // We could automatically populate the slots,
         // but I prefer adding them manually in the Level.
@@ -56,10 +56,10 @@ public class OreInventory : MonoBehaviour
         int ID = GetIDFromOre(tile.type);
         if(ID >= 0)
         {
-            int totalWeight = GetOreWeight(tile);
-            int maxWeight = GameManager.Instance.playerScript.cargoSize; // it's not great to have to access the player here
-            int newTotalWeight = totalWeight + tile.weight;
-            if (maxWeight < newTotalWeight)
+            int total_weight = GetOreWeight(tile);
+            int max_weight = GameManager.Instance.playerScript.cargoSize; // it's not great to have to access the player here, I think
+            int new_total_weight = total_weight + tile.weight;
+            if (max_weight < new_total_weight)
             {
                 Debug.LogError("Can't add ore due to full cargo.");
                 return;
@@ -68,13 +68,13 @@ public class OreInventory : MonoBehaviour
             oresInCargo[ID].amount += 1;
             UpdateUI();
 
-            if (maxWeight == newTotalWeight)
+            if (max_weight == new_total_weight)
             {
                 // Need to have some UI instead
                 Debug.LogWarning("Cargo full !");
             }
             // Warning debug if almost full at a percentage of total size
-            else if (maxWeight*0.8f <= newTotalWeight)
+            else if (max_weight*0.8f <= new_total_weight)
             {
                 // Need to have some UI instead
                 Debug.LogWarning("Cargo almost full !");
@@ -110,11 +110,11 @@ public class OreInventory : MonoBehaviour
         UpdateUI();
     }
 
-    private int GetIDFromOre(TileType oreName)
+    private int GetIDFromOre(TileType ore_name)
     {
         for (int i = 0; i < oresInCargo.Count; i++)
         {
-            if (oresInCargo[i].tileInfo.GetType() == oreName)
+            if (oresInCargo[i].tileInfo.GetType() == ore_name)
             {
                 return i;
             }
@@ -181,7 +181,7 @@ public class OreInventory : MonoBehaviour
         // Make sure all ores have a slot
         // This is more for debugging than anything
         bool found;
-        foreach (OreInventory.OreEntry entry in oreInventory.oresInCargo)
+        foreach (OreInventory.OreEntry entry in ore_inventory.oresInCargo)
         {
             found = false;
             foreach (OreInventorySlot slot in slots)

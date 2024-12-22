@@ -11,69 +11,69 @@ public class UpgradeSlot : MonoBehaviour
 
     public Upgrades upgradeInfo;
 
-    private GameManager gameManager;
-    private UpgradesManager upgradesManager;
+    private GameManager game_manager;
+    private UpgradesManager upgrades_manager;
     private Money money;
 
-    private upgradeTypes upgradeType;
-    private int upgradesCount;
+    private upgradeTypes upgrade_type;
+    private int upgrades_count;
 
     private void Awake()
     {
-        gameManager = GameManager.Instance;
-        upgradesManager = gameManager.upgradeManager;
-        money = gameManager.money;
+        game_manager = GameManager.Instance;
+        upgrades_manager = game_manager.upgradeManager;
+        money = game_manager.money;
     }
 
     private void Start()
     {
-        upgradeType = upgradeInfo.type;
-        upgradesCount = upgradeInfo.upgrades.Count - 1;
+        upgrade_type = upgradeInfo.type;
+        upgrades_count = upgradeInfo.upgrades.Count - 1;
 
         UpdateUI();
     }
 
     public void UpdateUI()
     {
-        int currentLevel = upgradesManager.GetUpgradeLevel(upgradeType);
-        if (upgradesCount == currentLevel)
+        int current_level = upgrades_manager.GetUpgradeLevel(upgrade_type);
+        if (upgrades_count == current_level)
         {
             interact.interactable = false;
 
             upgradeCost.text = "Sold Out";
-            upgradeName.text = upgradeInfo.upgrades[currentLevel].name;
-            upgradeLevel.text = currentLevel + "/" + currentLevel;
+            upgradeName.text = upgradeInfo.upgrades[current_level].name;
+            upgradeLevel.text = current_level + "/" + current_level;
             
             return;
         }
 
-        upgradeCost.text = upgradeInfo.upgrades[currentLevel + 1].cost.ToString();
-        upgradeName.text = upgradeInfo.upgrades[currentLevel + 1].name;
-        upgradeLevel.text = currentLevel + "/" + (upgradesCount);
+        upgradeCost.text = upgradeInfo.upgrades[current_level + 1].cost.ToString();
+        upgradeName.text = upgradeInfo.upgrades[current_level + 1].name;
+        upgradeLevel.text = current_level + "/" + (upgrades_count);
     }
 
     public void BuyUpgrade()
     {
-        int currentLevel = upgradesManager.GetUpgradeLevel(upgradeType);
-        if (upgradesCount == currentLevel)
+        int current_level = upgrades_manager.GetUpgradeLevel(upgrade_type);
+        if (upgrades_count == current_level)
         {
-            Debug.LogError("No more upgrades to buy for " + upgradeType);
+            Debug.LogError("No more upgrades to buy for " + upgrade_type);
             return;
         }
 
         int balance = money.GetMoney();
-        int cost = upgradeInfo.upgrades[currentLevel+1].cost;
+        int cost = upgradeInfo.upgrades[current_level+1].cost;
         if(cost > balance)
         {
-            Debug.LogError("Not enough money to buy upgrade " + upgradeType + " at cost " + cost);
+            Debug.LogError("Not enough money to buy upgrade " + upgrade_type + " at cost " + cost);
             return;
         }
 
-        bool success = gameManager.upgradeManager.Upgrade(upgradeType, currentLevel + 1);
+        bool success = game_manager.upgradeManager.Upgrade(upgrade_type, current_level + 1);
         if(success)
         {
             money.Buy(cost);
-            upgradesManager.SetUpgradeLevel(upgradeType, currentLevel + 1);
+            upgrades_manager.SetUpgradeLevel(upgrade_type, current_level + 1);
             UpdateUI();
         }
     }

@@ -3,26 +3,26 @@ using UnityEngine;
 [RequireComponent(typeof(PolygonCollider2D))]
 public class LineGeneration : MonoBehaviour
 {
-    private GameManager gameManager;
+    private GameManager game_manager;
     public AllTilesInfo allTilesInfo;
-    private int xSize;
+    private int x_size;
 
     public Object tileObject;
     public int lineID = -1; // Basically, depth. We don't need to see it in Unity, but it's helpful for debugging. It could be set to readonly
     
-    private bool[] airTiles; // True is a tile, False is air/digged up
-    private TileScript[] lineTiles; // References all child tiles in the line. Only modified on Start.
-    private TileInfo[] tilesInfo; // Init'ed in Start from allTilesObject
+    private bool[] air_tiles; // True is a tile, False is air/digged up
+    private TileScript[] line_tiles; // References all child tiles in the line. Only modified on Start.
+    private TileInfo[] tiles_info; // Init'ed in Start from allTilesObject
 
     private void Start()
     {
-        gameManager = GameManager.Instance;
-        xSize = gameManager.LevelXSize;
+        game_manager = GameManager.Instance;
+        x_size = game_manager.levelXSize;
 
         // Init Arrays
-        airTiles = new bool[xSize + 1];
-        lineTiles = new TileScript[xSize];
-        tilesInfo = allTilesInfo.GetAllTiles();
+        air_tiles = new bool[x_size + 1];
+        line_tiles = new TileScript[x_size];
+        tiles_info = allTilesInfo.GetAllTiles();
 
         SpawnTiles();
     }
@@ -30,7 +30,7 @@ public class LineGeneration : MonoBehaviour
     private void SpawnTiles() // Called once, at level start
     {
         // Generate all Tiles (digged-up tiles and air will be disabled later)
-        for (int x = 0; x < xSize; x++)
+        for (int x = 0; x < x_size; x++)
         {
             Vector3 pos = transform.position;
             pos.x += x + 0.5f;
@@ -40,9 +40,9 @@ public class LineGeneration : MonoBehaviour
             Quaternion rotation = Quaternion.Euler(0, 0, z_rot);
 
             GameObject new_tile = (GameObject)GameObject.Instantiate(tileObject, pos, rotation, transform);
-            new_tile.GetComponent<TileScript>().x_ID = x;
+            new_tile.GetComponent<TileScript>().xID = x;
 
-            lineTiles[x] = new_tile.GetComponent<TileScript>();
+            line_tiles[x] = new_tile.GetComponent<TileScript>();
         }
 
         GenerateLine(lineID);
@@ -57,16 +57,16 @@ public class LineGeneration : MonoBehaviour
 
         float noise_value, threshold, noise_size;
         float bias = 0.001f; // smol bias to remove 0 in noiseVal
-        for (int x = 0; x < xSize; x++)
+        for (int x = 0; x < x_size; x++)
         {
-            TileScript current_tile = lineTiles[x];
+            TileScript current_tile = line_tiles[x];
 
             // Update uniqueID
-            int unique_ID = line_ID * xSize + x;
+            int unique_ID = line_ID * x_size + x;
             current_tile.uniqueID = unique_ID;
 
             if (IsTileDugUp(unique_ID) == true) // Handle the tiles already dug up
-                airTiles[x] = false;
+                air_tiles[x] = false;
             else
             {
                 // Add Air
@@ -75,20 +75,20 @@ public class LineGeneration : MonoBehaviour
 
                 noise_value = Mathf.PerlinNoise(x * noise_size + seed, line_ID * noise_size + seed);
                 noise_value = Mathf.Clamp01(noise_value) + bias;
-                airTiles[x] = noise_value > threshold;
+                air_tiles[x] = noise_value > threshold;
 
                 if (this.lineID == 0) // If we're the first line,
-                    airTiles[x] = true; // remove all air.
+                    air_tiles[x] = true; // remove all air.
             }
             
             // Disable air tile, Enable non-air tile
-            current_tile.SetEnabled(airTiles[x]);
+            current_tile.SetEnabled(air_tiles[x]);
 
 
-            if (airTiles[x]) // If we know it's not an air tile
+            if (air_tiles[x]) // If we know it's not an air tile
             {
                 // Loop through all the TileInfo, and place the first "valid" tile
-                foreach(TileInfo tile_info in tilesInfo)
+                foreach(TileInfo tile_info in tiles_info)
                 {
                     noise_size = tile_info.GetNoiseSize();
                     threshold = tile_info.GetSpawnPercent(line_ID);
@@ -115,7 +115,7 @@ public class LineGeneration : MonoBehaviour
         // This might have to be updated on the next Update
         // It currently works because there is a setup in LevelGeneration.cs
         // that dirties the collision and updates it in FixedUpdate()
-        GenerateCollision2D(airTiles); // this is quite expensive, but necessary
+        GenerateCollision2D(air_tiles); // this is quite expensive, but necessary
     }
 
     private bool IsTileDugUp(int unique_ID)
@@ -129,11 +129,11 @@ public class LineGeneration : MonoBehaviour
     {
         PolygonCollider2D col = GetComponent<PolygonCollider2D>();
 
-        Vector2[] corners = new Vector2[xSize + 1];
+        Vector2[] corners = new Vector2[x_size + 1];
 
         bool prev = false;
         int half_vert_count = 0;
-        for (int x = 0; x <= xSize; x++)
+        for (int x = 0; x <= x_size; x++)
         {
             bool same = !(prev ^ to_generate[x]);
             if (!same) // state switched
@@ -199,8 +199,8 @@ public class LineGeneration : MonoBehaviour
     public void RecomputeCollision(int deleted_tile_ID)
     {
         // Update tileDeleted array considering the newly deleted tileID
-        airTiles[deleted_tile_ID] = false;
+        air_tiles[deleted_tile_ID] = false;
 
-        GenerateCollision2D(airTiles);
+        GenerateCollision2D(air_tiles);
     }
 }

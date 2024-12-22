@@ -8,7 +8,7 @@ public class Money : MonoBehaviour
 
     private void Start()
     {
-        updateMoneyUI();
+        UpdateMoneyUI();
     }
 
     public int GetMoney()
@@ -19,16 +19,16 @@ public class Money : MonoBehaviour
     public void Sell(int revenue)
     {
         money += revenue;
-        updateMoneyUI();
+        UpdateMoneyUI();
     }
 
     public void Buy(int cost)
     {
         money -= cost;
-        updateMoneyUI();
+        UpdateMoneyUI();
     }
 
-    private void updateMoneyUI()
+    private void UpdateMoneyUI()
     {
         moneyText.text = "Moneys : " + money.ToString() + "$";
     }

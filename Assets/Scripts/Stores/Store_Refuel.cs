@@ -7,31 +7,31 @@ public class Store_Refuel : Store
 {
     public override void Interact()
     {
-        PlayerScript playerScript = gameManager.playerScript;
+        PlayerScript player_script = gameManager.playerScript;
         Money money = gameManager.money;
 
         int balance = money.GetMoney();
         if (balance == 0) // If poor, do nothing.
             return;
         
-        int currentFuel = Mathf.CeilToInt(playerScript.currentFuel);
-        int maxFuel = playerScript.maxFuel;
-        if (currentFuel == maxFuel)
+        int current_fuel = Mathf.CeilToInt(player_script.currentFuel);
+        int max_fuel = player_script.maxFuel;
+        if (current_fuel == max_fuel)
             return;
 
-        int fuelDelta = maxFuel - currentFuel; // how much fuel we need
-        int moneyDelta = balance - fuelDelta;
+        int fuel_delta = max_fuel - current_fuel; // how much fuel we need
+        int money_delta = balance - fuel_delta;
 
         // 1 fuel == 1 dollar
-        if(moneyDelta < 0) // If we don't have enough money
+        if(money_delta < 0) // If we don't have enough money
         {
             money.Buy(balance); // Buy what we can
-            playerScript.SetFuel(currentFuel + balance);
+            player_script.SetFuel(current_fuel + balance);
         }
         else // If we have enough
         {
-            money.Buy(fuelDelta); // buy the difference
-            playerScript.SetFuel(maxFuel); // fill the tank
+            money.Buy(fuel_delta); // buy the difference
+            player_script.SetFuel(max_fuel); // fill the tank
         }
     }
 }
