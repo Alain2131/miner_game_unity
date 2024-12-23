@@ -42,7 +42,7 @@ public class PlayerScript : MonoBehaviour
     private GameManager game_manager;
 
     private bool is_digging = false;
-    private bool is_falling = false; // flying as well
+    private bool is_grounded = true;
 
     private float previous_frame_speed = 0;
 
@@ -101,9 +101,11 @@ public class PlayerScript : MonoBehaviour
 
         HandleInputs();
 
-        is_falling = !IsPlayerOnGround();
+        is_grounded = IsPlayerOnGround();
 
         HandleFallDamage();
+
+        MoveAwayFromWall();
     }
 
     private void ToggleInventory(InputAction.CallbackContext context)
@@ -213,6 +215,14 @@ public class PlayerScript : MonoBehaviour
             float mult = max_speed / player_speed;
             rb.velocity = new Vector2(rb.velocity.x * mult, rb.velocity.y * mult);
         }
+
+        // Lateral drag
+        float flat_reduction = 0.015f; // mostly useful at low speed
+        flat_reduction = Mathf.Min(flat_reduction, Mathf.Abs(rb.velocity.x)); // Ensure we don't remove more velocity than we have
+        flat_reduction *= Mathf.Sign(rb.velocity.x);
+
+        float mult_reduction = 0.9975f; // mostly useful at high speed
+        rb.velocity = new Vector2((rb.velocity.x - flat_reduction) * mult_reduction, rb.velocity.y);
     }
 
     private void HandleInputs()
@@ -260,25 +270,65 @@ public class PlayerScript : MonoBehaviour
         }
 
 
-        // Apply Movement Force
         if (input_vector.magnitude > 0 && !is_digging)
         {
-            Vector2 speedMult = new Vector2(lateralSpeed, upForce) * propellerMultiplier; // could be defined only once
-            rb.AddForce(new Vector3(input_vector.x, input_vector.y, 0) * speedMult * Time.deltaTime);
+            // Apply Movement Force
+            Vector2 speed_mult = new Vector2(lateralSpeed, upForce) * propellerMultiplier; // could be defined only once
+            rb.AddForce(new Vector3(input_vector.x, input_vector.y, 0) * speed_mult * Time.deltaTime);
 
 
-            float lateralMovementCost = 0.5f;
-            if (is_falling) // Barely consume fuel when moving left/right while flying
-                lateralMovementCost = 0.1f;
+            // Apply fuel consumption
+            float lateral_movement_cost = 0.1f;
+            if (is_grounded) // Higher lateral movement fuel consumption when grounded
+                lateral_movement_cost = 0.5f;
 
             // Flying is more expensive than moving left/right
-            float fuelConsumption = input_vector.y + Mathf.Abs(input_vector.x) * lateralMovementCost;
+            float fuel_consumption = input_vector.y + Mathf.Abs(input_vector.x) * lateral_movement_cost;
             // Could modulate based on movement input
             // At one point, I want to get movement to be quick from idle, then taper off
             // fuel consumption could reflect that (granted, it's not the most important detail)
             //MovingFuelConsumption(fuelConsumption);
-            ReduceFuel(fuelConsumption * Time.deltaTime);
+            ReduceFuel(fuel_consumption * Time.deltaTime);
         }
+    }
+
+    // Push player away from walls a little bit so they don't slide right along it.
+    // Otherwise, there is a potential to hit a "stray collision" (I believe it's a precision issue).
+    private void MoveAwayFromWall()
+    {
+        if (is_grounded)
+            return;
+
+        const float HALF_PLAYER = 0.45f;
+        const float BIAS = 0.015f;
+        const float DISTANCE_THRESHOLD = HALF_PLAYER + BIAS;
+
+        // Detect walls
+        bool[] walls = { false, false };
+        Vector2 direction = new Vector2(-1, 0);
+        RaycastHit2D hit = PlayerRaycast(direction * DISTANCE_THRESHOLD, "tile", false);
+        if (hit)
+            walls[0] = true;
+        else
+        {
+            direction.x = 1;
+            hit = PlayerRaycast(direction * DISTANCE_THRESHOLD, "tile", false);
+            if (hit)
+                walls[1] = true;
+        }
+
+        // Move away from wall
+        Vector3 pos = transform.position;
+        if (walls[0]) // left wall
+            pos.x += BIAS;
+        else if (walls[1]) // right wall
+            pos.x -= BIAS;
+        else // no wall
+            return;
+
+        // Purposefully not a force, we don't want momentum from a wall
+        // to push us into the other wall
+        transform.position = pos;
     }
 
     // "Dig" isn't really what this does, this is just in-between the input and the actual dig
@@ -459,20 +509,25 @@ public class PlayerScript : MonoBehaviour
     }
 
     // Utility methods
-    private RaycastHit2D PlayerRaycast(Vector3 ray_direction, string layer_name = "tile", bool debug_draw = false)
+    private RaycastHit2D PlayerRaycast(Vector3 ray_origin, Vector3 ray_direction, string layer_name = "tile", bool debug_draw = false)
     {
         int layer_mask = LayerMask.GetMask(layer_name);
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, ray_direction, ray_direction.magnitude, layer_mask);
+        RaycastHit2D hit = Physics2D.Raycast(ray_origin, ray_direction, ray_direction.magnitude, layer_mask);
 
         if (debug_draw)
         {
             if (hit.collider != null)
-                Debug.DrawRay(transform.position, ray_direction.normalized * hit.distance, Color.green);
+                Debug.DrawRay(ray_origin, ray_direction.normalized * hit.distance, Color.green);
             else
-                Debug.DrawRay(transform.position, ray_direction, Color.red);
+                Debug.DrawRay(ray_origin, ray_direction, Color.red);
         }
 
         return hit;
+    }
+
+    private RaycastHit2D PlayerRaycast(Vector3 ray_direction, string layer_name = "tile", bool debug_draw = false)
+    {
+        return PlayerRaycast(transform.position, ray_direction, layer_name, debug_draw);
     }
 
     // Should be in a math library
@@ -505,6 +560,13 @@ public class PlayerScript : MonoBehaviour
     {
         // We want a ray that's barely larger than the player. 0.475 is ~half the size of the player.
         RaycastHit2D hit = PlayerRaycast(Vector3.down * 0.475f, "floor", false);
+
+        if (!hit)
+            return hit;
+
+        if(hit.collider.isTrigger) // ignore triggers
+            return new RaycastHit2D();
+        
         return hit;
     }
 
@@ -530,16 +592,25 @@ public class PlayerScript : MonoBehaviour
     }
 
     // May be useful in the future when doing PlayerState
-    // Is different from isPlayerOnTile/Floor since those returns the specific hit object
+    // Is susceptible to detect hit-velocity impact on a wall as being grounded, for a frame or two.
+    // I'd like a way to filter those out, or make a better grounded detection mechanism.
     public bool IsPlayerOnGround()
     {
         if (is_digging) // If we are digging, we are "on the ground"
             return true;
 
-        bool is_player_touching_floor = rb.IsTouchingLayers(LayerMask.GetMask("floor"));
-        // We want a ray that's barely larger than the player. 0.475 is ~half the size of the player.
-        RaycastHit2D hit = PlayerRaycast(Vector3.down * 0.475f, "tile", false);
-        bool is_player_touching_tile = hit.collider != null;
+        //bool is_player_touching_floor = rb.IsTouchingLayers(LayerMask.GetMask("floor")); // doesn't interact well with the new floor trigger
+        bool is_player_touching_floor = FetchFloor();
+
+        // We want a ray that's barely larger than the player. Player is a 1x1 square scaled to 0.9, and half of 0.9 is 0.45
+        const float PLAYER_HALF_SIZE = 0.45f;
+        const float RAY_BIAS = 0.01f;
+        Vector3 ray_origin = transform.position + new Vector3(PLAYER_HALF_SIZE - 0.01f, 0.0f, 0.0f);
+        RaycastHit2D hit_left = PlayerRaycast(ray_origin, Vector3.down * (PLAYER_HALF_SIZE + RAY_BIAS), "tile", false);
+        ray_origin = transform.position - new Vector3(PLAYER_HALF_SIZE - 0.01f, 0.0f, 0.0f);
+        RaycastHit2D hit_right = PlayerRaycast(ray_origin, Vector3.down * (PLAYER_HALF_SIZE + RAY_BIAS), "tile", false);
+
+        bool is_player_touching_tile = hit_left.collider != null || hit_right.collider != null;
 
         //Debug.Log("Touching floor " + touchingFloor + " Touching tile " + touchingTile);
         return is_player_touching_floor || is_player_touching_tile;

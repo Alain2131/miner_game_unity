@@ -808,16 +808,8 @@ PrefabInstance:
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
-      propertyPath: disableDamage
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: jitterIntensity
       value: 0.02
-      objectReference: {fileID: 0}
-    - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
-      propertyPath: disableDigAnimation
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: omnidirectionalDamage
