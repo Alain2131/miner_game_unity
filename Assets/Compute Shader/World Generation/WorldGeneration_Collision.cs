@@ -104,7 +104,7 @@ public class WorldGeneration_Collision : MonoBehaviour
 
 
         // Here is an earlier thought process about figuring out an algorithm
-        // to get an "optimized" collision, i.e. with a continuous edge
+        // to get an "optimized" collision, i.e. with a continuous edge,
         // instead of discrete tiles. The issue with that idea is its inability to
         // have holes - but it's not necessarily a problem.
 
@@ -194,7 +194,7 @@ public class WorldGeneration_Collision : MonoBehaviour
         // Has an issue where the generation is a bit too soon,
         //composite_collider_2D.GenerateGeometry();
         // it's "one iteration" behind
-        // manually cliking Regenerate Collider works
+        // manually clicking Regenerate Collider works
 
         // So instead, we leave the engine to generate the collision "when it needs to"
         composite_collider_2D.generationType = CompositeCollider2D.GenerationType.Synchronous;

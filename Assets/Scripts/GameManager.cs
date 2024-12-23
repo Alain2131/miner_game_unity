@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     [Header("Level Generation Stuff")]
     public int levelXSize = 100; // the width of the level
     public int levelYSize = 20; // how many lines exists at once. Might need to rename this
+    public AllTilesInfo allTilesInfo;
+    private TileInfo[] tiles_info; // Init'ed in Awake from allTilesObject
 
 
     public Controls controls;
@@ -35,7 +37,8 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
         playerScript = player.GetComponent<PlayerScript>();
-        
+        tiles_info = allTilesInfo.GetAllTiles();
+
         pauseGameUI.SetActive(false);
 
         controls = new Controls();
@@ -95,9 +98,74 @@ public class GameManager : MonoBehaviour
     }
 
     // Should probably be in a "level" class or something, so we can call it with gameManager.level.AddDugUpTile()
-    public void AddDugUpTile(int tile_ID)
+    public void AddDugUpTile(int pixel_ID)
     {
-        tilesDugUp.Add(tile_ID);
+        tilesDugUp.Add(pixel_ID);
+    }
+
+    public bool IsTileDugUp(int pixel_ID)
+    {
+        // I wonder how fast that will be when the List will be thousands long
+        bool is_dug = tilesDugUp.Contains(pixel_ID);
+        bool is_air = PixelIDToTileInfo(pixel_ID).type.ToString() == "air"; // I don't know how efficient doing the full algorithm is
+        return is_dug || is_air;
+    }
+
+    public void DigTile(int pixel_ID)
+    {
+        if (IsTileDugUp(pixel_ID))
+            return;
+
+        TileScript ts = PixelIDToTileScript(pixel_ID);
+        ts.SetEnabled(false);
+
+        AddDugUpTile(pixel_ID); // add the tile to the tilesDugUp List
+
+        TileInfo tile_info = PixelIDToTileInfo(pixel_ID);
+
+        if (tile_info.addToInventory)
+            oreInventory.AddSingleOre(tile_info); // increase the tile count in the inventory (if applicable)
+
+        // Recompute Collision on the line
+        GameObject line_object = ts.transform.parent.gameObject;
+        line_object.GetComponent<LineGeneration>().RecomputeCollision(pixel_ID);
+    }
+
+
+
+
+    // HORRENDOUS and expensive logic, but this should be temporary
+    // Used to disable the tile object (to make it visually disappear)
+    private TileScript PixelIDToTileScript(int pixel_ID)
+    {
+        // get all LineObjects
+        // find matching Line ID
+        int row = PixelIDY(pixel_ID);
+        var line_objects = FindObjectsByType<LineGeneration>(FindObjectsSortMode.None);
+
+        LineGeneration found = line_objects[0];
+        foreach (var line_object in line_objects)
+        {
+            if(line_object.lineID == row)
+            {
+                found = line_object;
+                break;
+            }
+        }
+
+        // get children TileObjects
+        // find matching pixelID
+        foreach (Transform child in found.transform)
+        {
+            TileScript ts = child.GetComponent<TileScript>();
+            if(ts.pixelID == pixel_ID)
+            {
+                return ts;
+            }
+        }
+
+        Debug.LogError("TileScript not found :(");
+        return null;
     }
 
 
@@ -118,15 +186,20 @@ public class GameManager : MonoBehaviour
 
     public int PositionToPixelID(Vector3 position)
     {
-        // Needs to handle positive Y
-
         int idx = Mathf.FloorToInt(position.x);
-        int idy = -Mathf.FloorToInt(position.y);
+        int idy = Mathf.FloorToInt(position.y);
 
-        idx = Mathf.Clamp(idx, 0, levelXSize - 1);
-        idy = Mathf.Clamp(idy, 0, levelXSize - 1);
+        int pixel_ID = 99999;
+        if (idy >= 0) // over ground
+        {
+            pixel_ID = idx + (idy * levelXSize) + levelXSize;
+            pixel_ID *= -1;
+        }
+        else // under ground
+        {
+            pixel_ID = idx - (idy * levelXSize) - levelXSize;
+        }
 
-        int pixel_ID = idx + (idy * levelXSize) - levelXSize;
         return pixel_ID;
     }
 
@@ -168,12 +241,24 @@ public class GameManager : MonoBehaviour
         return Cd;
     }*/
 
-    // This could probably be optimized with better math logic
-    public int GetPixelAtOffset(int pixel_ID, int offsetx, int offsety)
+    // lateral position
+    public int PixelIDX(int pixel_ID)
     {
-        int idx = pixel_ID % levelXSize;
-        int idy = pixel_ID / levelXSize;
-        
+        return pixel_ID % levelXSize;
+    }
+
+    // height
+    public int PixelIDY(int pixel_ID)
+    {
+        return pixel_ID / levelXSize;
+    }
+
+    // This could probably be optimized with better math logic
+    public int GetPixelIDAtOffset(int pixel_ID, int offsetx, int offsety)
+    {
+        int idx = PixelIDX(pixel_ID);
+        int idy = PixelIDY(pixel_ID);
+
         idx = Mathf.Abs(idx);
 
         idx += offsetx;
@@ -181,17 +266,57 @@ public class GameManager : MonoBehaviour
 
 
 
-        Debug.Log("---------------");
-        Debug.Log(idx);
-        Debug.Log(idy);
+        //Debug.Log("---------------");
+        //Debug.Log(idx);
+        //Debug.Log(idy);
 
 
-        // Sampling is Out of Bounds
-        if (idx < 0 || idy < 0 || idx > levelXSize || idy > levelXSize)
+        // Sampling Out of Bounds
+        if (idx < 0 || idy < 0 || idx > levelXSize) // || idy > levelXSize <- caused an issue at one point, leaving for reference, will delete later
+        {
+            //Debug.LogWarning($"PixelID offset out of bound, {pixel_ID} {offsetx} {offsety}");
             return -1;
+        }
 
         int final_pixel_ID = idx + (idy * levelXSize);
         return final_pixel_ID;
+    }
+
+    // Basically, the world generation algorithm
+    public TileInfo PixelIDToTileInfo(int pixel_ID, float seed = 0f)
+    {
+        int level_column = PixelIDX(pixel_ID);
+        int level_row = PixelIDY(pixel_ID); // aka depth
+
+        float noise_value, noise_size, current_depth_spawn_percent;
+        const float BIAS = 0.001f; // smol bias to remove 0 in noise_value
+
+        // Loop through all TileInfos, and place the first "valid" tile
+        // Essentially, we give priority to the first types of tile.
+        // See allTilesInfo.GetAllTiles() for the order.
+        foreach (TileInfo tile_info in tiles_info)
+        {
+            noise_size = tile_info.GetNoiseSize();
+            current_depth_spawn_percent = tile_info.GetSpawnPercent(level_row);
+
+            if (current_depth_spawn_percent == 0)
+                continue;
+
+            noise_value = Mathf.PerlinNoise(level_column * noise_size + seed, level_row * noise_size + seed);
+            noise_value = Mathf.Clamp01(noise_value + BIAS);
+
+            /* // debug in case something goes wrong
+            if (pixel_ID == 2128)
+            {
+                Debug.Log($"tile {tile_info.type}, column {level_column}, row {level_row}, noise_size {noise_size}, spawn_percent {current_depth_spawn_percent}, noise {noise_value}");
+            }//*/
+
+            if (noise_value <= current_depth_spawn_percent)
+                return tile_info;
+        }
+
+        Debug.LogError($"NULL TileInfo for pixel_ID {pixel_ID} ! Returning air instead.");
+        return tiles_info[0]; // air
     }
 
     // This logic could be changed to calculate tileWorldSize on Awake()

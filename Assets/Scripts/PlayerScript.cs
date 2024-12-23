@@ -133,14 +133,9 @@ public class PlayerScript : MonoBehaviour
 
     private void Item_Explosive(InputAction.CallbackContext context)
     {
-        //int current_pixel_ID = gameManager.PositionToPixelID(transform.position);
-        //gameManager.CreateQuadAtPixelID(current_pixel_ID);
+        // Loop over a range of 1 tile around the player (total of 8)
 
         int pixel_ID = game_manager.PositionToPixelID(transform.position);
-        Debug.Log(pixel_ID);
-        Vector3 ray_direction = new Vector3(0, 0, 10);
-        int layer_mask = LayerMask.GetMask("tile");
-        //*
         for (int x = -1; x <= 1; x++)
         {
             for (int y = -1; y <= 1; y++)
@@ -148,40 +143,26 @@ public class PlayerScript : MonoBehaviour
                 if (x == 0 && y == 0)
                     continue;
 
-                int ID_to_dig = game_manager.GetPixelAtOffset(pixel_ID, x, y);
-                game_manager.CreateQuadAtPixelID(ID_to_dig);
+                int ID_to_dig = game_manager.GetPixelIDAtOffset(pixel_ID, x, y);
+                if (ID_to_dig < 0)
+                    continue;
 
-                //*
-                Vector3 center_to_dig = game_manager.PixelIDToPosition(ID_to_dig);
+                //gameManager.CreateQuadAtPixelID(ID_to_dig);
 
-                RaycastHit2D hit = Physics2D.Raycast(center_to_dig, ray_direction, ray_direction.magnitude, layer_mask);
-
-                if (hit.collider != null)
-                {
-                    TileScript tile = hit.collider.GetComponent<TileScript>();
-                    tile.DigTile();
-                }//
+                game_manager.DigTile(ID_to_dig);
             }
-        }//*/
+        }
 
 
         // Probably not the best place to have this
         // Check how many explosives we have
         if (itemExplosiveCount <= 0)
         {
-            Debug.Log("No more explosive item.");
+            Debug.LogWarning("No more explosive item.");
 
             itemExplosiveCount = 0; // Not a necessary check, but inexpensive to do.
             return;
         }
-
-        // Do explosive action
-        Debug.Log("Explosive consumed");
-
-        // From player's tileID, get a range of X tiles,
-        // loop over that range around the player
-
-
 
         itemExplosiveCount--;
     }
@@ -306,26 +287,34 @@ public class PlayerScript : MonoBehaviour
         // Fetch Tile
         RaycastHit2D hit = PlayerRaycast(dig_direction * 0.6f, "tile", false);
 
-        if (hit.collider != null)
-        {
-            if (!is_digging)
-            {
-                // Make sure we didn't just bounce
-                // This might have to be handled with a PlayerState
-                // As long as we haven't been on the ground for X amount of time,
-                // we are not allowed to dig (Falling State)
-                // if (playerState.onGround) doDig();
-                TileScript tile = hit.collider.GetComponent<TileScript>();
-                if (disableDigAnimation)
-                    tile.DigTile();
-                else
-                    StartCoroutine("DigAnimation", tile);
-            }
-        }
+        if (hit.collider == null || is_digging)
+            return;
+
+        // quite hacky at the moment
+        int down = dig_direction.y < -0.5 ? 1 : 0;
+        int right = dig_direction.x > 0.5 ? 1 : 0;
+        int left = dig_direction.x < -0.5 ? 1 : 0;
+        int lateral = -left + right;
+        int player_pixel_ID = game_manager.PositionToPixelID(transform.position);
+        int pixel_ID = game_manager.GetPixelIDAtOffset(player_pixel_ID, lateral, down);
+
+        //Debug.Log($"player_ID {player_pixel_ID}, tile ID {pixel_ID}, down {down}, lateral {lateral}");
+        
+        // Make sure we didn't just bounce
+        // This might have to be handled with a PlayerState
+        // As long as we haven't been on the ground for X amount of time,
+        // we are not allowed to dig (Falling State)
+        // if (playerState.onGround) doDig();
+        if (disableDigAnimation)
+            game_manager.DigTile(pixel_ID);
+        else
+            StartCoroutine(DigAnimation(pixel_ID));
     }
 
-    private IEnumerator DigAnimation(TileScript tile)
+    private IEnumerator DigAnimation(int pixel_ID)
     {
+        TileInfo tile_info = game_manager.PixelIDToTileInfo(pixel_ID);
+
         //Debug.Log("Diggy diggy hole");
         is_digging = true;
 
@@ -334,22 +323,15 @@ public class PlayerScript : MonoBehaviour
         rb.velocity = Vector2.zero;
         rb.simulated = false; // Disable RigidBody when digging
 
-        float dig_time = tile.tileInfo.GetDigTime();
+        float dig_time = tile_info.GetDigTime();
         dig_time /= drillSpeed;
 
         Vector3 current_pos = transform.position;
-        Vector3 target_position = current_pos;
-        target_position.x = tile.transform.position.x;
-
-        bool digging_down = (tile.transform.position - current_pos).y < -0.5;
-        if (digging_down)
-        {
-            target_position.y -= 1;
-        }
+        Vector3 target_position = game_manager.PixelIDToPosition(pixel_ID);
 
 
         float starting_fuel = currentFuel;
-        float target_fuel = currentFuel - tile.tileInfo.GetFuelConsumption();
+        float target_fuel = currentFuel - tile_info.GetFuelConsumption();
 
         float time = 0f;
         while (time < 1)
@@ -366,7 +348,8 @@ public class PlayerScript : MonoBehaviour
             yield return new WaitForSeconds(Time.deltaTime);
         }
 
-        tile.DigTile();
+        //tile.DigTile();
+        game_manager.DigTile(pixel_ID);
 
         rb.simulated = true;
         is_digging = false;
@@ -416,6 +399,9 @@ public class PlayerScript : MonoBehaviour
 
         currentHealth = amount;
         hullBar.SetValue(currentHealth);
+
+        // Should probably put the "Is Player Now Dead" logic here
+        // It's currently in hullBar.setValue()
         if(amount < 0)
             hurtOverlay.Hurt(1.0f);
     }

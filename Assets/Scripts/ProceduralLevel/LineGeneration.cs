@@ -8,26 +8,21 @@ using UnityEngine;
 public class LineGeneration : MonoBehaviour
 {
     private GameManager game_manager;
-    public AllTilesInfo allTilesInfo;
-    private int x_size;
+    private int lateral_tile_amount;
 
     public Object tileObject;
     public int lineID = -1; // Basically, depth. We don't need to see it in Unity, but it's helpful for debugging. It could be set to readonly
 
     private bool[] air_tiles; // False is a tile, True is air/digged up
-    private TileScript[] line_tiles; // References all child tiles in the line. Only modified on Start.
-    private TileInfo[] tiles_info; // Init'ed in Start from allTilesObject
 
     private void Start()
     {
         game_manager = GameManager.Instance;
-        x_size = game_manager.levelXSize;
+        lateral_tile_amount = game_manager.levelXSize;
 
         // Init Arrays
-        air_tiles = new bool[x_size + 1]; // +1 is an additional air tile, for the collision generation logic
+        air_tiles = new bool[lateral_tile_amount + 1]; // +1 is an additional air tile, for the collision generation logic
         air_tiles[air_tiles.Length - 1] = true; // last tile is always air
-        line_tiles = new TileScript[x_size];
-        tiles_info = allTilesInfo.GetAllTiles();
 
         SpawnTiles();
     }
@@ -35,7 +30,7 @@ public class LineGeneration : MonoBehaviour
     private void SpawnTiles() // Called once, at level start
     {
         // Generate all Tiles (digged-up tiles and air will be disabled later)
-        for (int x = 0; x < x_size; x++)
+        for (int x = 0; x < lateral_tile_amount; x++)
         {
             Vector3 pos = transform.position;
             pos.x += x + 0.5f;
@@ -46,8 +41,6 @@ public class LineGeneration : MonoBehaviour
 
             GameObject new_tile = (GameObject)GameObject.Instantiate(tileObject, pos, rotation, transform);
             new_tile.GetComponent<TileScript>().xID = x;
-
-            line_tiles[x] = new_tile.GetComponent<TileScript>();
         }
 
         GenerateLine(lineID);
@@ -60,48 +53,32 @@ public class LineGeneration : MonoBehaviour
         // because it doesn't update during the same frame.
         // So, we pass it manually
 
-        float noise_value, noise_size, current_depth_spawn_percent;
-        float bias = 0.001f; // smol bias to remove 0 in noise_value
-        for (int x = 0; x < x_size; x++)
+        for (int x = 0; x < lateral_tile_amount; x++)
         {
-            TileScript current_tile = line_tiles[x];
+            TileScript current_tile = transform.GetChild(x).GetComponent<TileScript>();
 
-            // Update unique_ID
-            int unique_ID = line_ID * x_size + x;
-            current_tile.uniqueID = unique_ID;
+            // Update pixel_ID
+            int pixel_ID = line_ID * lateral_tile_amount + x;
+            current_tile.pixelID = pixel_ID;
 
             // Flag as air if the tile is already dug up
-            if (IsTileDugUp(unique_ID))
+            if (game_manager.IsTileDugUp(pixel_ID))
                 air_tiles[x] = true;
             else
                 air_tiles[x] = false;
 
-
+            
+            // Assign Tile Type
             if (!air_tiles[x]) // If we know it's not an air tile
             {
                 // Loop through all TileInfos, and place the first "valid" tile
                 // Essentially, we give priority to the first types of tile.
                 // See allTilesInfo.GetAllTiles() for the order.
-                foreach (TileInfo tile_info in tiles_info)
-                {
-                    noise_size = tile_info.GetNoiseSize();
-                    current_depth_spawn_percent = tile_info.GetSpawnPercent(line_ID);
+                TileInfo selected_tile = game_manager.PixelIDToTileInfo(pixel_ID, seed);
+                if (selected_tile == null)
+                    Debug.LogError("Choosen tile is null !");
 
-                    if (current_depth_spawn_percent == 0)
-                        continue;
-
-                    noise_value = Mathf.PerlinNoise(x * noise_size + seed, line_ID * noise_size + seed);
-                    noise_value = Mathf.Clamp01(noise_value) + bias;
-                    if (noise_value < current_depth_spawn_percent)
-                    {
-                        if (tile_info.type.ToString() == "air")
-                            air_tiles[x] = true;
-
-                        current_tile.SetMaterial(tile_info.GetMaterial());
-                        current_tile.tileInfo = tile_info;
-                        break;
-                    }
-                }
+                current_tile.SetMaterial(selected_tile.GetMaterial());
             }
 
             // Disable air tile, Enable non-air tile
@@ -118,22 +95,15 @@ public class LineGeneration : MonoBehaviour
         GenerateCollision2D(air_tiles); // this is quite expensive, but necessary
     }
 
-    private bool IsTileDugUp(int unique_ID)
-    {
-        // I wonder how fast that will be when the List will be thousands long
-        bool is_dug = game_manager.tilesDugUp.Contains(unique_ID);
-        return is_dug;
-    }
-
     private void GenerateCollision2D(bool[] to_generate)
     {
         PolygonCollider2D col = GetComponent<PolygonCollider2D>();
 
-        Vector2[] corners = new Vector2[x_size + 1];
+        Vector2[] corners = new Vector2[lateral_tile_amount + 1];
 
         bool prev_is_air = true;
         int half_vert_count = 0;
-        for (int x = 0; x <= x_size; x++)
+        for (int x = 0; x <= lateral_tile_amount; x++)
         {
             bool different = prev_is_air != to_generate[x];
             if (different) // state switched
@@ -197,10 +167,11 @@ public class LineGeneration : MonoBehaviour
         col.transform.parent.GetComponent<CompositeCollider2D>().GenerateGeometry();
     }
 
-    public void RecomputeCollision(int deleted_tile_ID)
+    public void RecomputeCollision(int deleted_pixel_ID)
     {
-        // Update air_tiles array considering the newly deleted tile_ID
-        air_tiles[deleted_tile_ID] = true;
+        // Update air_tiles array considering the newly deleted pixel_ID
+        int xID = game_manager.PixelIDX(deleted_pixel_ID);
+        air_tiles[xID] = true;
 
         GenerateCollision2D(air_tiles);
     }
