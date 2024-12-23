@@ -40,7 +40,6 @@ public class LineGeneration : MonoBehaviour
             Quaternion rotation = Quaternion.Euler(0, 0, z_rot);
 
             GameObject new_tile = (GameObject)GameObject.Instantiate(tileObject, pos, rotation, transform);
-            new_tile.GetComponent<TileScript>().xID = x;
         }
 
         GenerateLine(lineID);

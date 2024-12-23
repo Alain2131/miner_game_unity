@@ -107,7 +107,7 @@ public class GameManager : MonoBehaviour
     {
         // I wonder how fast that will be when the List will be thousands long
         bool is_dug = tilesDugUp.Contains(pixel_ID);
-        bool is_air = PixelIDToTileInfo(pixel_ID).type.ToString() == "air"; // I don't know how efficient doing the full algorithm is
+        bool is_air = PixelIDToTileInfo(pixel_ID).type == TileType.air; // I don't know how efficient doing the full algorithm is
         return is_dug || is_air;
     }
 
@@ -117,18 +117,17 @@ public class GameManager : MonoBehaviour
             return;
 
         TileScript ts = PixelIDToTileScript(pixel_ID);
-        ts.SetEnabled(false);
+        ts.SetEnabled(false); // Necessary as long as we have individual tiles.
 
-        AddDugUpTile(pixel_ID); // add the tile to the tilesDugUp List
+        AddDugUpTile(pixel_ID); // Add the tile to the tilesDugUp List
 
         TileInfo tile_info = PixelIDToTileInfo(pixel_ID);
 
-        if (tile_info.addToInventory)
-            oreInventory.AddSingleOre(tile_info); // increase the tile count in the inventory (if applicable)
+        oreInventory.AddSingleOre(tile_info);
 
         // Recompute Collision on the line
         GameObject line_object = ts.transform.parent.gameObject;
-        line_object.GetComponent<LineGeneration>().RecomputeCollision(pixel_ID);
+        line_object.GetComponent<LineGeneration>().RecomputeCollision(pixel_ID); // Only necessary when using the LevelGeneration's collision
     }
 
 

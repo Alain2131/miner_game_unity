@@ -53,6 +53,9 @@ public class OreInventory : MonoBehaviour
 
     public void AddSingleOre(TileInfo tile)
     {
+        if (!tile.addToInventory)
+            return;
+
         int ID = GetIDFromOre(tile.type);
         if(ID >= 0)
         {

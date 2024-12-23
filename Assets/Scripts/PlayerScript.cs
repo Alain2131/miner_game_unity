@@ -284,8 +284,12 @@ public class PlayerScript : MonoBehaviour
     // "Dig" isn't really what this does, this is just in-between the input and the actual dig
     private void Dig(Vector3 dig_direction)
     {
+        float ray_length = 0.6f;
+        if (disableDigAnimation)
+            ray_length = 1.0f; // Allows for unlimited digging speed
+
         // Fetch Tile
-        RaycastHit2D hit = PlayerRaycast(dig_direction * 0.6f, "tile", false);
+        RaycastHit2D hit = PlayerRaycast(dig_direction * ray_length, "tile", false);
 
         if (hit.collider == null || is_digging)
             return;
@@ -479,6 +483,9 @@ public class PlayerScript : MonoBehaviour
 
     private bool CanPlayerDig()
     {
+        if (disableDigAnimation)
+            return true;
+
         // We want a ray that's barely larger than the player. 0.475 is ~half the size of the player.
         RaycastHit2D hit = PlayerRaycast(Vector3.down * 0.475f, "tile", false);
         if(!hit)

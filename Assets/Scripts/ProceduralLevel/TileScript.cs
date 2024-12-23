@@ -8,8 +8,6 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer), typeof(BoxCollider2D))]
 public class TileScript : MonoBehaviour
 {
-    public int xID; // the lateral position on the line, including air tiles
-
     // lineID * xSize + x_ID, a unique ID for every single tiles to store which tiles have been dug up
     // coincidendally matches up with Pixel ID, should probably only calculate once and share the info
     public int pixelID = -1;
