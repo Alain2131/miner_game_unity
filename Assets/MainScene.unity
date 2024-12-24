@@ -753,7 +753,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 432368806723328931, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.65
+      value: 0.52
       objectReference: {fileID: 0}
     - target: {fileID: 432368806723328931, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2535,6 +2535,70 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 1204470071}
+--- !u!1 &754208902
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 754208904}
+  - component: {fileID: 754208903}
+  m_Layer: 7
+  m_Name: Tiles Collision Around Player (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!60 &754208903
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 754208902}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 2, y: -1}
+      - {x: 3, y: -1}
+      - {x: 3, y: -2}
+      - {x: 2, y: -2}
+    - - {x: 0, y: 0}
+      - {x: 0.5, y: -0.25}
+      - {x: 1, y: -2}
+      - {x: 0, y: -2}
+--- !u!4 &754208904
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 754208902}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &782432829 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
@@ -4176,6 +4240,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a7caf8c55d12a24ca40ab3705a24538, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manualLutSelection: 0
+  lutSelection: 0
 --- !u!60 &1419401845
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -4201,38 +4267,22 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.16079664, y: 2.1944013}
-      - {x: 0.13242066, y: 2.8349733}
-      - {x: 0.89324814, y: 2.8322663}
-      - {x: 0.7824516, y: 2.147108}
-    - - {x: 1.1066592, y: 2.1161177}
-      - {x: 1.1823282, y: 2.8134418}
-      - {x: 1.8769455, y: 2.8012762}
-      - {x: 1.8674867, y: 2.1755764}
-    - - {x: 2.0903566, y: 2.1891725}
-      - {x: 2.1754842, y: 2.8013685}
-      - {x: 2.853891, y: 2.7446175}
-      - {x: 2.8322668, y: 2.125669}
-    - - {x: 0.22439265, y: 1.2012455}
-      - {x: 0.24601662, y: 1.7729003}
-      - {x: 0.8149649, y: 1.7823591}
-      - {x: 0.8460475, y: 1.0972005}
-    - - {x: 2.0904486, y: 1.1608895}
-      - {x: 2.1255763, y: 1.9122581}
-      - {x: 2.7756076, y: 1.8082129}
-      - {x: 2.70669, y: 1.1041373}
-    - - {x: 0.19340229, y: 0.05675161}
-      - {x: 0.16773331, y: 0.8554137}
-      - {x: 0.90018487, y: 0.85812056}
-      - {x: 0.8528919, y: 0.13242078}
-    - - {x: 1.1230547, y: 0.10413742}
-      - {x: 1.2365582, y: 0.9284686}
-      - {x: 1.8460478, y: 0.9406339}
-      - {x: 1.864965, y: 0.091971874}
-    - - {x: 2.0689173, y: 0.12044048}
-      - {x: 2.2270072, y: 0.79613996}
-      - {x: 2.7919102, y: 0.8150575}
-      - {x: 2.829745, y: 0.10827494}
+    - - {x: 0.09416032, y: 1.128225}
+      - {x: 0.13908446, y: 2.8483005}
+      - {x: 0.913239, y: 2.905566}
+      - {x: 0.9023963, y: 1.1209136}
+    - - {x: 1.1533045, y: 2.096127}
+      - {x: 1.0957018, y: 2.893405}
+      - {x: 2.8964763, y: 2.8745759}
+      - {x: 2.8736906, y: 2.0756226}
+    - - {x: 2.1569924, y: 0.16343784}
+      - {x: 2.1821477, y: 1.8484735}
+      - {x: 2.8139095, y: 1.8383678}
+      - {x: 2.9055665, y: 0.11326146}
+    - - {x: 0.08445692, y: 0.10175133}
+      - {x: 0.079426885, y: 0.88664126}
+      - {x: 1.9211228, y: 0.86944586}
+      - {x: 1.9455419, y: 0.05101514}
 --- !u!4 &1419401846
 Transform:
   m_ObjectHideFlags: 0

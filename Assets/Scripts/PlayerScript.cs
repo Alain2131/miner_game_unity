@@ -39,6 +39,9 @@ public class PlayerScript : MonoBehaviour
     [Header("Items")]
     public int itemExplosiveCount = 5;
 
+    // Might be worth adding pixel_ID as a property here, calculated every frame
+    // Other scripts would sample the value instead of calculating it themselves
+
     private GameManager game_manager;
 
     private bool is_digging = false;
