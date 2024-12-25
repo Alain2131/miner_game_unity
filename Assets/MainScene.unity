@@ -4241,6 +4241,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manualLutSelection: 0
+  followPlayer: 1
   lutSelection: 0
 --- !u!60 &1419401845
 PolygonCollider2D:
