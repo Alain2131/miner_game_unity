@@ -37,7 +37,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private bool disableFuel = false;
 
     [Header("Items")]
-    public int itemExplosiveCount = 5;
+    public Items items;
 
     // Might be worth adding pixel_ID as a property here, calculated every frame
     // Other scripts would sample the value instead of calculating it themselves
@@ -65,7 +65,14 @@ public class PlayerScript : MonoBehaviour
         controls.Gameplay.Inventory.performed += ToggleInventory;
         controls.Gameplay.TogglePause.performed += TogglePause;
         controls.Gameplay.Interact.performed += Interact;
+
+        // Items
         controls.Gameplay.Explosive.performed += Item_Explosive;
+        controls.Gameplay.LargeExplosive.performed += Item_LargeExplosive;
+        controls.Gameplay.CheapTeleporter.performed += Item_CheapTeleporter;
+        controls.Gameplay.FancyTeleporter.performed += Item_FancyTeleporter;
+        controls.Gameplay.RepairKit.performed += Item_RepairKit;
+        controls.Gameplay.FuelReserve.performed += Item_FuelReserve;
 
         controls.MenuControls.Cancel.performed += TogglePause;
         controls.MenuControls.Interact.performed += Interact;
@@ -138,45 +145,34 @@ public class PlayerScript : MonoBehaviour
 
     private void Item_Explosive(InputAction.CallbackContext context)
     {
-        // Loop over a range of 1 tile around the player (total of 8)
-
-        int pixel_ID = game_manager.PositionToPixelID(transform.position);
-        for (int x = -1; x <= 1; x++)
-        {
-            for (int y = -1; y <= 1; y++)
-            {
-                if (x == 0 && y == 0)
-                    continue;
-
-                int ID_to_dig = game_manager.GetPixelIDAtOffset(pixel_ID, x, y);
-                if (ID_to_dig < 0)
-                    continue;
-
-                //gameManager.CreateQuadAtPixelID(ID_to_dig);
-
-                game_manager.DigTile(ID_to_dig);
-            }
-        }
-
-
-        // Probably not the best place to have this
-        // Check how many explosives we have
-        if (itemExplosiveCount <= 0)
-        {
-            Debug.LogWarning("No more explosive item.");
-
-            itemExplosiveCount = 0; // Not a necessary check, but inexpensive to do.
-            return;
-        }
-
-        itemExplosiveCount--;
+        items.explosive.ConsumeItem();
     }
 
-    void Update()
+    private void Item_LargeExplosive(InputAction.CallbackContext context)
     {
-        
+        items.large_explosive.ConsumeItem();
     }
-    
+
+    private void Item_CheapTeleporter(InputAction.CallbackContext context)
+    {
+        items.cheap_teleporter.ConsumeItem();
+    }
+
+    private void Item_FancyTeleporter(InputAction.CallbackContext context)
+    {
+        items.fancy_teleporter.ConsumeItem();
+    }
+
+    private void Item_RepairKit(InputAction.CallbackContext context)
+    {
+        items.repair_kit.ConsumeItem();
+    }
+
+    private void Item_FuelReserve(InputAction.CallbackContext context)
+    {
+        items.fuel_reserve.ConsumeItem();
+    }
+
 
     private void HandleFallDamage()
     {
@@ -455,7 +451,7 @@ public class PlayerScript : MonoBehaviour
         if (disableDamage)
             return;
 
-        currentHealth = amount;
+        currentHealth = Mathf.Min(amount, maxHealth);
         hullBar.SetValue(currentHealth);
 
         // Should probably put the "Is Player Now Dead" logic here
@@ -484,7 +480,7 @@ public class PlayerScript : MonoBehaviour
         if (disableFuel)
             return;
 
-        currentFuel = amount;
+        currentFuel = Mathf.Min(amount, maxFuel);
         fuelBar.SetValue(currentFuel);
     }
 

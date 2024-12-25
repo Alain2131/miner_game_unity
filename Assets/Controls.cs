@@ -80,6 +80,51 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LargeExplosive"",
+                    ""type"": ""Button"",
+                    ""id"": ""50be74e0-be1a-4f04-94df-9955bed5bfff"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CheapTeleporter"",
+                    ""type"": ""Button"",
+                    ""id"": ""59be14a9-9f40-47df-a277-7168cf52fa7a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FancyTeleporter"",
+                    ""type"": ""Button"",
+                    ""id"": ""1399ee70-50d8-4683-bddd-a7979dada4c8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RepairKit"",
+                    ""type"": ""Button"",
+                    ""id"": ""5786f4d6-b418-45d7-a493-d4c0a446e318"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FuelReserve"",
+                    ""type"": ""Button"",
+                    ""id"": ""8aefbc78-0073-4b44-9663-872722df42f3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -229,11 +274,132 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""f3add1bb-67eb-46a0-ab58-4d9aa7255b4a"",
-                    ""path"": ""<Keyboard>/c"",
+                    ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Explosive"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c94ebe00-17c2-47e2-bcd2-ffdc64076f63"",
+                    ""path"": ""<Keyboard>/numpad1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Explosive"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4c3d605f-5dc4-43dd-9218-5fc5d9fdbc13"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""LargeExplosive"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2372d51f-510a-4a7f-a7ad-11839b3aa6d9"",
+                    ""path"": ""<Keyboard>/numpad2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""LargeExplosive"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7289ebee-02ee-4c1a-876d-9e11c997d372"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""CheapTeleporter"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fc481a06-cc96-4141-ac38-caaf02dca487"",
+                    ""path"": ""<Keyboard>/numpad3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""CheapTeleporter"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bbcffd32-7474-4d69-babe-1f710bfe3803"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""FancyTeleporter"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4e1d1ae0-b13a-4e82-b14d-1493f2dff1db"",
+                    ""path"": ""<Keyboard>/numpad4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""FancyTeleporter"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3f0a91f5-74a2-4805-825c-f372c1cfe440"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""RepairKit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""14ee1111-43d8-4e0a-994a-f0f77716b7f9"",
+                    ""path"": ""<Keyboard>/numpad5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""RepairKit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""10eecb14-8f51-4494-a8dd-c7c4570594b2"",
+                    ""path"": ""<Keyboard>/6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""FuelReserve"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""031f9b59-4acf-49c2-a8e0-571cf5725b1a"",
+                    ""path"": ""<Keyboard>/numpad6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""FuelReserve"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -554,6 +720,11 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Gameplay_Inventory = m_Gameplay.FindAction("Inventory", throwIfNotFound: true);
         m_Gameplay_TogglePause = m_Gameplay.FindAction("TogglePause", throwIfNotFound: true);
         m_Gameplay_Explosive = m_Gameplay.FindAction("Explosive", throwIfNotFound: true);
+        m_Gameplay_LargeExplosive = m_Gameplay.FindAction("LargeExplosive", throwIfNotFound: true);
+        m_Gameplay_CheapTeleporter = m_Gameplay.FindAction("CheapTeleporter", throwIfNotFound: true);
+        m_Gameplay_FancyTeleporter = m_Gameplay.FindAction("FancyTeleporter", throwIfNotFound: true);
+        m_Gameplay_RepairKit = m_Gameplay.FindAction("RepairKit", throwIfNotFound: true);
+        m_Gameplay_FuelReserve = m_Gameplay.FindAction("FuelReserve", throwIfNotFound: true);
         // Menu Controls
         m_MenuControls = asset.FindActionMap("Menu Controls", throwIfNotFound: true);
         m_MenuControls_Navigate = m_MenuControls.FindAction("Navigate", throwIfNotFound: true);
@@ -632,6 +803,11 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Inventory;
     private readonly InputAction m_Gameplay_TogglePause;
     private readonly InputAction m_Gameplay_Explosive;
+    private readonly InputAction m_Gameplay_LargeExplosive;
+    private readonly InputAction m_Gameplay_CheapTeleporter;
+    private readonly InputAction m_Gameplay_FancyTeleporter;
+    private readonly InputAction m_Gameplay_RepairKit;
+    private readonly InputAction m_Gameplay_FuelReserve;
     public struct GameplayActions
     {
         private @Controls m_Wrapper;
@@ -642,6 +818,11 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @Inventory => m_Wrapper.m_Gameplay_Inventory;
         public InputAction @TogglePause => m_Wrapper.m_Gameplay_TogglePause;
         public InputAction @Explosive => m_Wrapper.m_Gameplay_Explosive;
+        public InputAction @LargeExplosive => m_Wrapper.m_Gameplay_LargeExplosive;
+        public InputAction @CheapTeleporter => m_Wrapper.m_Gameplay_CheapTeleporter;
+        public InputAction @FancyTeleporter => m_Wrapper.m_Gameplay_FancyTeleporter;
+        public InputAction @RepairKit => m_Wrapper.m_Gameplay_RepairKit;
+        public InputAction @FuelReserve => m_Wrapper.m_Gameplay_FuelReserve;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -669,6 +850,21 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Explosive.started += instance.OnExplosive;
             @Explosive.performed += instance.OnExplosive;
             @Explosive.canceled += instance.OnExplosive;
+            @LargeExplosive.started += instance.OnLargeExplosive;
+            @LargeExplosive.performed += instance.OnLargeExplosive;
+            @LargeExplosive.canceled += instance.OnLargeExplosive;
+            @CheapTeleporter.started += instance.OnCheapTeleporter;
+            @CheapTeleporter.performed += instance.OnCheapTeleporter;
+            @CheapTeleporter.canceled += instance.OnCheapTeleporter;
+            @FancyTeleporter.started += instance.OnFancyTeleporter;
+            @FancyTeleporter.performed += instance.OnFancyTeleporter;
+            @FancyTeleporter.canceled += instance.OnFancyTeleporter;
+            @RepairKit.started += instance.OnRepairKit;
+            @RepairKit.performed += instance.OnRepairKit;
+            @RepairKit.canceled += instance.OnRepairKit;
+            @FuelReserve.started += instance.OnFuelReserve;
+            @FuelReserve.performed += instance.OnFuelReserve;
+            @FuelReserve.canceled += instance.OnFuelReserve;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -691,6 +887,21 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Explosive.started -= instance.OnExplosive;
             @Explosive.performed -= instance.OnExplosive;
             @Explosive.canceled -= instance.OnExplosive;
+            @LargeExplosive.started -= instance.OnLargeExplosive;
+            @LargeExplosive.performed -= instance.OnLargeExplosive;
+            @LargeExplosive.canceled -= instance.OnLargeExplosive;
+            @CheapTeleporter.started -= instance.OnCheapTeleporter;
+            @CheapTeleporter.performed -= instance.OnCheapTeleporter;
+            @CheapTeleporter.canceled -= instance.OnCheapTeleporter;
+            @FancyTeleporter.started -= instance.OnFancyTeleporter;
+            @FancyTeleporter.performed -= instance.OnFancyTeleporter;
+            @FancyTeleporter.canceled -= instance.OnFancyTeleporter;
+            @RepairKit.started -= instance.OnRepairKit;
+            @RepairKit.performed -= instance.OnRepairKit;
+            @RepairKit.canceled -= instance.OnRepairKit;
+            @FuelReserve.started -= instance.OnFuelReserve;
+            @FuelReserve.performed -= instance.OnFuelReserve;
+            @FuelReserve.canceled -= instance.OnFuelReserve;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -835,6 +1046,11 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnInventory(InputAction.CallbackContext context);
         void OnTogglePause(InputAction.CallbackContext context);
         void OnExplosive(InputAction.CallbackContext context);
+        void OnLargeExplosive(InputAction.CallbackContext context);
+        void OnCheapTeleporter(InputAction.CallbackContext context);
+        void OnFancyTeleporter(InputAction.CallbackContext context);
+        void OnRepairKit(InputAction.CallbackContext context);
+        void OnFuelReserve(InputAction.CallbackContext context);
     }
     public interface IMenuControlsActions
     {

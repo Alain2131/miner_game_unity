@@ -749,11 +749,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 432368806723328931, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.5
+      value: 5.57
       objectReference: {fileID: 0}
     - target: {fileID: 432368806723328931, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.52
+      value: 1.55
       objectReference: {fileID: 0}
     - target: {fileID: 432368806723328931, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -784,6 +784,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6200000, guid: 1a912a78f04ea824e8e373469a8cac96, type: 2}
     - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
+      propertyPath: items
+      value: 
+      objectReference: {fileID: 1359078528}
+    - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: fuelBar
       value: 
       objectReference: {fileID: 1930581995}
@@ -799,6 +803,10 @@ PrefabInstance:
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 1999159836}
+    - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
+      propertyPath: disableFuel
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: hurtOverlay
       value: 
@@ -2540,7 +2548,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
   m_PrefabInstance: {fileID: 199047072}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1359078527}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40118f4dee54b7a4181a6b3fe7a62797, type: 3}
@@ -4141,6 +4149,23 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: e07323cc45d172642adde77a73addd15, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c42b01553033a444292bb4fea6d27fc1, type: 3}
+--- !u!1 &1359078527 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 432368806723328941, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
+  m_PrefabInstance: {fileID: 199047072}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1359078528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1359078527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4156cd3c220a234ca7fa62aca34e996, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &1406108352 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3170005387618622840, guid: c42b01553033a444292bb4fea6d27fc1, type: 3}
