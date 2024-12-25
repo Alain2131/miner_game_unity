@@ -1,6 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Stray collision on the floor
+// setup :
+// hole in the middle, fly up (~2 tiles), hit the ground, and you might be stopped from moving left or right
+
 [RequireComponent(typeof(PolygonCollider2D))]
 public class TilesCollisionAroundPlayer : MonoBehaviour
 {
@@ -259,31 +263,19 @@ public class TilesCollisionAroundPlayer : MonoBehaviour
         }
 
         int player_pixel_ID = game_manager.PositionToPixelID(player_transform.position);
-
-        // dirty hack when over ground
-        // will have to find a better solution
-        // the issue is then when above ground, pixel_ID is negative
-		// fix has to be done in GameManager.cs, the various PixelIDTo__() methods should handle pixel_ID -52 and whatever offset I need on it
-        if(player_pixel_ID < 0)
-        {
-            lutSelection = 7; // very wrong, will always force to dig on the floor even when it's all air, must fix
-            ApplyCollision(lutSelection);
-            return;
-        }
-
+		
         lutSelection = GetLUTNumberAroundPixelID(player_pixel_ID);
         ApplyCollision(lutSelection);
     }
 
     void ApplyCollision(int lut_number)
     {
-		Vector3 offset = new Vector3(0, 0, 0);
+		Vector2 offset = new Vector2(0, 0);
 		if (followPlayer)
         {
-			int player_pixel_ID = game_manager.PositionToPixelID(player_transform.position);
-			player_pixel_ID = Mathf.Abs(player_pixel_ID); // dirty hack for above ground
+            Vector2 CENTER_OFFSET = new Vector2(-1.5f, 1.5f);
 
-            Vector3 CENTER_OFFSET = new Vector3(-1.5f, 1.5f, 0.0f);
+			int player_pixel_ID = game_manager.PositionToPixelID(player_transform.position);
 			offset = game_manager.PixelIDToPosition(player_pixel_ID) + CENTER_OFFSET;
         }
 		polygon_collider_2d.offset = offset;

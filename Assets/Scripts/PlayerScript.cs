@@ -383,8 +383,8 @@ public class PlayerScript : MonoBehaviour
         float dig_time = tile_info.GetDigTime();
         dig_time /= drillSpeed;
 
-        Vector3 current_pos = transform.position;
-        Vector3 target_position = game_manager.PixelIDToPosition(pixel_ID);
+        Vector2 current_pos = transform.position;
+        Vector2 target_position = game_manager.PixelIDToPosition(pixel_ID);
 
 
         float starting_fuel = currentFuel;
@@ -396,7 +396,7 @@ public class PlayerScript : MonoBehaviour
             time += Time.deltaTime / dig_time;
 
             // Update Player Position
-            transform.position = Vector3.Lerp(current_pos, target_position, time);
+            transform.position = Vector2.Lerp(current_pos, target_position, time);
             transform.position += AddJitter();
 
             // Digging Fuel Consumption
@@ -412,6 +412,8 @@ public class PlayerScript : MonoBehaviour
         is_digging = false;
     }
 
+    // Has to return vector3 even though we're only doing a 2D jitter,
+    // otherwise this doesn't work -> transform.position += AddJitter();
     private Vector3 AddJitter()
     {
         // The Jitter starts and stops abruptly
@@ -424,10 +426,9 @@ public class PlayerScript : MonoBehaviour
 
         float time = Time.realtimeSinceStartup;
 
-        Vector3 jitter_offset;
+        Vector2 jitter_offset;
         jitter_offset.x = Mathf.PerlinNoise((time + 12.4f) * jitter_scale, 0f) - 0.5f;
         jitter_offset.y = Mathf.PerlinNoise((time + 9.647f) * jitter_scale, 0f) - 0.5f;
-        jitter_offset.z = 0;
 
         jitter_offset *= jitter_intensity;
 

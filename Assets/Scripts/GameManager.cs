@@ -107,8 +107,14 @@ public class GameManager : MonoBehaviour
     {
         // I wonder how fast that will be when the List will be thousands long
         bool is_dug = tilesDugUp.Contains(pixel_ID);
+
+        // I think PixelIDToTileInfo() is a bit expensive,
+        // so we exit early if we already know the tile is dug.
+        if (is_dug)
+            return true;
+
         bool is_air = PixelIDToTileInfo(pixel_ID).type == TileType.air; // I don't know how efficient doing the full algorithm is
-        return is_dug || is_air;
+        return is_air;
     }
 
     public void DigTile(int pixel_ID)
@@ -145,7 +151,7 @@ public class GameManager : MonoBehaviour
         LineGeneration found = line_objects[0];
         foreach (var line_object in line_objects)
         {
-            if(line_object.lineID == row)
+            if (line_object.lineID == row)
             {
                 found = line_object;
                 break;
@@ -157,7 +163,7 @@ public class GameManager : MonoBehaviour
         foreach (Transform child in found.transform)
         {
             TileScript ts = child.GetComponent<TileScript>();
-            if(ts.pixelID == pixel_ID)
+            if (ts.pixelID == pixel_ID)
             {
                 return ts;
             }
@@ -177,73 +183,10 @@ public class GameManager : MonoBehaviour
 
 
 
-
-
-
-
-
-
-    public int PositionToPixelID(Vector3 position)
-    {
-        int idx = Mathf.FloorToInt(position.x);
-        int idy = Mathf.FloorToInt(position.y);
-
-        int pixel_ID = 99999;
-        if (idy >= 0) // over ground
-        {
-            pixel_ID = idx + (idy * levelXSize) + levelXSize;
-            pixel_ID *= -1;
-        }
-        else // under ground
-        {
-            pixel_ID = idx - (idy * levelXSize) - levelXSize;
-        }
-
-        return pixel_ID;
-    }
-
-    public Vector3 PixelIDToPosition(int pixel_ID)
-    {
-        // Need to handle negative pixelID properly
-        // Decide on what -1 will be.
-        // * Above 0
-        // * Above 99
-        if(pixel_ID < 0)
-            return new Vector3(-1, -1, 0);
-
-        
-        int idx =  pixel_ID % levelXSize;
-        int idy = -pixel_ID / levelXSize;
-        //idy -= LevelYSize; // cancel out "one page offset"
-
-        //float scale = GetMaterialScale();
-        //float x_pos = (idx * scale) / resolution;
-        //float y_pos = (idy * scale) / resolution;
-
-        float tile_size = GetPixelWorldSize();
-        float x_pos = idx * tile_size;
-        float y_pos = idy * tile_size;
-        y_pos -= 1;
-
-        // x_pos and y_pos are at the bottom-left corner, so we add half the size
-        x_pos += tile_size * 0.5f;
-        y_pos += tile_size * 0.5f;
-
-        return new Vector3(x_pos, y_pos, 0);
-    }
-
-    /*public Color SampleAtPosition(Vector3 position)
-    {
-        int pixel_ID = PositionToPixelID(position);
-
-        Color Cd = SampleAtID(pixel_ID);
-        return Cd;
-    }*/
-
     // lateral position
     public int PixelIDX(int pixel_ID)
     {
-        return pixel_ID % levelXSize;
+        return Mathf.Abs(pixel_ID % levelXSize);
     }
 
     // height
@@ -252,36 +195,62 @@ public class GameManager : MonoBehaviour
         return pixel_ID / levelXSize;
     }
 
-    // This could probably be optimized with better math logic
+    private int IdXYToPixelID(int idx, int idy)
+    {
+        int pixel_ID;
+        if (idy < 0) // over ground
+        {
+            pixel_ID = idx - (idy * levelXSize);
+            pixel_ID *= -1;
+        }
+        else // under ground
+        {
+            pixel_ID = idx + (idy * levelXSize);
+        }
+        return pixel_ID;
+    }
+
+    public int PositionToPixelID(Vector2 position)
+    {
+        int idx = Mathf.FloorToInt(position.x);
+        int idy = -Mathf.FloorToInt(position.y) - 1;
+
+        return IdXYToPixelID(idx, idy);
+    }
+
+    public Vector2 PixelIDToPosition(int pixel_ID)
+    {
+        int idx = PixelIDX(pixel_ID);
+        int idy = -PixelIDY(pixel_ID) - 1;
+
+        float tile_size = GetPixelWorldSize();
+        float x_pos = idx * tile_size;
+        float y_pos = idy * tile_size;
+
+        // x_pos and y_pos are at the bottom-left corner of each tiles,
+        // so we add half a tile size
+        x_pos += tile_size * 0.5f;
+        y_pos += tile_size * 0.5f;
+
+        return new Vector2(x_pos, y_pos);
+    }
+
     public int GetPixelIDAtOffset(int pixel_ID, int offsetx, int offsety)
     {
         int idx = PixelIDX(pixel_ID);
         int idy = PixelIDY(pixel_ID);
 
-        idx = Mathf.Abs(idx);
-
         idx += offsetx;
         idy += offsety;
 
-
-
-        //Debug.Log("---------------");
-        //Debug.Log(idx);
-        //Debug.Log(idy);
-
-
-        // Sampling Out of Bounds
-        if (idx < 0 || idy < 0 || idx > levelXSize) // || idy > levelXSize <- caused an issue at one point, leaving for reference, will delete later
-        {
-            //Debug.LogWarning($"PixelID offset out of bound, {pixel_ID} {offsetx} {offsety}");
-            return -1;
-        }
-
-        int final_pixel_ID = idx + (idy * levelXSize);
+        int final_pixel_ID = IdXYToPixelID(idx, idy);
         return final_pixel_ID;
     }
 
     // Basically, the world generation algorithm
+    // Could specify "TileInfo type=null" to have a default where we get the first valid, but can also specify the one we want
+    // That mode would be "dangerous" as it wouldn't necessarily give us the final one, but it would be useful to fetch air faster,
+    // since we know it's always the first one (for now, anyways)
     public TileInfo PixelIDToTileInfo(int pixel_ID, float seed = 0f)
     {
         int level_column = PixelIDX(pixel_ID);
@@ -318,6 +287,14 @@ public class GameManager : MonoBehaviour
         return tiles_info[0]; // air
     }
 
+    /*public Color SampleAtPosition(Vector3 position)
+    {
+        int pixel_ID = PositionToPixelID(position);
+
+        Color Cd = SampleAtID(pixel_ID);
+        return Cd;
+    }*/
+
     // This logic could be changed to calculate tileWorldSize on Awake()
     // Then just return that value
     // I'm leaving that in as a special sauce example,
@@ -331,7 +308,7 @@ public class GameManager : MonoBehaviour
     public void CreateQuadAtPixelID(int pixel_ID)
     {
         float size = GetPixelWorldSize();
-        Vector3 position = PixelIDToPosition(pixel_ID);
+        Vector2 position = PixelIDToPosition(pixel_ID);
 
         GameObject square = GameObject.CreatePrimitive(PrimitiveType.Quad);
         square.transform.localScale = new Vector3(size, size, size);
