@@ -271,7 +271,7 @@ public class Items : MonoBehaviour
     public Item repair_kit;
     public Item fuel_reserve;
 
-    private void Start()
+    private void Awake()
     {
         explosive = new Explosive();
         large_explosive = new LargeExplosive();
