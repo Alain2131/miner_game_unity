@@ -42,4 +42,9 @@ public class Store_Items : Store
         // But I would assume it will be the same for the others
         // once they get a UI. Or this gets completely changed.
     }
+
+    public void BuyItem(int index)
+    {
+        Debug.Log($"bought item id {index}");
+    }
 }
