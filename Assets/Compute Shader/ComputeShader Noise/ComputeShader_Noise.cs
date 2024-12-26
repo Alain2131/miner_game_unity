@@ -36,7 +36,8 @@ public class ComputeShader_Noise : MonoBehaviour
 
     void Update()
     {
-        computeShader.SetFloat("t", (float)EditorApplication.timeSinceStartup);
+        //computeShader.SetFloat("t", (float)EditorApplication.timeSinceStartup); // doesn't work in shipped builds, will need an alternative
+        computeShader.SetFloat("t", 0.0f);
         computeShader.Dispatch(perlin_noise_handle, resolution / 8, resolution / 8, 1);
     }
 
