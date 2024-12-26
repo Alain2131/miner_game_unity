@@ -271,6 +271,8 @@ public class Items : MonoBehaviour
     public Item repair_kit;
     public Item fuel_reserve;
 
+    public Item[] items_instance;
+
     private void Awake()
     {
         explosive = new Explosive();
@@ -280,12 +282,20 @@ public class Items : MonoBehaviour
         repair_kit = new RepairKit();
         fuel_reserve = new FuelReserve();
 
+        // array to gather all types of items for other scripts
+        // i.e. store, save game can go over all items
+        items_instance = new Item[6];
+        items_instance[0] = explosive;
+        items_instance[1] = large_explosive;
+        items_instance[2] = cheap_teleporter;
+        items_instance[3] = fancy_teleporter;
+        items_instance[4] = repair_kit;
+        items_instance[5] = fuel_reserve;
+
         // These will probably be set by save data
-        explosive.Count = 5;
-        large_explosive.Count = 5;
-        cheap_teleporter.Count = 5;
-        fancy_teleporter.Count = 5;
-        repair_kit.Count = 5;
-        fuel_reserve.Count = 5;
+        foreach (Item item in items_instance)
+        {
+            item.Count = 5;
+        }
     }
 }
