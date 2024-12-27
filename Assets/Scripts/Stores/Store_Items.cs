@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Store_Items : Store
 {
+    private Item[] items_instance;
+
     private void Start()
     {
         // Make sure the store is closed when the game starts
@@ -9,7 +11,7 @@ public class Store_Items : Store
             gameManager.ToggleItemsStoreUI();
 
         
-        Item[] items_instance = gameManager.playerScript.items.items_instance;
+        items_instance = gameManager.playerScript.items.items_instance;
         foreach (Item item in items_instance)
         {
             // Add an item slot to the consummable items Grid Layout
@@ -27,10 +29,15 @@ public class Store_Items : Store
         // I could use the OnClick() property, can we set that by script ? Is this a good idea ?
         // Also, buying ? What will handle the transaction, making sure we've got enough money, and setting the amount ?
 
-        // Instance item slots
-        //Transform upgrade_items_layout = transform.GetChild(0);
-        //int co = transform.childCount;
-        //Debug.Log(transform);
+        /*
+        Update, I did the simplest solution for the time being.
+        I manually copy-pasted the UI stuff, and linked each buttons to Store_Items.BuyItem(),
+        as well as manually setting the proper index, name and cost.
+        This WILL have to be done better - but I don't think we need a big system.
+        How often will these change ? Just do something basic to set the name and cost by id.
+
+        As far as what handles the buying and stuff - that's prime refactoring real estate !
+        */
     }
 
     public override void Interact()
@@ -45,6 +52,16 @@ public class Store_Items : Store
 
     public void BuyItem(int index)
     {
-        Debug.Log($"bought item id {index}");
+        Item item = items_instance[index];
+
+        bool bought = gameManager.money.Buy(item.Cost);
+        if (!bought)
+        {
+            Debug.LogWarning($"Not enough momeys to buy {item.Name}");
+            return;
+        }
+
+        item.Count++;
+        Debug.Log($"bought {item.Name}, has {item.Count}");
     }
 }

@@ -22,10 +22,14 @@ public class Money : MonoBehaviour
         UpdateMoneyUI();
     }
 
-    public void Buy(int cost)
+    public bool Buy(int cost)
     {
+        if (money < cost)
+            return false;
+
         money -= cost;
         UpdateMoneyUI();
+        return true;
     }
 
     private void UpdateMoneyUI()
