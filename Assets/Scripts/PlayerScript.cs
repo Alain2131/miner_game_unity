@@ -387,6 +387,13 @@ public class PlayerScript : MonoBehaviour
         float dig_time = tile_info.GetDigTime();
         dig_time /= drillSpeed;
 
+        // the deeper we are, the slower the drill is
+        int depth = game_manager.PixelIDY(pixel_ID);
+        // no idea if this is good, at all, considering "infinite depth" and different drill levels
+        // almost nothing until 15, then it's a linear increase in time to depth
+        float depth_mult = 1 + Mathf.Max(depth, 10) * 0.05f;
+        dig_time *= depth_mult;
+
         Vector2 current_pos = transform.position;
         Vector2 target_position = game_manager.PixelIDToPosition(pixel_ID);
 

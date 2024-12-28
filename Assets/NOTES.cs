@@ -94,6 +94,11 @@
 // Balancing
 // - The Cargo seems constantly too small
 // - We can buy early upgrades way too easily
+// Having less ores makes me more inclined to go towards ore pockets rather than ignoring and going deeper
+// Same goes with speed, I prefer to go with what I see rather than going deeper
+// I believe the implementation of slower digging by depth will increase that feeling even more.
+// I think it's good, to an extent.
+// Noise leaves a bit too many gaps, it should be a bit more uniform
 
 // Figure out how to build the game for different platforms
 // - PC

@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71eb41f4426282841a10e821e9f30a39, type: 3}
   m_Name: AllTilesInfo
   m_EditorClassIdentifier: 
-  dirtTile: {fileID: 11400000, guid: 25d0355cd70e0ee4bbb98a9092a400a0, type: 2}
-  coalTile: {fileID: 11400000, guid: b139119115ca6d54a9d8c0cea052ad91, type: 2}
-  ironTile: {fileID: 11400000, guid: 14c0be3b79f7d58458756f0720344017, type: 2}
-  rockTile: {fileID: 11400000, guid: be12ba73d63b13e49bd607ef8d003456, type: 2}
-  airTile: {fileID: 11400000, guid: 9e018067cf910094bb733f039fa8ec8d, type: 2}
+  tiles:
+  - {fileID: 11400000, guid: 9e018067cf910094bb733f039fa8ec8d, type: 2}
+  - {fileID: 11400000, guid: 14c0be3b79f7d58458756f0720344017, type: 2}
+  - {fileID: 11400000, guid: b139119115ca6d54a9d8c0cea052ad91, type: 2}
+  - {fileID: 11400000, guid: be12ba73d63b13e49bd607ef8d003456, type: 2}
+  - {fileID: 11400000, guid: 25d0355cd70e0ee4bbb98a9092a400a0, type: 2}

@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: tileInfo_rock
   m_EditorClassIdentifier: 
   type: 3
-  material: {fileID: 2100000, guid: 4aeb8fd1246681c4e8c7f77efec6c317, type: 2}
+  material: {fileID: 2100000, guid: e7bfa00cb8d227e49aef7f1620b5afb8, type: 2}
   digTime: 5
   fuelConsumption: 10
-  minimumDrillLevel: 2
+  minimumDrillLevel: 5
   addToInventory: 0
   weight: 0
   value: 0
   noiseSize: 1.01
   levelGenerationValues:
-  - depth: 0
+  - depth: 75
     percent: 0
+  - depth: 100
+    percent: 0.05
