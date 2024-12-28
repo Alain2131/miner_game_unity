@@ -52,23 +52,26 @@ public class LineGeneration : MonoBehaviour
         // because it doesn't update during the same frame.
         // So, we pass it manually
 
-        for (int x = 0; x < lateral_tile_amount; x++)
+        for (int x_ID = 0; x_ID < lateral_tile_amount; x_ID++)
         {
-            TileScript current_tile = transform.GetChild(x).GetComponent<TileScript>();
+            Transform tile_transform = transform.GetChild(x_ID);
+            TileScript current_tile = tile_transform.GetComponent<TileScript>();
 
             // Update pixel_ID
-            int pixel_ID = line_ID * lateral_tile_amount + x;
+            int pixel_ID = line_ID * lateral_tile_amount + x_ID;
             current_tile.pixelID = pixel_ID;
 
             // Flag as air if the tile is already dug up
             if (game_manager.IsTileDugUp(pixel_ID))
-                air_tiles[x] = true;
+            {
+                air_tiles[x_ID] = true;
+            }
             else
-                air_tiles[x] = false;
+                air_tiles[x_ID] = false;
 
             
             // Assign Tile Type
-            if (!air_tiles[x]) // If we know it's not an air tile
+            if (!air_tiles[x_ID]) // If we know it's not an air tile
             {
                 // Loop through all TileInfos, and place the first "valid" tile
                 // Essentially, we give priority to the first types of tile.
@@ -81,7 +84,7 @@ public class LineGeneration : MonoBehaviour
             }
 
             // Disable air tile, Enable non-air tile
-            current_tile.SetEnabled(!air_tiles[x]);
+            current_tile.SetEnabled(!air_tiles[x_ID]);
 
             // We could randomize rotation,
             // but it's not necessary when re-using the line.

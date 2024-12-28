@@ -21,7 +21,7 @@
 // - Inventory
 // - * Allow possibility of discarding ores (to lower weight) (DONE)
 // - * Show ore value/weight (DONE) -> might want to get total value instead of individual value)
-// - Items
+// - Items (DONE)
 // - Money (DONE)
 // - Upgrades
 // - * Drill Speed (DONE)
@@ -37,11 +37,12 @@
 // - * * Remove some amount of ore in the cargo (some or all of it)
 // - * * * If all is lost, could have the wreck be recoverable where the player died (but the wreck would contain like half or whatever)
 // - * * * Not sure how to handle when the player dies in the air. Fall down to the bottom ? Would the wreckage float ? (could go full silly with little balloons holding the wreckage in place)
+// - * * * Could also be a simple game over, starting from last save or something, maybe with a hardcore mode with a single life
 // - * * Fill fuel
 // - * * The IMPORTANT part is to never be in a situation where the player is stuck without being able to make money/progress anymore
 // - Stores
-// - * Upgrades (buying/selling) <- selling ??? wot
-// - * Items (dynamite, teleport, etc)
+// - * Upgrades (DONE)
+// - * Items (dynamite, teleport, etc) (DONE)
 // - * Ore selling (DONE)
 // - * Fuel buying (DONE)
 // - * Hull repair (DONE)
@@ -53,7 +54,7 @@
 
 // UI
 // - Inventory (DONE)
-// - Items (could be a part of the inventory screen)
+// - Items (could be a part of the inventory screen) (gameplay implementation DONE, ui is trash)
 // - Stores
 // - Fuel/life (DONE)
 // - Money (DONE)
@@ -88,6 +89,7 @@
 // - * Pod
 // - * Environment
 // - * Stores
+// - Monsters ?
 
 // Balancing
 // - The Cargo seems constantly too small
@@ -224,7 +226,7 @@ We will probably be able to remove the ray intersection to fetch the tile, since
 Coding Conventions
 
 * PascalCase is used for classes and functions/methods
-* camelCase is used inspector variables
+* camelCase is used for inspector variables
 * SCREAMING_SNAKE_CASE is used for constants
 * snake_case is used for everything else
 */

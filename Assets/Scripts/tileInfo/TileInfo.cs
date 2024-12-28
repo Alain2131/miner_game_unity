@@ -5,6 +5,7 @@ public enum TileType
     dirt,
     coal,
     iron,
+    rock,
     air
 }
 
@@ -17,6 +18,7 @@ public class TileInfo : ScriptableObject
 
     public float digTime = 1.0f;
     public float fuelConsumption = 2.0f;
+    public int minimumDrillLevel = 0; 
 
     [Space(10)]
     public bool addToInventory = true;

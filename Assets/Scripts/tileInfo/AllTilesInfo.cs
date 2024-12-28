@@ -3,10 +3,8 @@ using UnityEngine;
 //[CreateAssetMenu(fileName = "AllTiles", menuName = "AllTiles")]
 public class AllTilesInfo : ScriptableObject
 {
-    public TileInfo dirtTile;
-    public TileInfo coalTile;
-    public TileInfo ironTile;
-    public TileInfo airTile;
+    [Header("Order defines spawn priority")]
+    public TileInfo[] tiles;
 
     //public static AllTilesInfo Instance;
 
@@ -16,12 +14,6 @@ public class AllTilesInfo : ScriptableObject
     {
         Instance = this;
     }*/
-
-    public TileInfo[] GetAllTiles()
-    {
-        // This is the priority of placement. The first that can be placed is the choosen one.
-        return new TileInfo[] { airTile, ironTile, coalTile, dirtTile };
-    }
 }
 
 /*

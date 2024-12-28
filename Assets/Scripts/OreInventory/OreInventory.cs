@@ -25,7 +25,7 @@ public class OreInventory : MonoBehaviour
     {
         // Populate oresInCargo list. This feels a bit weird though
         oresInCargo = new List<OreEntry>(); // Remove any stuff from the UI - what does that mean ?
-        foreach (TileInfo tile in allTilesInfo.GetAllTiles())
+        foreach (TileInfo tile in allTilesInfo.tiles)
         {
             if (tile.addToInventory)
             {

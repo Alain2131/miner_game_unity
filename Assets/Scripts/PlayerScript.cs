@@ -351,8 +351,16 @@ public class PlayerScript : MonoBehaviour
         int player_pixel_ID = game_manager.PositionToPixelID(transform.position);
         int pixel_ID = game_manager.GetPixelIDAtOffset(player_pixel_ID, lateral, down);
 
+        TileInfo tile_info = game_manager.PixelIDToTileInfo(pixel_ID);
+        int drill_level = game_manager.upgradeManager.drillUpgradeLevel;
+        if (tile_info.minimumDrillLevel > drill_level)
+        {
+            Debug.LogWarning($"Can't drill {tile_info.GetType()} with drill level {drill_level}, requires drill level {tile_info.minimumDrillLevel} or more.");
+            return;
+        }
+
         //Debug.Log($"player_ID {player_pixel_ID}, tile ID {pixel_ID}, down {down}, lateral {lateral}");
-        
+
         // Make sure we didn't just bounce
         // This might have to be handled with a PlayerState
         // As long as we haven't been on the ground for X amount of time,

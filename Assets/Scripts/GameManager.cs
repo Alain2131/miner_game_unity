@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
         playerScript = player.GetComponent<PlayerScript>();
-        tiles_info = allTilesInfo.GetAllTiles();
+        tiles_info = allTilesInfo.tiles;
 
         pauseGameUI.SetActive(false);
 
@@ -253,6 +253,12 @@ public class GameManager : MonoBehaviour
     // since we know it's always the first one (for now, anyways)
     public TileInfo PixelIDToTileInfo(int pixel_ID, float seed = 0f)
     {
+        if(pixel_ID < 0)
+        {
+            Debug.Log("Negative pixel_ID are ignored, returning air.");
+            return tiles_info[0]; // air
+        }
+
         int level_column = PixelIDX(pixel_ID);
         int level_row = PixelIDY(pixel_ID); // aka depth
 
@@ -274,7 +280,7 @@ public class GameManager : MonoBehaviour
             noise_value = Mathf.Clamp01(noise_value + BIAS);
 
             /* // debug in case something goes wrong
-            if (pixel_ID == 2128)
+            if (pixel_ID == 505)
             {
                 Debug.Log($"tile {tile_info.type}, column {level_column}, row {level_row}, noise_size {noise_size}, spawn_percent {current_depth_spawn_percent}, noise {noise_value}");
             }//*/
