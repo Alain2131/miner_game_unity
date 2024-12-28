@@ -207,11 +207,11 @@ public class PlayerScript : MonoBehaviour
     {
         // Make sure the player can't move faster than a certain speed
         // Especially useful when falling
-        float max_speed = 20f;
+        const float MAX_SPEED = 10f;
         float player_speed = rb.velocity.magnitude;
-        if (player_speed > max_speed)
+        if (player_speed > MAX_SPEED)
         {
-            float mult = max_speed / player_speed;
+            float mult = MAX_SPEED / player_speed;
             rb.velocity = new Vector2(rb.velocity.x * mult, rb.velocity.y * mult);
         }
 

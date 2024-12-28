@@ -776,6 +776,10 @@ PrefabInstance:
       propertyPath: m_Simulated
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 432368806723328940, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
+      propertyPath: m_GravityScale
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 432368806723328941, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: m_Name
       value: PlayerObject
@@ -801,6 +805,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1999159836}
     - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
+      propertyPath: upForce
+      value: 1500
+      objectReference: {fileID: 0}
+    - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: doJitter
       value: 0
       objectReference: {fileID: 0}
@@ -819,6 +827,10 @@ PrefabInstance:
     - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: jitterScale
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
+      propertyPath: lateralSpeed
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 432368806723328943, guid: a6651a1c1b097e1499dfe7eebfd7e3fc, type: 3}
       propertyPath: jitterIntensity
