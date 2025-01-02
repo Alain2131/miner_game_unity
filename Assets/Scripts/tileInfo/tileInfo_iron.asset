@@ -21,7 +21,7 @@ MonoBehaviour:
   weight: 150
   value: 40
   noiseSize: 1.08
-  levelGenerationValues:
+  LevelGenerationValues:
   - depth: 25
     percent: 0
   - depth: 50

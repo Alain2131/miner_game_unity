@@ -17,7 +17,6 @@ public class OreInventorySlot : MonoBehaviour
 
     public TileInfo tileInfo;
 
-    //private OreInventory oreInventory;
     private GameManager game_manager;
 
     private void Awake()
@@ -35,7 +34,7 @@ public class OreInventorySlot : MonoBehaviour
         // But it is nice to see the actual result in the engine
         // rather than having to start the game every time.
 
-        //oreName.text = tileInfo.name;
+        oreName.text = tileInfo.type.ToString();
     }
 
     public void UpdateSlotUI()

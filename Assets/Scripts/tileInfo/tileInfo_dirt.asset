@@ -12,14 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4398deb782bb25146b1bb657f438468b, type: 3}
   m_Name: tileInfo_dirt
   m_EditorClassIdentifier: 
-  name: dirt
+  type: 0
   material: {fileID: 2100000, guid: bead403a621dfa744be7210e1174916a, type: 2}
   digTime: 0.75
   fuelConsumption: 2
+  minimumDrillLevel: 0
   addToInventory: 0
   weight: 0
   value: 0
   noiseSize: 1.02
-  levelGenerationValues:
+  LevelGenerationValues:
   - depth: 0
     percent: 1

@@ -36,14 +36,14 @@ public class TileInfo : ScriptableObject
     public float noiseSize = 1.01f;
 
     [System.Serializable]
-    public struct LevelGenerationValues
+    public struct LevelGenerationValues_
     {
         public int depth;
         [Range(0, 1)]
         public float percent; // aka threshold
     }
     [Tooltip("Make sure Depth is correctly ordered.")]
-    public LevelGenerationValues[] levelGenerationValues;
+    public LevelGenerationValues_[] LevelGenerationValues;
     // It would be amazing to convert that system with a curve editor
     // Each tile would be a line, it would be clamped from 0-1 in height,
     // and width would be depth
@@ -87,25 +87,30 @@ public class TileInfo : ScriptableObject
     // Only for convenience and readability
     private int GetDepth(int index)
     {
-        return levelGenerationValues[index].depth;
+        return LevelGenerationValues[index].depth;
     }
     private float GetPercent(int index)
     {
-        return levelGenerationValues[index].percent;
+        return LevelGenerationValues[index].percent;
     }
 
-    // Go through the list of depth/percentage
-    // fetch the interpolated percentage based on the depth
+    // Go through the list of depth/percentage,
+    // and fetch the interpolated percentage based on the depth.
+    // This is essentially sampling from a multi-segment line graph.
+    // Google around to see if there's a nicer way to do this !
     public float GetSpawnPercent(int input_depth)
     {
-        int len = levelGenerationValues.Length;
+        int array_length = LevelGenerationValues.Length;
+
+        //Debug.Log($"array length: {array_length} last_depth : {GetDepth(array_length - 1)} current depth : {input_depth}");
 
         // If we're at the end, return the last percent
-        if (GetDepth(len - 1) <= input_depth)
-            return GetPercent(len - 1);
+        if (input_depth >= GetDepth(array_length - 1))
+            return GetPercent(array_length - 1);
 
-        int index = len - 1;
-        for (int i = 0; i < len; i++)
+
+        int index = array_length - 1;
+        for (int i = 0; i < array_length; i++)
         {
             if (GetDepth(i) > input_depth)
             {
@@ -114,23 +119,21 @@ public class TileInfo : ScriptableObject
             }
         }
 
-        int previous_depth = GetDepth(index);
-        int next_depth = previous_depth;
+        if (index <= 0) // is first line or earlier
+            return GetPercent(0);
 
-        float previous_percent = GetPercent(index);
-        float next_percent = previous_percent;
 
-        if (index != 0) // Get -1 if we're not 0.
-        {
-            previous_depth = GetDepth(index - 1);
-            previous_percent = GetPercent(index - 1);
-        }
+        int depth_0 = GetDepth(index - 1);
+        float percent_0 = GetPercent(index - 1);
+
+        int depth_1 = GetDepth(index);
+        float percent_1 = GetPercent(index);
 
 
         //float normal = Mathf.InverseLerp(previousDepth, nextDepth, inputDepth);
         //float percent = Mathf.Lerp(previousPercent, nextPercent, normal);
 
-        float percent = previous_percent + (input_depth - previous_depth) * (next_percent - previous_percent) / (next_depth - previous_depth);
+        float percent = percent_0 + (input_depth - depth_0) * (percent_1 - percent_0) / (depth_1 - depth_0);
         // This is equivalent, and should be faster.
         // If you get around to testing that,
         // I'd be curious to see the numbers.

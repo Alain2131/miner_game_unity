@@ -7,6 +7,7 @@ public class OreInventory : MonoBehaviour
 
     public Transform itemsParent;
     public GameObject oreInventoryUI;
+    public GameObject slotPrefab;
 
     private OreInventory ore_inventory;
     private OreInventorySlot[] slots;
@@ -33,6 +34,10 @@ public class OreInventory : MonoBehaviour
                 new_ore.tileInfo = tile;
                 new_ore.amount = 0;
                 oresInCargo.Add(new_ore);
+
+                GameObject new_slot = (GameObject)GameObject.Instantiate(slotPrefab, Vector2.zero, Quaternion.identity, itemsParent);
+                OreInventorySlot n = new_slot.GetComponent<OreInventorySlot>();
+                n.tileInfo = tile;
             }
         }
 
