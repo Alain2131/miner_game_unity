@@ -251,6 +251,7 @@ public class GameManager : MonoBehaviour
     // Could specify "TileInfo type=null" to have a default where we get the first valid, but can also specify the one we want
     // That mode would be "dangerous" as it wouldn't necessarily give us the final one, but it would be useful to fetch air faster,
     // since we know it's always the first one (for now, anyways)
+    // Seed will have to be shared in some way, maybe directly referenced here rather than a parameter
     public TileInfo PixelIDToTileInfo(int pixel_ID, float seed = 0f)
     {
         if(pixel_ID < 0)
