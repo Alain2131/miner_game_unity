@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4398deb782bb25146b1bb657f438468b, type: 3}
   m_Name: tileInfo_air
   m_EditorClassIdentifier: 
-  type: 4
+  type: 5
   material: {fileID: 2100000, guid: 4aeb8fd1246681c4e8c7f77efec6c317, type: 2}
   digTime: 0
   fuelConsumption: 0

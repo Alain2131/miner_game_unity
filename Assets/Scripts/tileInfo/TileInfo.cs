@@ -5,6 +5,7 @@ public enum TileType
     dirt,
     coal,
     iron,
+    copper,
     rock,
     air
 }

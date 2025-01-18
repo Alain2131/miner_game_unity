@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4398deb782bb25146b1bb657f438468b, type: 3}
-  m_Name: tileInfo_rock
+  m_Name: tileInfo_copper
   m_EditorClassIdentifier: 
-  type: 4
-  material: {fileID: 2100000, guid: e7bfa00cb8d227e49aef7f1620b5afb8, type: 2}
-  digTime: 5
-  fuelConsumption: 10
-  minimumDrillLevel: 5
-  addToInventory: 0
-  weight: 0
-  value: 0
-  noiseSize: 1.01
+  type: 3
+  material: {fileID: 2100000, guid: 5d403e7557d8dd34bac7b98cdccc2d02, type: 2}
+  digTime: 1
+  fuelConsumption: 3
+  minimumDrillLevel: 0
+  addToInventory: 1
+  weight: 200
+  value: 60
+  noiseSize: 1.034
   LevelGenerationValues:
-  - depth: 75
+  - depth: 50
     percent: 0
-  - depth: 100
-    percent: 0.025
+  - depth: 75
+    percent: 0.075
